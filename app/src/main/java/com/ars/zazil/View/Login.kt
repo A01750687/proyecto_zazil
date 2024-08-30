@@ -38,77 +38,92 @@ import com.ars.zazil.R
 import com.ars.zazil.View.LoginTextField
 import com.ars.zazil.ui.theme.Black
 import com.ars.zazil.ui.theme.BlueGray
+import com.ars.zazil.ui.theme.fondo
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
 fun loginvista() {
-    Surface {
+    Surface (color = fondo){
         Column(modifier = Modifier.fillMaxSize()) {
             TopSection()
             Spacer(modifier = Modifier.height(36.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 30.dp)
-            ) {
-                LoginTextField(
-                    label = "Celular",
-                    trailing = "",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(
-                    modifier = Modifier.height(15.dp)
-                )
-                LoginTextField(
-                    label = "Contraseña",
-                    trailing = "Olvidaste tu contaseña?",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(
-                    modifier = Modifier.height(15.dp)
-                )
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp),
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isSystemInDarkTheme()) BlueGray else Black,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(size = 4.dp)
-                ) {
-                    Text(
-                        text = "Iniciar Sesion",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-
-
-                }
-                Spacer(modifier = Modifier.height(15.dp)
-                )
-                Button(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp),
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isSystemInDarkTheme()) BlueGray else Black,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(size = 4.dp)
-                ) {
-                    Text(
-                        text = "Crear Cuenta",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
-
-
-            }
+            BottomSection()
         }
     }
 
+}
+
+@Composable
+private fun BottomSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 30.dp)
+    ) {
+        LoginTextField(
+            label = "Celular",
+            trailing = "",
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent)
+        )
+        Spacer(
+            modifier = Modifier.height(15.dp)
+        )
+        LoginTextField(
+            label = "Contraseña",
+            trailing = "Olvidaste tu contaseña?",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 40.dp)
+                .background(Color.Transparent)
+
+
+        )
+        Spacer(
+            modifier = Modifier.height(15.dp)
+        )
+        Button(
+            modifier = Modifier
+                .padding(start = 110.dp)
+                .height(40.dp),
+            onClick = { /*TODO*/ },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+
+            ),
+            shape = RoundedCornerShape(size = 12.dp)
+        ) {
+            Text(
+                text = "Iniciar Sesion",
+                style = MaterialTheme.typography.labelMedium
+            )
+
+
+        }
+        Spacer(
+            modifier = Modifier.height(15.dp)
+        )
+        Button(
+            modifier = Modifier
+                .padding(start = 110.dp)
+                .height(40.dp),
+            onClick = { /*TODO*/ },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(size = 12.dp)
+        ) {
+            Text(
+                text = "Crear Cuenta",
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+
+
+    }
 }
 
 @Composable
@@ -131,14 +146,14 @@ private fun TopSection() {
         ) {
             //Juntar solo en imagen
             Image(
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(180.dp),
                 painter = painterResource(id = R.drawable.logo_zazil),
                 contentDescription = "Logozazil",
             )
         }
         Text(
             modifier = Modifier
-                .padding(bottom = 10.dp)
+                .padding(bottom = 25.dp)
                 .align(Alignment.BottomCenter),
             text = stringResource(id = R.string.Iniciar_Sesion),
             style = MaterialTheme.typography.headlineLarge,
