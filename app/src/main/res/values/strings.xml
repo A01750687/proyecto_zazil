@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Zazil</string>
+    <string name="logo_zazil">logo_zazil</string>
+    <string name="zazil">zazil\n</string>
+    <string name="Zazil">Zazil\n</string>
+    <string name="login">login\n</string>
+    <string name="Iniciar_Sesion">Iniciar Sesion\n</string>
+    <string name="logo">\n</string>
 </resources>
