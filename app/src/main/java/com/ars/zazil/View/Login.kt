@@ -13,15 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.ars.zazil.R
 import com.ars.zazil.View.LoginTextField
 import com.ars.zazil.ui.theme.Black
-import com.ars.zazil.ui.theme.BlueGray
 import com.ars.zazil.ui.theme.fondo
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
@@ -65,7 +58,6 @@ private fun BottomSection() {
             trailing = "",
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Transparent)
         )
         Spacer(
             modifier = Modifier.height(15.dp)
@@ -153,7 +145,6 @@ private fun TopSection() {
         }
         Text(
             modifier = Modifier
-                .padding(bottom = 25.dp)
                 .align(Alignment.BottomCenter),
             text = stringResource(id = R.string.Iniciar_Sesion),
             style = MaterialTheme.typography.headlineLarge,
