@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "783043939229",
+    "project_id": "zazil-ad893",
+    "storage_bucket": "zazil-ad893.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783043939229:android:434296601fc0c4cfe4bd74",
+        "android_client_info": {
+          "package_name": "com.ars.zazil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783043939229-mcjcqqmpn9vhgir7rmu4h9g32do6lh94.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ars.zazil",
+            "certificate_hash": "b724853b36d0c1722f947dc8df2b444ded48b97e"
+          }
+        },
+        {
+          "client_id": "783043939229-10fm2pgnufnis20oqhihb437s41rlkar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfUwRzu7wXEnCiyCsUFdXxhrx15y6oXxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783043939229-10fm2pgnufnis20oqhihb437s41rlkar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

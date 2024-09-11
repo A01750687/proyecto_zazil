@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -68,4 +69,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     //jetpack Compose
     implementation(libs.material3)
+    //google firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
 }
