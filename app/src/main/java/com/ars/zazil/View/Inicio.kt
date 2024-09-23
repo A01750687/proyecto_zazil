@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 
@@ -47,24 +49,7 @@ private fun Botones() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            modifier = Modifier
-                .height(50.dp)
-                .width(200.dp),
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black,
-
-                ),
-
-            shape = RoundedCornerShape(size = 12.dp)
-        ) {
-            Text(
-                text = "Iniciar Sesion",
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
+        Botinicio()
         Spacer(
             modifier = Modifier.height(15.dp)
         )
@@ -77,22 +62,82 @@ private fun Botones() {
         Spacer(
             modifier = Modifier.height(15.dp)
         )
-        Button(
-            modifier = Modifier
-                .height(50.dp)
-                .width(200.dp),
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
+        BotCrear()
+        Spacer(
+            modifier = Modifier.height(25.dp)
+        )
+        BotGoogle()
+
+    }
+}
+
+@Composable
+private fun BotGoogle() {
+    Button(
+        modifier = Modifier
+            .height(50.dp)
+            .width(350.dp),
+        onClick = { /*TODO*/ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black
+        ),
+        shape = RoundedCornerShape(size = 12.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo_google),
+            contentDescription = "Logo de Google",
+            modifier = Modifier.size(36.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text = "Continuar con Google",
+            fontSize = 16.sp,
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+@Composable
+private fun BotCrear() {
+    Button(
+        modifier = Modifier
+            .height(50.dp)
+            .width(200.dp),
+        onClick = { /*TODO*/ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black
+        ),
+        shape = RoundedCornerShape(size = 12.dp)
+    ) {
+        Text(
+            text = "Crear Cuenta",
+            fontSize = 16.sp,
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+@Composable
+private fun Botinicio() {
+    Button(
+        modifier = Modifier
+            .height(50.dp)
+            .width(200.dp),
+        onClick = { /*TODO*/ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+
             ),
-            shape = RoundedCornerShape(size = 12.dp)
-        ) {
-            Text(
-                text = "Crear Cuenta",
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
+        shape = RoundedCornerShape(size = 12.dp)
+    ) {
+        Text(
+            text = "Iniciar Sesion",
+            fontSize = 16.sp,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 

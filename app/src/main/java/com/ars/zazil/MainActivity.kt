@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
+import androidx .compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -96,9 +96,10 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ){
     NavHost(navController = navController,
-        startDestination = Pantallas.RUTA_PRINCIPAL,
+        startDestination = Pantallas.RUTA_PRINCIPAL,//cambiar a inicio
 
     ){
+        composable()
 
         composable(Pantallas.RUTA_PRINCIPAL) {
             Principal(productoAppVM,modifier)

@@ -51,6 +51,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -81,7 +82,6 @@ fun Principal(productoAppVM: ProductoAppVM, modifier: Modifier = Modifier) {
         Productos(estadoLista,modifier)
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -114,7 +114,7 @@ fun TopBar(
         actions = {
             IconButton(onClick = { /*TODO: Calendario*/ },
                 modifier = Modifier.padding(bottom = 15.dp)) {
-                Icon(painter = painterResource(id = R.drawable.calendario),
+                Image(painter = painterResource(id = R.drawable.calendario),
                     contentDescription = "Calendario")
             }
         },
