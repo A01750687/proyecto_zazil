@@ -70,12 +70,12 @@ fun SelectorDeGenero() {
             modifier = Modifier.clickable { isExpanded = true })
         DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
             Gender.values().toList().forEach { gender ->
-                DropdownMenuItem(onClick = {
-                    selectedGender = gender
-                    isExpanded = false
-                }) {
-                    Text(gender.displayText)
-                }
+//                DropdownMenuItem(onClick = {
+//                    selectedGender = gender
+//                    isExpanded = false
+//                }) {
+//                    Text(gender.displayText)
+//                }
             }
         }
     }

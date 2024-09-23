@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.ars.zazil.R
 
 @Composable
-fun preguntas(){
+fun preguntas(modifier: Modifier) {
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)){
         Text(text = "Preguntas frecuentes",
             style = MaterialTheme.typography.headlineLarge,
