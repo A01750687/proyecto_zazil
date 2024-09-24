@@ -12,9 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,41 +46,59 @@ import androidx.navigation.NavHostController
 fun Registro(navController: NavHostController) {
     Surface(color = fondo) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize().padding(26.dp),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Imagen()
             CamposDeRegistro()
             Spacer(modifier = Modifier.height(15.dp))
-            SelectorDeGenero()
+            SelectorDeGenero(modifier = Modifier)
+            Fecha()
             Spacer(modifier = Modifier.height(15.dp))
             CrearCuenta()
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectorDeGenero() {
+fun SelectorDeGenero(modifier: Modifier) {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedGender by remember { mutableStateOf<Gender?>(null) }
+    val icon = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {
+            isExpanded = !isExpanded
+        }
     ) {
-        Text(
-            selectedGender?.displayText ?: SELECT_GENDER,
-            modifier = Modifier.clickable { isExpanded = true })
-        DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-            Gender.values().toList().forEach { gender ->
-//                DropdownMenuItem(onClick = {
-//                    selectedGender = gender
-//                    isExpanded = false
-//                }) {
-//                    Text(gender.displayText)
-//                }
+        TextField(
+            value = selectedGender,
+            onValueChange = { },
+            readOnly = true,
+            modifier = modifier,
+            label = { Text("Género") },
+            trailingIcon = {
+                Icon(icon, contentDescription = if (isExpanded) "Collapse menu" else "Expand menu")
+            }
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = {
+                isExpanded = false
+            }
+        ) {
+            val options = listOf("Mujer", "Hombre", "Otro")
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    text = { Text(selectionOption) },
+                    onClick = {
+                        selectedGender = selectionOption
+                        isExpanded = false
+                    }
+                )
             }
         }
     }
