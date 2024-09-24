@@ -1,4 +1,4 @@
-package com.ars.zazil.ViewModel
+package com.ars.zazil.Viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

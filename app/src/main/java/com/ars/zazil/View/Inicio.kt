@@ -1,6 +1,8 @@
 package com.ars.zazil.View
 
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,13 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ars.zazil.R
+import com.ars.zazil.Viewmodel.GoogleVM
 import com.ars.zazil.ui.theme.fondo
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun Inicio(navController: NavHostController) {
@@ -71,12 +79,39 @@ private fun Botones(navController: NavHostController) {
 }
 
 @Composable
-private fun BotGoogle() {
+fun BotGoogle(googleVM: GoogleVM = GoogleVM()) {
+    val token = "783043939229-10fm2pgnufnis20oqhihb437s41rlkar.apps.googleusercontent.com"
+    val contexto = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) {
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val cuenta = task.getResult(ApiException::class.java)
+            val credencial = GoogleAuthProvider.getCredential(cuenta.idToken, null)
+            googleVM.hacerLoginGoogle(credencial) {
+                googleVM.setEstadoLogin(true)
+            }
+        } catch(e: Exception) {
+            println("EXEPCION haciendo Login: ${e.localizedMessage}")
+        }
+    }
+
+
     Button(
         modifier = Modifier
             .height(50.dp)
             .width(350.dp),
-        onClick = { /*TODO*/ },
+        onClick = {
+            val opciones = GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(token)
+                .requestEmail()
+                .build()
+            val clienteGoogle = GoogleSignIn.getClient(contexto, opciones)
+            launcher.launch(clienteGoogle.signInIntent)
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color.Black
@@ -96,6 +131,7 @@ private fun BotGoogle() {
         )
     }
 }
+
 
 @Composable
 private fun BotCrear(navController: NavHostController) {
