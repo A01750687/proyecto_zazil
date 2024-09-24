@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.firebase.auth.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -83,6 +84,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     //jetpack Compose
     implementation(libs.material3)
-    //google firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    //implementation(libs.firebase.auth.ktx)
+    implementation("com.google.android.gms:play-services-auth:20.3.0")
+    implementation(libs.firebase.auth.ktx)
+
 }
