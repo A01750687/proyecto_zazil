@@ -26,28 +26,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.ars.zazil.R
 import com.ars.zazil.View.LoginTextField
+import com.ars.zazil.View.Pantallas
+import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.ui.theme.Black
 import com.ars.zazil.ui.theme.fondo
-
-@Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun IniciarSesion() {
+fun IniciarSesion(loginVM: LoginVM, navController: NavHostController) {
     Surface (color = fondo){
         Column(modifier = Modifier.fillMaxSize()) {
             TopSection()
             Spacer(modifier = Modifier.height(36.dp))
-            BottomSection()
+            BottomSection(loginVM,navController)
         }
     }
 
 }
 
 @Composable
-private fun BottomSection() {
+private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +79,15 @@ private fun BottomSection() {
             modifier = Modifier
                 .padding(start = 110.dp)
                 .height(40.dp),
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(Pantallas.RUTA_PRINCIPAL){
+                    popUpTo(navController.graph.id){
+                        inclusive = true
+                    }
+                    loginVM.setEstadoLogin(true)
+
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
                 contentColor = Color.Black
@@ -101,7 +109,7 @@ private fun BottomSection() {
             modifier = Modifier
                 .padding(start = 110.dp)
                 .height(40.dp),
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(Pantallas.RUTA_CREARCUENTA) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
                 contentColor = Color.Black

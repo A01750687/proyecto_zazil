@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,11 +33,10 @@ import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
 
-
-@Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun Registro() {
+fun Registro(navController: NavHostController) {
     Surface(color = fondo) {
         Column(
             modifier = Modifier.fillMaxSize(),

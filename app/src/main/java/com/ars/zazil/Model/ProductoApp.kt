@@ -1,6 +1,7 @@
 package com.ars.zazil.Model
 
 data class ProductoApp(
+    val id: String = "",
     val nombre: String = "",
     val stock: Int = 0,
     val precio: Float = 0f,

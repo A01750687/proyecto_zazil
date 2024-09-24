@@ -20,23 +20,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ars.zazil.R
+import coil.compose.rememberAsyncImagePainter
+import com.ars.zazil.Viewmodel.ProductoAppVM
 
 // Preview con medidas de un celular
-@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
-fun ProductInDetails(modifier: Modifier = Modifier) {
+fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifier = Modifier) {
+
+    val estado = productoAppVM.estado.collectAsState()
+    productoAppVM.descargarProducto(id)
+
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
@@ -47,7 +50,7 @@ fun ProductInDetails(modifier: Modifier = Modifier) {
     ) {
         // Imagen del producto
         Image(
-            painter = painterResource(id = R.drawable.image),
+            painter = rememberAsyncImagePainter("http://10.48.79.109:8000/"+estado.value.imagen),
             contentDescription = "Producto",
             modifier = Modifier
                 .size(180.dp)
@@ -67,7 +70,7 @@ fun ProductInDetails(modifier: Modifier = Modifier) {
                         fontSize = 16.sp
                     )
                 ) {
-                    append("$150")
+                    append("${estado.value.precio}")
                 }
             }
         )
@@ -78,7 +81,7 @@ fun ProductInDetails(modifier: Modifier = Modifier) {
         Text(
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)) {
-                    append("Toalla Femenina Reutilizable")
+                    append(estado.value.nombre)
                 }
                 withStyle(
                     style = SpanStyle(
@@ -87,7 +90,7 @@ fun ProductInDetails(modifier: Modifier = Modifier) {
                         fontSize = 18.sp
                     )
                 ) {
-                    append(" Regular")
+                    append(estado.value.categoria)
                 }
             }
         )

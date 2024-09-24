@@ -1,4 +1,4 @@
-package com.ars.zazil.viewmodel
+package com.ars.zazil.Viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +12,19 @@ class ProductoAppVM: ViewModel() {
 
     private val servicioRemoto = ServicioRemoto()
 
+    private val _estado = MutableStateFlow(ProductoApp())
+    val estado: StateFlow<ProductoApp> = _estado
+
     private val _estadoLista = MutableStateFlow(listOf<ProductoApp>())
     val estadoLista: StateFlow<List<ProductoApp>> = _estadoLista
 
 
+    fun descargarProducto(id:String){
+        viewModelScope.launch {
+            val producto = servicioRemoto.descargarProducto(id)
+            _estado.value = producto
+        }
+    }
 
     fun descargarListaProducto(){
         viewModelScope.launch {

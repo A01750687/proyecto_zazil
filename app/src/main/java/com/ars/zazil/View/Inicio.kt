@@ -23,33 +23,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 
-@Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun Inicio() {
+fun Inicio(navController: NavHostController) {
     Surface(color = fondo) {
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Imagen()
-            Botones()
+            Botones(navController)
         }
     }
 
 }
 
 @Composable
-private fun Botones() {
+private fun Botones(navController: NavHostController) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Botinicio()
+        Botinicio(navController)
         Spacer(
             modifier = Modifier.height(15.dp)
         )
@@ -62,7 +61,7 @@ private fun Botones() {
         Spacer(
             modifier = Modifier.height(15.dp)
         )
-        BotCrear()
+        BotCrear(navController)
         Spacer(
             modifier = Modifier.height(25.dp)
         )
@@ -99,12 +98,14 @@ private fun BotGoogle() {
 }
 
 @Composable
-private fun BotCrear() {
+private fun BotCrear(navController: NavHostController) {
     Button(
         modifier = Modifier
             .height(50.dp)
             .width(200.dp),
-        onClick = { /*TODO*/ },
+        onClick = {
+            navController.navigate(Pantallas.RUTA_CREARCUENTA)
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color.Black
@@ -120,13 +121,13 @@ private fun BotCrear() {
 }
 
 @Composable
-private fun Botinicio() {
+private fun Botinicio(navController: NavHostController) {
     Button(
         modifier = Modifier
             .height(50.dp)
             .width(200.dp),
         onClick = {
-
+            navController.navigate(Pantallas.RUTA_INICIO_SESION)
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,

@@ -29,7 +29,7 @@ fun ContactUsPage(
 ) {
     Column(
         modifier = modifier
-            .padding(top = 34.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

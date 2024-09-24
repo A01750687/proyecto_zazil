@@ -15,6 +15,10 @@ class ServicioRemoto {
         retrofit.create(ProductoAppApi::class.java)
     }
 
+    suspend fun descargarProducto(id:String): ProductoApp{
+        return servicio.descargarProducto(id)
+    }
+
     suspend fun descargarlistaProducto(): List<ProductoApp>{
         return servicio.descargarListaProducto()
     }

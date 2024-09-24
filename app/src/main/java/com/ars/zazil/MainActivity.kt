@@ -17,17 +17,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ars.zazil.View.BottomBar
+import com.ars.zazil.View.ContactUsPage
 import com.ars.zazil.View.Inicio
 import com.ars.zazil.View.Login.IniciarSesion
 import com.ars.zazil.View.Pantallas
 import com.ars.zazil.View.Principal
+import com.ars.zazil.View.ProductInDetails
 import com.ars.zazil.View.Registro
 import com.ars.zazil.View.Sidebar
 import com.ars.zazil.View.TopBar
@@ -36,7 +40,8 @@ import com.ars.zazil.View.pagos
 import com.ars.zazil.View.preguntas
 import com.ars.zazil.ui.theme.ZazilTheme
 import com.ars.zazil.ui.theme.naranja
-import com.ars.zazil.viewmodel.ProductoAppVM
+import com.ars.zazil.Viewmodel.LoginVM
+import com.ars.zazil.Viewmodel.ProductoAppVM
 
 class MainActivity : ComponentActivity() {
     //ViewModel
@@ -62,30 +67,39 @@ class MainActivity : ComponentActivity() {
 fun Contenido(
     productoAppVM: ProductoAppVM,
     drawerState: DrawerState,
+    loginVM: LoginVM = viewModel(),
     navController: NavHostController
 ){
+
+    val loginEstado = loginVM.estadoLogin.collectAsState()
+
     Scaffold (
         topBar = {
-            Column {
-                Box (modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(color = naranja)
-                )
-                TopBar(drawerState,navController, modifier = Modifier)
+            if(loginEstado.value){
+                Column {
+                    Box (modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(color = naranja)
+                    )
+                    TopBar(drawerState,navController, modifier = Modifier)
+                }
             }
         },
-        bottomBar = { Column {
-            BottomBar(navController,modifier = Modifier)
-            Box (modifier = Modifier
-                .fillMaxWidth()
-                .height(25.dp)
-                .background(color = naranja)
-            )
-        }
+        bottomBar = {
+            if(loginEstado.value){
+                Column {
+                    BottomBar(navController,modifier = Modifier)
+                    Box (modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp)
+                        .background(color = naranja)
+                    )
+                }
+            }
         }
     ) { innerPadding ->
-        AppNavHost(productoAppVM,navController,modifier = Modifier.padding(innerPadding))
+        AppNavHost(productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
     }
 }
 
@@ -93,6 +107,7 @@ fun Contenido(
 @Composable
 fun AppNavHost(
     productoAppVM: ProductoAppVM,
+    loginVM: LoginVM,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ){
@@ -100,19 +115,26 @@ fun AppNavHost(
         startDestination = Pantallas.RUTA_INICIO,
     ){
         composable(Pantallas.RUTA_INICIO){
-            Inicio()
+            Inicio(navController)
         }
         composable(Pantallas.RUTA_CREARCUENTA){
-            Registro()
+            Registro(navController)
         }
         composable(Pantallas.RUTA_INICIO_SESION){
-            IniciarSesion()
+            IniciarSesion(loginVM,navController)
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {
-            Principal(productoAppVM,modifier)
+            Principal(navController,productoAppVM,modifier)
+        }
+        composable(Pantallas.RUTA_DETALLE + "/{id}") {
+            val id = it.arguments?.getString("id") ?: "0"
+            ProductInDetails(productoAppVM,id,modifier)
         }
 
+        composable(Pantallas.RUTA_CONTACTO) {
+            ContactUsPage(modifier = Modifier)
+        }
         composable(Pantallas.RUTA_CARRITO){
             carrito()
         }

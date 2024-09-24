@@ -51,7 +51,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -62,12 +61,16 @@ import com.ars.zazil.Model.Product
 import com.ars.zazil.Model.ProductoApp
 import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
-import com.ars.zazil.viewmodel.ProductoAppVM
+import com.ars.zazil.Viewmodel.ProductoAppVM
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun Principal(productoAppVM: ProductoAppVM, modifier: Modifier = Modifier) {
+fun Principal(
+    navController: NavHostController,
+    productoAppVM: ProductoAppVM,
+    modifier: Modifier = Modifier
+) {
 
     val estadoLista = productoAppVM.estadoLista.collectAsState()
 
@@ -79,7 +82,7 @@ fun Principal(productoAppVM: ProductoAppVM, modifier: Modifier = Modifier) {
     {
         Spacer(modifier = Modifier.height(16.dp))
         FilBus()
-        Productos(estadoLista,modifier)
+        Productos(navController,estadoLista,modifier)
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -168,31 +171,9 @@ fun FilBus() {
 }
 
 @Composable
-fun Productos(estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifier) {
-    var currentPage by remember { mutableStateOf(0)}
-    val productos = listOf(
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 150, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image),
-        Product("Toalla Femenina Reutilizable Regular", 180, R.drawable.image)
-    )
+fun Productos(navController: NavHostController,estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifier) {
 
+    var currentPage by remember { mutableStateOf(0)}
     var productosMostrados by remember { mutableStateOf<List<List<ProductoApp>>>(emptyList()) }
 
     LaunchedEffect(estadoLista.value) {
@@ -220,7 +201,7 @@ fun Productos(estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifi
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         rowItems.forEach { product ->
-                            ProductCard(product)
+                            ProductCard(navController, product)
                         }
                     }
                 }
@@ -269,12 +250,14 @@ fun Productos(estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifi
 }
 
 @Composable
-fun ProductCard(product: ProductoApp) {
+fun ProductCard(navController: NavHostController,product: ProductoApp) {
     Card (
         modifier = Modifier
             .width(180.dp)
             .padding(8.dp)
-            .clickable { /*TODO: Info del producto*/ }
+            .clickable {
+                navController.navigate(Pantallas.RUTA_DETALLE+"/${product.id}")
+            }
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
