@@ -1,9 +1,7 @@
 package com.ars.zazil.View
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,19 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,54 +29,69 @@ import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import android.app.DatePickerDialog
+import android.widget.DatePicker
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 @Composable
 fun Registro(navController: NavHostController) {
     Surface(color = fondo) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(26.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(26.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Imagen()
             CamposDeRegistro()
-            Spacer(modifier = Modifier.height(15.dp))
             SelectorDeGenero(modifier = Modifier)
-            Fecha()
+            Fecha(Modifier)
             Spacer(modifier = Modifier.height(15.dp))
             CrearCuenta()
         }
     }
 }
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectorDeGenero(modifier: Modifier) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var selectedGender by remember { mutableStateOf<Gender?>(null) }
-    val icon = if (isExpanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Seleccione Género") }
+    val icon = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown
 
     ExposedDropdownMenuBox(
-        expanded = isExpanded,
+        expanded = expanded,
         onExpandedChange = {
-            isExpanded = !isExpanded
+            expanded = !expanded
         }
     ) {
         TextField(
-            value = selectedGender,
+            value = selectedOption,
             onValueChange = { },
             readOnly = true,
             modifier = modifier,
             label = { Text("Género") },
             trailingIcon = {
-                Icon(icon, contentDescription = if (isExpanded) "Collapse menu" else "Expand menu")
+                Icon(icon, contentDescription = if (expanded) "Collapse menu" else "Expand menu")
             }
         )
         ExposedDropdownMenu(
-            expanded = isExpanded,
+            expanded = expanded,
             onDismissRequest = {
-                isExpanded = false
+                expanded = false
             }
         ) {
             val options = listOf("Mujer", "Hombre", "Otro")
@@ -95,8 +99,8 @@ fun SelectorDeGenero(modifier: Modifier) {
                 DropdownMenuItem(
                     text = { Text(selectionOption) },
                     onClick = {
-                        selectedGender = selectionOption
-                        isExpanded = false
+                        selectedOption = selectionOption
+                        expanded = false
                     }
                 )
             }
@@ -104,14 +108,32 @@ fun SelectorDeGenero(modifier: Modifier) {
     }
 }
 
-private const val SELECT_GENDER = "Seleccione Género"
 
-enum class Gender(val displayText: String) {
-    FEMALE("Femenino"),
-    MALE("Masculino"),
-    OTHER("Otro")
+@Composable
+fun Fecha(modifier: Modifier) {
+    var date by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            date = "$dayOfMonth/${month + 1}/$year"
+        },
+        Calendar.getInstance().get(Calendar.YEAR),
+        Calendar.getInstance().get(Calendar.MONTH),
+        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+    )
+
+    TextField(
+        value = date,
+        onValueChange = { },
+        readOnly = true,
+        modifier = modifier,
+        label = { Text("Fecha de Nacimiento") },
+        trailingIcon = {
+            Icon(Icons.Filled.CalendarToday, contentDescription = null)
+        }
+    )
 }
-
 
 @Composable
 private fun CrearCuenta() {
@@ -144,22 +166,27 @@ private fun Imagen() {
     Image(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
-            .padding(bottom = 100.dp),
+            .height(200.dp),
         painter = painterResource(id = R.drawable.logo_zazil),
         contentDescription = null,
     )
 }
-
 @Composable
 private fun CamposDeRegistro() {
+    var nombre by remember { mutableStateOf("") }
+    var direccion by remember { mutableStateOf("") }
+    var edad by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+    var contrasena by remember { mutableStateOf("") }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Campo Nombre
         TextField(
-            value = "",
-            onValueChange = { /* Manejar cambio de Nombre */ },
+            value = nombre,
+            onValueChange = { nombre = it },  // Actualizamos el valor con lo que escribe el usuario
             label = { Text("Nombre") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -168,9 +195,10 @@ private fun CamposDeRegistro() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Campo Dirección
         TextField(
-            value = "",
-            onValueChange = { /* Manejar cambio de Dirección */ },
+            value = direccion,
+            onValueChange = { direccion = it },  // Actualizamos el valor
             label = { Text("Dirección") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -179,9 +207,10 @@ private fun CamposDeRegistro() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Campo Edad
         TextField(
-            value = "",
-            onValueChange = { /* Manejar cambio de Edad */ },
+            value = edad,
+            onValueChange = { edad = it },  // Actualizamos el valor
             label = { Text("Edad") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,9 +219,10 @@ private fun CamposDeRegistro() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Campo Celular
         TextField(
-            value = "",
-            onValueChange = { /* Manejar cambio de Celular */ },
+            value = celular,
+            onValueChange = { celular = it },  // Actualizamos el valor
             label = { Text("Celular") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,14 +231,15 @@ private fun CamposDeRegistro() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Campo Contraseña
         TextField(
-            value = "",
-            onValueChange = { /* Manejar cambio de Contraseña */ },
+            value = contrasena,
+            onValueChange = { contrasena = it },  // Actualizamos el valor
             label = { Text("Contraseña") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation()  // Ocultamos la contraseña
         )
 
         Spacer(modifier = Modifier.height(10.dp))
