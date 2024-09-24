@@ -35,7 +35,7 @@ import com.ars.zazil.ui.theme.fondo
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun loginvista() {
+fun IniciarSesion() {
     Surface (color = fondo){
         Column(modifier = Modifier.fillMaxSize()) {
             TopSection()

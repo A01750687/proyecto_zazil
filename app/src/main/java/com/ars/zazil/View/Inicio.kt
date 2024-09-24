@@ -31,7 +31,7 @@ import com.ars.zazil.ui.theme.fondo
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun loginvista() {
+fun Inicio() {
     Surface(color = fondo) {
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -125,7 +125,9 @@ private fun Botinicio() {
         modifier = Modifier
             .height(50.dp)
             .width(200.dp),
-        onClick = { /*TODO*/ },
+        onClick = {
+
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color.Black,

@@ -14,8 +14,9 @@ sealed class Pantallas(
     // Objeto de la clase Pantallas(static)
     companion object{
         var listaPantallas = listOf(Carrito,Preguntas,Pagos)
-        const val  RUTA_INICIO = "Inicio"
-
+        const val RUTA_INICIO = "Inicio"
+        const val RUTA_CREARCUENTA = "CrearCuenta"
+        const val RUTA_INICIO_SESION = "InicioSesion"
         const val RUTA_PRINCIPAL = "Principal"
         const val RUTA_LOGIN = "Login"
         const val RUTA_REGISTRO = "Registro"
@@ -26,6 +27,9 @@ sealed class Pantallas(
     }
     //Pantallas
     private data object Inicio: Pantallas(RUTA_INICIO,"Inicio")
+    private data object CrearCuenta: Pantallas(RUTA_CREARCUENTA,"CrearCuenta")
+    private data object InicioSesion: Pantallas(RUTA_INICIO_SESION,"InicioSesion")
+
     private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal")
     private data object Login: Pantallas(RUTA_LOGIN,"Login")
     private data object Registro: Pantallas(RUTA_REGISTRO,"Registro")

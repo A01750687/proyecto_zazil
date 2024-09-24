@@ -38,7 +38,7 @@ import androidx.compose.runtime.setValue
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 800)
 @Composable
-fun PantallaRegistro() {
+fun Registro() {
     Surface(color = fondo) {
         Column(
             modifier = Modifier.fillMaxSize(),

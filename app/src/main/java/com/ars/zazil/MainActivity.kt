@@ -24,10 +24,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ars.zazil.View.BottomBar
-import com.ars.zazil.View.Login.loginvista
-import com.ars.zazil.View.PantallaRegistro
+import com.ars.zazil.View.Inicio
+import com.ars.zazil.View.Login.IniciarSesion
 import com.ars.zazil.View.Pantallas
 import com.ars.zazil.View.Principal
+import com.ars.zazil.View.Registro
 import com.ars.zazil.View.Sidebar
 import com.ars.zazil.View.TopBar
 import com.ars.zazil.View.carrito
@@ -96,19 +97,20 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ){
     NavHost(navController = navController,
-        startDestination = Pantallas.RUTA_PRINCIPAL,//cambiar a inicio
-
+        startDestination = Pantallas.RUTA_INICIO,
     ){
-        composable()
+        composable(Pantallas.RUTA_INICIO){
+            Inicio()
+        }
+        composable(Pantallas.RUTA_CREARCUENTA){
+            Registro()
+        }
+        composable(Pantallas.RUTA_INICIO_SESION){
+            IniciarSesion()
+        }
 
         composable(Pantallas.RUTA_PRINCIPAL) {
             Principal(productoAppVM,modifier)
-        }
-        composable(Pantallas.RUTA_LOGIN) {
-            loginvista()
-        }
-        composable(Pantallas.RUTA_REGISTRO) {
-            PantallaRegistro()
         }
 
         composable(Pantallas.RUTA_CARRITO){
