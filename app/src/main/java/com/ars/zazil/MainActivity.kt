@@ -17,7 +17,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,6 +76,8 @@ fun Contenido(
 
     val loginEstado = loginVM.estadoLogin.collectAsState()
 
+    val abrirCalendario = remember { mutableStateOf(false) }
+
     Scaffold (
         topBar = {
             if(loginEstado.value){
@@ -82,7 +87,7 @@ fun Contenido(
                         .height(50.dp)
                         .background(color = naranja)
                     )
-                    TopBar(drawerState,navController, modifier = Modifier)
+                    TopBar(abrirCalendario, drawerState,navController, modifier = Modifier)
                 }
             }
         },
@@ -99,13 +104,14 @@ fun Contenido(
             }
         }
     ) { innerPadding ->
-        AppNavHost(productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
+        AppNavHost(abrirCalendario,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(
+    abrirCalendario: MutableState<Boolean>,
     productoAppVM: ProductoAppVM,
     loginVM: LoginVM,
     navController: NavHostController,
@@ -125,7 +131,7 @@ fun AppNavHost(
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {
-            Principal(navController,productoAppVM,modifier)
+            Principal(abrirCalendario,navController,productoAppVM,modifier)
         }
         composable(Pantallas.RUTA_DETALLE + "/{id}") {
             val id = it.arguments?.getString("id") ?: "0"

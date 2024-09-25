@@ -16,11 +16,19 @@ class ServicioRemoto {
     }
 
     suspend fun descargarProducto(id:String): ProductoApp{
-        return servicio.descargarProducto(id)
+        try {
+            return servicio.descargarProducto(id)
+        } catch (e: Exception){
+            return ProductoApp() 
+        }
     }
 
     suspend fun descargarlistaProducto(): List<ProductoApp>{
-        return servicio.descargarListaProducto()
+        try {
+            return servicio.descargarListaProducto()
+        } catch (e: Exception){
+            return emptyList()
+        }
     }
 
 }

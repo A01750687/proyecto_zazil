@@ -36,6 +36,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,20 +54,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.rememberAsyncImagePainter
-import com.ars.zazil.Model.Product
 import com.ars.zazil.Model.ProductoApp
 import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 import com.ars.zazil.Viewmodel.ProductoAppVM
+import com.mags.pruebas.View.App
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
 fun Principal(
+    abrirCalendario: MutableState<Boolean>,
     navController: NavHostController,
     productoAppVM: ProductoAppVM,
     modifier: Modifier = Modifier
@@ -76,6 +79,11 @@ fun Principal(
 
     productoAppVM.descargarListaProducto()
 
+    if(abrirCalendario.value){
+        PopupCalendario {
+            abrirCalendario.value = false
+        }
+    }
     Column (modifier = modifier
         .fillMaxSize()
         .background(Color.White))
@@ -88,6 +96,7 @@ fun Principal(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
+    abrirCalendario: MutableState<Boolean>,
     drawerState: DrawerState,
     navController: NavHostController,
     modifier: Modifier = Modifier
@@ -115,7 +124,9 @@ fun TopBar(
         },
         modifier = Modifier.height(70.dp),
         actions = {
-            IconButton(onClick = { /*TODO: Calendario*/ },
+            IconButton(onClick = {
+                abrirCalendario.value = true
+            },
                 modifier = Modifier.padding(bottom = 15.dp)) {
                 Image(painter = painterResource(id = R.drawable.calendario),
                     contentDescription = "Calendario")
@@ -136,6 +147,19 @@ fun TopBar(
             containerColor = fondo
         )
     )
+}
+
+@Composable
+fun PopupCalendario(
+    onDismissRequest: () -> Unit
+){
+    Dialog(
+        onDismissRequest = { onDismissRequest() },
+    ){
+        Card {
+            App()
+        }
+    }
 }
 
 @Composable
@@ -256,7 +280,7 @@ fun ProductCard(navController: NavHostController,product: ProductoApp) {
             .width(180.dp)
             .padding(8.dp)
             .clickable {
-                navController.navigate(Pantallas.RUTA_DETALLE+"/${product.id}")
+                navController.navigate(Pantallas.RUTA_DETALLE + "/${product.id}")
             }
     ) {
         Column (
