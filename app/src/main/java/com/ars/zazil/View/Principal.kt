@@ -75,6 +75,8 @@ fun Principal(
     modifier: Modifier = Modifier
 ) {
 
+    val estadoFiltrado = productoAppVM.estadoFiltrado.collectAsState()
+
     val estadoLista = productoAppVM.estadoLista.collectAsState()
 
     productoAppVM.descargarListaProducto()
@@ -89,8 +91,8 @@ fun Principal(
         .background(Color.White))
     {
         Spacer(modifier = Modifier.height(16.dp))
-        FilBus()
-        Productos(navController,estadoLista,modifier)
+        FilBus(productoAppVM)
+        Productos(navController,estadoFiltrado,modifier)
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -163,7 +165,9 @@ fun PopupCalendario(
 }
 
 @Composable
-fun FilBus() {
+fun FilBus(productoAppVM: ProductoAppVM) {
+    var query by remember { mutableStateOf("") }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -180,8 +184,11 @@ fun FilBus() {
                 fontSize = 18.sp)
         }
         TextField(
-            value = "",
-            onValueChange = {/*TODO: Búsqueda*/ },
+            value = query,
+            onValueChange = {
+                query = it
+                productoAppVM.searchProducto(query)
+            },
             placeholder = { Text("Buscar...",
                 style = TextStyle(fontSize = 14.sp))
             },
@@ -194,6 +201,7 @@ fun FilBus() {
 
 }
 
+// Falta el texto de que no sale un producto al buscarlo, porfa no le muevan
 @Composable
 fun Productos(navController: NavHostController,estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifier) {
 

@@ -18,6 +18,9 @@ class ProductoAppVM: ViewModel() {
     private val _estadoLista = MutableStateFlow(listOf<ProductoApp>())
     val estadoLista: StateFlow<List<ProductoApp>> = _estadoLista
 
+    private val _estadoFiltrado = MutableStateFlow(listOf<ProductoApp>())
+    val estadoFiltrado: StateFlow<List<ProductoApp>> = _estadoFiltrado
+
 
     fun descargarProducto(id:String){
         viewModelScope.launch {
@@ -30,7 +33,16 @@ class ProductoAppVM: ViewModel() {
         viewModelScope.launch {
             val listaProducto = servicioRemoto.descargarlistaProducto()
             _estadoLista.value = listaProducto
+            _estadoFiltrado.value = listaProducto
         }
     }
 
+    fun searchProducto(query:String) {
+        val listaFiltrada = if (query.isEmpty()) {
+            _estadoLista.value
+        } else {
+            _estadoLista.value.filter { it.nombre.contains(query, ignoreCase = true) }
+        }
+        _estadoFiltrado.value = listaFiltrada
+    }
 }
