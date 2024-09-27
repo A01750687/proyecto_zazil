@@ -86,14 +86,18 @@ fun SelectorDeGenero(){
             expanded = expandido,
             onDismissRequest = { expandido=false }
         ) {
-            opciones.forEach{ label ->
-                DropdownMenuItem(text = { label },
-                    onClick = {
-                        selectedOption = label
-                        expandido = false
-                    }
-                )
+            Column(){
+                opciones.forEach{label ->
+                    DropdownMenuItem(
+                        text = { Text(text = label) },
+                        onClick = {
+                            selectedOption = label
+                            expandido = false
+                        }
+                    )
+                }
             }
+
         }
     }
 }
