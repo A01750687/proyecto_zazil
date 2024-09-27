@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
@@ -49,58 +51,46 @@ fun Registro(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(26.dp),
+                .padding(26.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Imagen()
             CamposDeRegistro()
-            SelectorDeGenero(modifier = Modifier)
-            Fecha(Modifier)
+            SelectorDeGenero()
+            Fecha()
             Spacer(modifier = Modifier.height(15.dp))
             CrearCuenta()
         }
     }
 }
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectorDeGenero(modifier: Modifier) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Seleccione Género") }
-    val icon = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown
+fun SelectorDeGenero(){
+    var expandido by remember { mutableStateOf(false)}
+    val opciones = listOf("Femenino","Masculino", "Otro")
+    var selectedOption by remember { mutableStateOf(opciones[0]) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        TextField(
-            value = selectedOption,
-            onValueChange = { },
-            readOnly = true,
-            modifier = modifier,
-            label = { Text("Género") },
-            trailingIcon = {
-                Icon(icon, contentDescription = if (expanded) "Collapse menu" else "Expand menu")
-            }
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
+        OutlinedButton(
+            onClick = { expandido= !expandido }
         ) {
-            val options = listOf("Mujer", "Hombre", "Otro")
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = { Text(selectionOption) },
+          Text(text = selectedOption)
+          Icon(imageVector = if(expandido)Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown, contentDescription = null )
+        }
+        DropdownMenu(
+            expanded = expandido,
+            onDismissRequest = { expandido=false }
+        ) {
+            opciones.forEach{ label ->
+                DropdownMenuItem(text = { label },
                     onClick = {
-                        selectedOption = selectionOption
-                        expanded = false
+                        selectedOption = label
+                        expandido = false
                     }
                 )
             }
@@ -108,32 +98,32 @@ fun SelectorDeGenero(modifier: Modifier) {
     }
 }
 
-
 @Composable
-fun Fecha(modifier: Modifier) {
-    var date by remember { mutableStateOf("") }
+fun Fecha() {
     val context = LocalContext.current
+    var date by remember { mutableStateOf("") }
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
     val datePickerDialog = DatePickerDialog(
         context,
-        { _, year, month, dayOfMonth ->
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             date = "$dayOfMonth/${month + 1}/$year"
-        },
-        Calendar.getInstance().get(Calendar.YEAR),
-        Calendar.getInstance().get(Calendar.MONTH),
-        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        }, year, month, day
     )
 
-    TextField(
-        value = date,
-        onValueChange = { },
-        readOnly = true,
-        modifier = modifier,
-        label = { Text("Fecha de Nacimiento") },
-        trailingIcon = {
-            Icon(Icons.Filled.CalendarToday, contentDescription = null)
+    OutlinedButton(
+        onClick = {
+            datePickerDialog.show()
         }
-    )
+    ) {
+        Text(text = if (date.isBlank()) "Seleccionar Fecha" else date)
+        Icon(imageVector = Icons.Filled.CalendarToday, contentDescription = null)
+    }
 }
+
 
 @Composable
 private fun CrearCuenta() {
