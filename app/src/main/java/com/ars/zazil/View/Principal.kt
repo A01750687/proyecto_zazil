@@ -2,6 +2,7 @@ package com.ars.zazil.View
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -81,20 +83,23 @@ fun Principal(
 
     productoAppVM.descargarListaProducto()
 
-    if(abrirCalendario.value){
+    if (abrirCalendario.value) {
         PopupCalendario {
             abrirCalendario.value = false
         }
     }
-    Column (modifier = modifier
-        .fillMaxSize()
-        .background(Color.White))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
+    )
     {
         Spacer(modifier = Modifier.height(16.dp))
         FilBus(productoAppVM)
-        Productos(navController,estadoFiltrado,modifier)
+        Productos(navController, estadoFiltrado, modifier)
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -126,23 +131,31 @@ fun TopBar(
         },
         modifier = Modifier.height(70.dp),
         actions = {
-            IconButton(onClick = {
-                abrirCalendario.value = true
-            },
-                modifier = Modifier.padding(bottom = 15.dp)) {
-                Image(painter = painterResource(id = R.drawable.calendario),
-                    contentDescription = "Calendario")
+            IconButton(
+                onClick = {
+                    abrirCalendario.value = true
+                },
+                modifier = Modifier.padding(bottom = 15.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.calendario),
+                    contentDescription = "Calendario"
+                )
             }
         },
         navigationIcon = {
-            IconButton(onClick = {
-                  scope.launch{
-                    drawerState.open()
-                }
-            },
-                modifier = Modifier.padding(bottom = 15.dp)) {
-                Icon(painter = painterResource(id = R.drawable.tres),
-                    contentDescription = "Lateral")
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
+                modifier = Modifier.padding(bottom = 15.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.tres),
+                    contentDescription = "Lateral"
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -154,10 +167,10 @@ fun TopBar(
 @Composable
 fun PopupCalendario(
     onDismissRequest: () -> Unit
-){
+) {
     Dialog(
         onDismissRequest = { onDismissRequest() },
-    ){
+    ) {
         Card {
             App()
         }
@@ -167,6 +180,7 @@ fun PopupCalendario(
 @Composable
 fun FilBus(productoAppVM: ProductoAppVM) {
     var query by remember { mutableStateOf("") }
+    var verFiltros by remember { mutableStateOf(false) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -174,14 +188,20 @@ fun FilBus(productoAppVM: ProductoAppVM) {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically,modifier = Modifier.weight(1f)){
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(painter = painterResource(id = R.drawable.filtro),
-                    contentDescription = "Filtro")
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+            IconButton(onClick = {
+                verFiltros = true
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.filtro),
+                    contentDescription = "Filtro"
+                )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Filtros",
-                fontSize = 18.sp)
+            Text(
+                text = "Filtros",
+                fontSize = 18.sp
+            )
         }
         TextField(
             value = query,
@@ -189,8 +209,11 @@ fun FilBus(productoAppVM: ProductoAppVM) {
                 query = it
                 productoAppVM.searchProducto(query)
             },
-            placeholder = { Text("Buscar...",
-                style = TextStyle(fontSize = 14.sp))
+            placeholder = {
+                Text(
+                    "Buscar...",
+                    style = TextStyle(fontSize = 14.sp)
+                )
             },
             modifier = Modifier
                 .height(50.dp)
@@ -198,18 +221,114 @@ fun FilBus(productoAppVM: ProductoAppVM) {
             shape = RoundedCornerShape(30.dp)
         )
     }
+    if (verFiltros) {
+        Filtros(onDismiss = { verFiltros = false })
+    }
+}
 
+@Composable
+fun Filtros(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(modifier = Modifier
+                .background(Color.White)
+                .padding(16.dp)
+            ) {
+              Column(
+                  modifier = Modifier
+                      .width(100.dp)
+                      .padding(8.dp),
+                  verticalArrangement = Arrangement.spacedBy(16.dp)
+              ) {
+                  CategoryButton(label="Categoria",isSelected = true)
+                  CategoryButton(label="Tamaño")
+                  CategoryButton(label="Colores")
+                  CategoryButton(label="Precio")
+              }
+              Column(modifier = Modifier
+                  .weight(1f)
+                  .padding(16.dp)
+              ) {
+                  Text(text = "Categoría", color = Color.Red, fontSize = 20.sp,
+                      modifier = Modifier
+                      .padding(8.dp)
+                  )
+                  CheckboxItem("Flujo Abundante")
+                  CheckboxItem("Flujo Moderado")
+                  CheckboxItem("Flujo Ligero")
+                  CheckboxItem("Kit")
+                  Row(modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(top = 16.dp),
+                      horizontalArrangement = Arrangement.SpaceBetween
+                  ) {
+                      Button(onClick = onDismiss) {
+                          Text("Restablecer")
+                      }
+                      Button(onClick = { /*logica de aplicar filtros*/
+                          onDismiss()
+                      }) {
+                          Text("Aplicar filtros")
+                      }
+                  }
+              }
+            }
+        }
+    }
+}
+
+@Composable
+fun CategoryButton(label: String, isSelected: Boolean = false) {
+    val backgroundColor = if (isSelected) Color(0xFFFFC1E3) else Color.Transparent // Light pink color for selected
+    val borderColor = if (isSelected) Color(0xFFBF5F82) else Color.Gray // Darker pink border for selected
+
+    Text(
+        text = label,
+        color = if (isSelected) Color(0xFFBF5F82) else Color.Black, // Pink text for selected
+        fontSize = 16.sp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor)
+            .border(width = 1.dp, color = borderColor)
+            .padding(8.dp)
+    )
+}
+
+@Composable
+fun CheckboxItem(label: String) {
+    var Estado by remember { mutableStateOf(false) }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Checkbox(
+            checked = Estado,
+            onCheckedChange = { Estado = it }
+        )
+        Text(text = label, fontSize = 14.sp)
+    }
 }
 
 // Falta el texto de que no sale un producto al buscarlo, porfa no le muevan
 @Composable
-fun Productos(navController: NavHostController,estadoLista: State<List<ProductoApp>>, modifier: Modifier = Modifier) {
+fun Productos(
+    navController: NavHostController,
+    estadoLista: State<List<ProductoApp>>,
+    modifier: Modifier = Modifier
+) {
 
-    var currentPage by remember { mutableStateOf(0)}
+    var currentPage by remember { mutableStateOf(0) }
     var productosMostrados by remember { mutableStateOf<List<List<ProductoApp>>>(emptyList()) }
 
     LaunchedEffect(estadoLista.value) {
-        if (estadoLista.value.isNotEmpty()){
+        if (estadoLista.value.isNotEmpty()) {
             productosMostrados = estadoLista.value.chunked(10)
         }
     }
@@ -218,14 +337,16 @@ fun Productos(navController: NavHostController,estadoLista: State<List<ProductoA
 
         val totalPag = productosMostrados.size
 
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-        ) {
-            LazyColumn (modifier = Modifier
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .weight(1f)
-                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .padding(16.dp)
             ) {
                 items(productosMostrados[currentPage].chunked(2)) { rowItems ->
                     Row(
@@ -238,22 +359,25 @@ fun Productos(navController: NavHostController,estadoLista: State<List<ProductoA
                     }
                 }
             }
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(25.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    if (currentPage > 0) {
-                        currentPage--
-                    }
-                },
+                IconButton(
+                    onClick = {
+                        if (currentPage > 0) {
+                            currentPage--
+                        }
+                    },
                     enabled = currentPage > 0
                 ) {
-                    Icon(imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Anterior")
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Anterior"
+                    )
                 }
 
                 Text(
@@ -262,28 +386,30 @@ fun Productos(navController: NavHostController,estadoLista: State<List<ProductoA
                     textAlign = TextAlign.Center,
                 )
 
-                IconButton(onClick = {
-                    if (currentPage < totalPag - 1) {
-                        currentPage++
-                    }
-                },
+                IconButton(
+                    onClick = {
+                        if (currentPage < totalPag - 1) {
+                            currentPage++
+                        }
+                    },
                     enabled = currentPage < totalPag - 1
                 ) {
-                    Icon(imageVector = Icons.Default.ArrowForward,
-                        contentDescription = "Siguiente")
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "Siguiente"
+                    )
                 }
             }
         }
-    }
-    else{
+    } else {
         Text(text = "No existen productos")
     }
 
 }
 
 @Composable
-fun ProductCard(navController: NavHostController,product: ProductoApp) {
-    Card (
+fun ProductCard(navController: NavHostController, product: ProductoApp) {
+    Card(
         modifier = Modifier
             .width(180.dp)
             .padding(8.dp)
@@ -291,12 +417,12 @@ fun ProductCard(navController: NavHostController,product: ProductoApp) {
                 navController.navigate(Pantallas.RUTA_DETALLE + "/${product.id}")
             }
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(8.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter("http://10.48.79.109:8000/"+product.imagen),
+                painter = rememberAsyncImagePainter("http://10.48.79.109:8000/" + product.imagen),
                 contentDescription = product.nombre,
                 modifier = Modifier
                     .size(120.dp),
@@ -308,18 +434,24 @@ fun ProductCard(navController: NavHostController,product: ProductoApp) {
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "$${product.precio}",
+            Text(
+                text = "$${product.precio}",
                 color = Color.Black,
-                fontSize = 14.sp)
+                fontSize = 14.sp
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Button(onClick = { /*TODO: Añadir al carrito*/ },
+            Button(
+                onClick = { /*TODO: Añadir al carrito*/ },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Añadir al carrito",
+                Text(
+                    "Añadir al carrito",
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center)
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -334,13 +466,13 @@ fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
 
         val pilaNavegacion by navController.currentBackStackEntryAsState()
         val pantallaActual = pilaNavegacion?.destination
-        Pantallas.listaPantallas.forEach {pantalla ->
+        Pantallas.listaPantallas.forEach { pantalla ->
 
             NavigationBarItem(
                 selected = pantalla.ruta == pantallaActual?.route,
                 onClick = {
-                    navController.navigate(pantalla.ruta){
-                        popUpTo(navController.graph.findStartDestination().id){
+                    navController.navigate(pantalla.ruta) {
+                        popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
                         launchSingleTop = true
@@ -349,7 +481,8 @@ fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
                     }
                 },
                 icon = {
-                    Icon(painter = painterResource(id = pantalla.iconId!!),
+                    Icon(
+                        painter = painterResource(id = pantalla.iconId!!),
                         contentDescription = pantalla.etiqueta
                     )
                 }
