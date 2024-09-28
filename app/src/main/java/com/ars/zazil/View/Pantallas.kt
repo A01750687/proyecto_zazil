@@ -18,6 +18,8 @@ sealed class Pantallas(
         const val RUTA_CREARCUENTA = "CrearCuenta"
         const val RUTA_INICIO_SESION = "InicioSesion"
 
+        const val RUTA_PEDIDOS = "Pedidos"
+
         const val RUTA_PRINCIPAL = "Principal"
         const val RUTA_DETALLE = "Detalle"
 
@@ -30,6 +32,8 @@ sealed class Pantallas(
     private data object Inicio: Pantallas(RUTA_INICIO,"Inicio")
     private data object CrearCuenta: Pantallas(RUTA_CREARCUENTA,"CrearCuenta")
     private data object InicioSesion: Pantallas(RUTA_INICIO_SESION,"InicioSesion")
+
+    private data object Pedidos: Pantallas(RUTA_PEDIDOS, "Pedidos Pasados")
 
     private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal")
     private data object Detalle: Pantallas(RUTA_DETALLE,"Detalle")

@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.util.Locale
@@ -27,7 +26,7 @@ import java.time.temporal.TemporalAdjusters
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun App(modifier:Modifier = Modifier){
+fun Calendario(modifier:Modifier = Modifier){
     Column(modifier = modifier
         .fillMaxWidth()
         .wrapContentSize(Alignment.Center)
