@@ -23,7 +23,7 @@ sealed class ItemSidebar(
     private data object PedidosPasados: ItemSidebar(
         Icons.Outlined.Refresh,
         "Mis Pedidos pasados",
-        ""
+        Pantallas.RUTA_PEDIDOS
     )
     private data object Logout: ItemSidebar(
         Icons.Outlined.Close,

@@ -45,6 +45,7 @@ import com.ars.zazil.ui.theme.ZazilTheme
 import com.ars.zazil.ui.theme.naranja
 import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.Viewmodel.ProductoAppVM
+import com.mags.pruebas.View.Pedidos_Pasados
 
 class MainActivity : ComponentActivity() {
     //ViewModel
@@ -128,6 +129,10 @@ fun AppNavHost(
         }
         composable(Pantallas.RUTA_INICIO_SESION){
             IniciarSesion(loginVM,navController)
+        }
+
+        composable(Pantallas.RUTA_PEDIDOS) {
+            Pedidos_Pasados(modifier)
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {

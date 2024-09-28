@@ -2,6 +2,7 @@ package com.ars.zazil.View
 
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -29,7 +30,9 @@ fun Sidebar(
                         },
                         label = { Text(text = item.titulo) },
                         selected = false,
-                        onClick = { /*TODO*/ })
+                        onClick = {
+                            navController.navigate(item.ruta)
+                        })
 
                 }
             }

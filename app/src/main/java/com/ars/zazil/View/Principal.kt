@@ -65,7 +65,7 @@ import com.ars.zazil.Model.ProductoApp
 import com.ars.zazil.R
 import com.ars.zazil.ui.theme.fondo
 import com.ars.zazil.Viewmodel.ProductoAppVM
-import com.mags.pruebas.View.App
+import com.mags.pruebas.View.Calendario
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
@@ -172,7 +172,7 @@ fun PopupCalendario(
         onDismissRequest = { onDismissRequest() },
     ) {
         Card {
-            App()
+            Calendario()
         }
     }
 }
