@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -228,74 +229,210 @@ fun FilBus(productoAppVM: ProductoAppVM) {
 
 @Composable
 fun Filtros(onDismiss: () -> Unit) {
+    var SelectedCategoria by remember { mutableStateOf("Categoria") }
+
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
-            Row(modifier = Modifier
-                .background(Color.White)
-                .padding(16.dp)
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
             ) {
-              Column(
-                  modifier = Modifier
-                      .width(100.dp)
-                      .padding(8.dp),
-                  verticalArrangement = Arrangement.spacedBy(16.dp)
-              ) {
-                  CategoryButton(label="Categoria",isSelected = true)
-                  CategoryButton(label="Tamaño")
-                  CategoryButton(label="Colores")
-                  CategoryButton(label="Precio")
-              }
-              Column(modifier = Modifier
-                  .weight(1f)
-                  .padding(16.dp)
-              ) {
-                  Text(text = "Categoría", color = Color.Red, fontSize = 20.sp,
-                      modifier = Modifier
-                      .padding(8.dp)
-                  )
-                  CheckboxItem("Flujo Abundante")
-                  CheckboxItem("Flujo Moderado")
-                  CheckboxItem("Flujo Ligero")
-                  CheckboxItem("Kit")
-                  Row(modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(top = 16.dp),
-                      horizontalArrangement = Arrangement.SpaceBetween
-                  ) {
-                      Button(onClick = onDismiss) {
-                          Text("Restablecer")
-                      }
-                      Button(onClick = { /*logica de aplicar filtros*/
-                          onDismiss()
-                      }) {
-                          Text("Aplicar filtros")
-                      }
-                  }
-              }
+                //Parte superior Filtros y Restablecer
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Filtros",
+                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                    TextButton(
+                        onClick = { /*Reiniciar filtros*/ },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(
+                            text = "Restablecer",
+                            color = Color.Blue,
+                            style = TextStyle(fontSize = 20.sp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Filtros Y sus opciones
+                Row(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(16.dp)
+                ) { //Filtros
+                    Column(
+                        modifier = Modifier
+                            .width(120.dp)
+                            .padding(end = 4.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CategoryButton(
+                            label = "Categoria",
+                            isSelected = SelectedCategoria == "Categoría"
+                        ) {
+                            SelectedCategoria = "Categoría"
+                        }
+                        CategoryButton(
+                            label = "Tamaño",
+                            isSelected = SelectedCategoria == "Tamaño"
+                        ) {
+                            SelectedCategoria = "Tamaño"
+                        }
+                        CategoryButton(
+                            label = "Colores",
+                            isSelected = SelectedCategoria == "Colores"
+                        ) {
+                            SelectedCategoria = "Colores"
+                        }
+                        CategoryButton(
+                            label = "Precio",
+                            isSelected = SelectedCategoria == "Precio"
+                        ) {
+                            SelectedCategoria = "Precio"
+                        }
+                    }
+                    //Opciones de filtros
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = SelectedCategoria,
+                            color = Color.Red,
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .padding(bottom = 4.dp)
+                        )
+                        when (SelectedCategoria) {
+                            "Categoría" -> {
+                                LazyColumn {
+                                    items(
+                                        listOf(
+                                            "Flujo Abundante",
+                                            "Flujo Moderado",
+                                            "Flujo Ligero",
+                                            "Kit"
+                                        )
+                                    ) { category ->
+                                        CheckboxItem(category)
+                                    }
+                                }
+                            }
+
+                            "Tamaño" -> {
+                                LazyColumn {
+                                    items(
+                                        listOf(
+                                            "Nocturna",
+                                            "Panti",
+                                            "Regular",
+                                            "Teen"
+                                        )
+                                    ) { size ->
+                                        CheckboxItem(size)
+                                    }
+                                }
+                            }
+
+                            "Colores" -> {
+                                LazyColumn(modifier = Modifier.weight(1f)) {
+                                    items(
+                                        listOf(
+                                            "Negro",
+                                            "Black Rock",
+                                            "Apple",
+                                            "Picton Blue",
+                                            "Dodger Blue",
+                                            "Aero Blue",
+                                            "Violet Red",
+                                            "Froly",
+                                            "Mauve",
+                                            "Red",
+                                            "Pink Lace"
+                                        )
+                                    ) { color ->
+                                        CheckboxItem(color)
+                                    }
+                                }
+                            }
+
+                            "Precio" -> {
+                                Column {
+                                    TextField(
+                                        value = "",
+                                        onValueChange = {},
+                                        label = { Text("Min") },
+                                        placeholder = { Text("$ MIN") },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
+                                    )
+                                    TextField(
+                                        value = "",
+                                        onValueChange = {},
+                                        label = { Text("Max") },
+                                        placeholder = { Text("$ MAX") },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
+                                    )
+                                }
+                            }
+                        }
+                        //Aplicar filtro
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(onClick = { /*logica de aplicar filtros*/
+                                onDismiss()
+                            }) {
+                                Text("Aplicar filtros")
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun CategoryButton(label: String, isSelected: Boolean = false) {
-    val backgroundColor = if (isSelected) Color(0xFFFFC1E3) else Color.Transparent // Light pink color for selected
-    val borderColor = if (isSelected) Color(0xFFBF5F82) else Color.Gray // Darker pink border for selected
+fun CategoryButton(label: String, isSelected: Boolean = false, onClick: () -> Unit) {
+    val backgroundColor =
+        if (isSelected) Color(0xFFFFC1E3) else Color.Transparent
+    val borderColor =
+        if (isSelected) Color(0xFFBF5F82) else Color.Gray
 
     Text(
         text = label,
-        color = if (isSelected) Color(0xFFBF5F82) else Color.Black, // Pink text for selected
+        color = if (isSelected) Color(0xFFBF5F82) else Color.Black,
         fontSize = 16.sp,
         modifier = Modifier
             .fillMaxWidth()
             .background(color = backgroundColor)
             .border(width = 1.dp, color = borderColor)
             .padding(8.dp)
+            .clickable { onClick() }
     )
 }
 
