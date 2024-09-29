@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +28,8 @@ import com.ars.zazil.R
 
 @Composable
 fun pagos(modifier: Modifier) {
-    Column(modifier = Modifier.padding(32.dp)) {
+    val scrollState = rememberScrollState()
+    Column(modifier = modifier.padding(16.dp).verticalScroll(scrollState)) {
         Text(modifier = Modifier.align(Alignment.CenterHorizontally).padding(8.dp),
             text = "Métodos de pago",
             style = MaterialTheme.typography.headlineLarge)

@@ -153,10 +153,10 @@ fun AppNavHost(
         }
 
         composable(Pantallas.RUTA_CONTACTO) {
-            ContactUsPage(modifier = Modifier)
+            ContactUsPage(modifier = modifier)
         }
         composable(Pantallas.RUTA_CARRITO){
-            carrito()
+            carrito(modifier)
         }
         composable(Pantallas.RUTA_PREGUNTAS) {
             preguntas(modifier)

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +22,10 @@ import com.ars.zazil.R
 
 @Composable
 fun preguntas(modifier: Modifier) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)){
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = modifier.fillMaxWidth().padding(16.dp).verticalScroll(scrollState)
+    ){
         Text(text = "Preguntas frecuentes",
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp))

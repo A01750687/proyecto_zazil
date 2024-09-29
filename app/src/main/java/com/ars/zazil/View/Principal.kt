@@ -120,12 +120,16 @@ fun TopBar(
                 text = "Zazil",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .padding(bottom = 15.dp)
                     .clickable {
                         if (Pantallas.RUTA_PRINCIPAL != pantallaActual?.route) {
-                            navController.navigate(Pantallas.RUTA_PRINCIPAL)
+                            navController.navigate(Pantallas.RUTA_PRINCIPAL){
+                                popUpTo(navController.graph.id){
+                                    inclusive = true
+                                }
+                            }
                         }
                     }
             )
@@ -239,9 +243,9 @@ fun Filtros(onDismiss: () -> Unit) {
                 .padding(8.dp)
         ) {
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(Color.White)
-                    .padding(8.dp)
             ) {
                 //Parte superior Filtros y Restablecer
                 Row(
@@ -274,7 +278,8 @@ fun Filtros(onDismiss: () -> Unit) {
                 Row(
                     modifier = Modifier
                         .background(Color.White)
-                        .padding(16.dp)
+                        .padding(8.dp)
+                        .height(225.dp)
                 ) { //Filtros
                     Column(
                         modifier = Modifier
@@ -397,19 +402,13 @@ fun Filtros(onDismiss: () -> Unit) {
                             }
                         }
                         //Aplicar filtro
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(onClick = { /*logica de aplicar filtros*/
-                                onDismiss()
-                            }) {
-                                Text("Aplicar filtros")
-                            }
-                        }
+
                     }
+                }
+                Button(onClick = { /*logica de aplicar filtros*/
+                    onDismiss()
+                }) {
+                    Text("Aplicar filtros")
                 }
             }
         }
@@ -443,7 +442,6 @@ fun CheckboxItem(label: String) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
     ) {
         Checkbox(
             checked = Estado,
