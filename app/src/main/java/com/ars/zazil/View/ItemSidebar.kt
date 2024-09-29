@@ -18,7 +18,7 @@ sealed class ItemSidebar(
     private data object Perfil: ItemSidebar(
         Icons.Outlined.AccountCircle,
         "Mi Perfil",
-        ""
+        Pantallas.RUTA_PERFIL
     )
     private data object PedidosPasados: ItemSidebar(
         Icons.Outlined.Refresh,

@@ -30,9 +30,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ars.zazil.View.BottomBar
 import com.ars.zazil.View.ContactUsPage
+import com.ars.zazil.View.EditarP
 import com.ars.zazil.View.Inicio
 import com.ars.zazil.View.Login.IniciarSesion
 import com.ars.zazil.View.Pantallas
+import com.ars.zazil.View.Perfil
 import com.ars.zazil.View.Principal
 import com.ars.zazil.View.ProductInDetails
 import com.ars.zazil.View.Registro
@@ -129,6 +131,13 @@ fun AppNavHost(
         }
         composable(Pantallas.RUTA_INICIO_SESION){
             IniciarSesion(loginVM,navController)
+        }
+
+        composable(Pantallas.RUTA_PERFIL) {
+            Perfil(navController,modifier)
+        }
+        composable(Pantallas.RUTA_EDITARPERFIL) {
+            EditarP(modifier)
         }
 
         composable(Pantallas.RUTA_PEDIDOS) {
