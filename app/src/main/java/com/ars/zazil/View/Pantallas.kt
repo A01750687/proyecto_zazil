@@ -29,6 +29,9 @@ sealed class Pantallas(
         const val RUTA_CARRITO = "Carrito"
         const val RUTA_PREGUNTAS = "Preguntas"
         const val RUTA_PAGOS = "Pagos"
+
+        const val RUTA_LISTAPREGUNTAS = "ListaPreguntas"
+        const val RUTA_DETALLEPREGUNTA = "DetallePregunta"
     }
     //Pantallas
     private data object Inicio: Pantallas(RUTA_INICIO,"Inicio")
@@ -46,4 +49,7 @@ sealed class Pantallas(
     private data object Carrito: Pantallas(RUTA_CARRITO,"Carrito", R.drawable.carrito)
     private data object Preguntas: Pantallas(RUTA_PREGUNTAS,"Preguntas", R.drawable.pregunta)
     private data object Pagos: Pantallas(RUTA_PAGOS,"Pago", R.drawable.pago)
+
+    private data object ListaPreguntas: Pantallas(RUTA_LISTAPREGUNTAS,"ListaPreguntas")
+    private data object DetallePregunta: Pantallas(RUTA_DETALLEPREGUNTA,"DetallePregunta")
 }

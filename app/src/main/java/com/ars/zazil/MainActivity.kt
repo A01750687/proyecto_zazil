@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ars.zazil.Model.Qa
 import com.ars.zazil.View.BottomBar
 import com.ars.zazil.View.ContactUsPage
 import com.ars.zazil.View.EditarP
@@ -41,8 +42,10 @@ import com.ars.zazil.View.Registro
 import com.ars.zazil.View.Sidebar
 import com.ars.zazil.View.TopBar
 import com.ars.zazil.View.carrito
+import com.ars.zazil.View.detallePregunta
 import com.ars.zazil.View.pagos
 import com.ars.zazil.View.preguntas
+import com.ars.zazil.View.preguntasFrec
 import com.ars.zazil.ui.theme.ZazilTheme
 import com.ars.zazil.ui.theme.naranja
 import com.ars.zazil.Viewmodel.LoginVM
@@ -159,10 +162,20 @@ fun AppNavHost(
             carrito(modifier)
         }
         composable(Pantallas.RUTA_PREGUNTAS) {
-            preguntas(modifier)
+            preguntas(modifier, navController = navController)
         }
         composable(Pantallas.RUTA_PAGOS) {
             pagos(modifier)
+        }
+        composable("ListaPreguntas") {
+            preguntasFrec(modifier, navController = navController)
+        }
+        // Pasamos la pregunta y la respuesta como argumentos de la ruta
+        composable("detalle/{pregunta}/{respuesta}") { backStackEntry ->
+            val pregunta = backStackEntry.arguments?.getString("pregunta") ?: ""
+            val respuesta = backStackEntry.arguments?.getString("respuesta") ?: ""
+            val qa = Qa(pregunta, respuesta)
+            detallePregunta(pregunta = qa, navController = navController)
         }
     }
 }

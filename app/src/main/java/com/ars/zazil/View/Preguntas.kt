@@ -14,15 +14,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.ars.zazil.R
 
 @Composable
-fun preguntas(modifier: Modifier) {
+fun preguntas(modifier: Modifier, navController: NavHostController) {
     val scrollState = rememberScrollState()
+
+    val showDialogSomos = remember { mutableStateOf(false) }
+    val showDialogContenido = remember { mutableStateOf(false) }
+    val showDialogCompra = remember { mutableStateOf(false) }
+    val showDialogDevolucion = remember { mutableStateOf(false) }
+    val showDialogSeguridad = remember { mutableStateOf(false) }
     Column(
         modifier = modifier.fillMaxWidth().padding(16.dp).verticalScroll(scrollState)
     ){
@@ -38,7 +47,7 @@ fun preguntas(modifier: Modifier) {
                 .padding(8.dp)
         ) {
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { showDialogCompra.value = true },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f) // Controla el espacio que ocupa el botón
@@ -52,7 +61,7 @@ fun preguntas(modifier: Modifier) {
             }
 
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { showDialogDevolucion.value = true },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f)
@@ -86,7 +95,7 @@ fun preguntas(modifier: Modifier) {
                 .padding(8.dp)
         ) {
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { showDialogContenido.value = true },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f) // Controla el espacio que ocupa el botón
@@ -100,7 +109,7 @@ fun preguntas(modifier: Modifier) {
             }
 
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { navController.navigate("ListaPreguntas") },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f)
@@ -134,7 +143,7 @@ fun preguntas(modifier: Modifier) {
                 .padding(8.dp)
         ) {
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { showDialogSomos.value = true },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f) // Controla el espacio que ocupa el botón
@@ -148,7 +157,7 @@ fun preguntas(modifier: Modifier) {
             }
 
             IconButton(
-                onClick = { /* Acción al hacer clic */ },
+                onClick = { showDialogSeguridad.value = true },
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1f)
@@ -173,5 +182,25 @@ fun preguntas(modifier: Modifier) {
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
 
+    }
+
+    if (showDialogSomos.value) {
+        AlertaSomos(onDismiss = { showDialogSomos.value = false })
+    }
+
+    if (showDialogContenido.value) {
+        AlertaContenido(onDismiss = { showDialogContenido.value = false })
+    }
+
+    if (showDialogCompra.value) {
+        AlertaCompra(onDismiss = { showDialogCompra.value = false })
+    }
+
+    if (showDialogDevolucion.value) {
+        AlertaDevolucion(onDismiss = { showDialogDevolucion.value = false })
+    }
+
+    if (showDialogSeguridad.value) {
+        AlertaSeguridad(onDismiss = { showDialogSeguridad.value = false })
     }
 }
