@@ -1,9 +1,7 @@
 package com.ars.zazil.Model
 
-data class producto(
-    val nombre: String,
-    val precio: Double,
-    val imagen: Int,
+data class ProductoCarrito(
+    val producto: ProductoApp,
     var cantidad: Int
 )
 

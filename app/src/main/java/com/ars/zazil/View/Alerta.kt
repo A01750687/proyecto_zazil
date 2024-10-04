@@ -93,9 +93,9 @@ fun AlertaCompra(onDismiss: () -> Unit) {
                     "\n" +
                     "- Selecciona la cantidad.\n" +
                     "\n" +
-                    "- Añade al carrito.\n" +
+                    "- Añade al Carrito.\n" +
                     "\n" +
-                    "- Puedes seguir añadiendo más productos al carrito o proceder a pagar lo que esté en el carrito.\n" +
+                    "- Puedes seguir añadiendo más productos al Carrito o proceder a pagar lo que esté en el Carrito.\n" +
                     "\n" +
                     "- Selecciona el metodo de pago entre Paypal, Transferencia bancaria o Depósito")
         },

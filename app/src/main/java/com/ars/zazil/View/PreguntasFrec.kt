@@ -26,7 +26,7 @@ import com.ars.zazil.Viewmodel.PreguntasViewModel
 @Composable
 fun preguntasFrec(modifier: Modifier, viewModel: PreguntasViewModel = viewModel(), navController: NavHostController = rememberNavController()) {
 
-    Column(modifier = Modifier
+    Column(modifier = modifier
         .fillMaxWidth()
         .padding(16.dp)
     ) {
@@ -63,8 +63,8 @@ fun preguntasFrec(modifier: Modifier, viewModel: PreguntasViewModel = viewModel(
 }
 
 @Composable
-fun detallePregunta(pregunta: Qa, navController: NavHostController) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+fun detallePregunta(pregunta: Qa, navController: NavHostController, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         Text(text = pregunta.pregunta,
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier

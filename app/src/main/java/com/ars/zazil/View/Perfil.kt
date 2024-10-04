@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,15 +31,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ars.zazil.Viewmodel.LoginVM
 
 //@Preview(showBackground = true, widthDp = 340, heightDp = 600)
 @Composable
-fun Perfil(navController: NavController, modifier: Modifier = Modifier) {
+fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = Modifier) {
     val scrollSate = rememberScrollState()
+
+    val loginEstado = loginVM.usuarioState.collectAsState()
 
     var nombre by remember { mutableStateOf("") }
     var edad by remember { mutableStateOf("") }
@@ -87,21 +90,21 @@ fun Perfil(navController: NavController, modifier: Modifier = Modifier) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 SectionCard(
                     title = "Nombre",
-                    value = "Nombre\nApellido P\nApellido M",
+                    value = loginEstado.value.nombre,
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
                 )
                 SectionCard(
                     title = "Edad",
-                    value = "20",
+                    value = "${loginEstado.value.edad}",
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
                 )
                 SectionCard(
                     title = "Celular",
-                    value = "+52 xxxxxxxxx",
+                    value = "+52 ${loginEstado.value.numero}",
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
@@ -112,7 +115,7 @@ fun Perfil(navController: NavController, modifier: Modifier = Modifier) {
 
             SectionCard(
                 title = "Dirección",
-                value = "Calle\nNúmero\nCiudad\nEstado\nPaís",
+                value = loginEstado.value.direccion,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)

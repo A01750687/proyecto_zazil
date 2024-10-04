@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -63,7 +64,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.rememberAsyncImagePainter
 import com.ars.zazil.Model.ProductoApp
+import com.ars.zazil.Model.ProductoCarrito
+import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.R
+import com.ars.zazil.Viewmodel.CarritoVM
 import com.ars.zazil.ui.theme.fondo
 import com.ars.zazil.Viewmodel.ProductoAppVM
 import com.mags.pruebas.View.Calendario
@@ -74,6 +78,7 @@ import kotlinx.coroutines.launch
 fun Principal(
     abrirCalendario: MutableState<Boolean>,
     navController: NavHostController,
+    carritoViewModel: CarritoVM,
     productoAppVM: ProductoAppVM,
     modifier: Modifier = Modifier
 ) {
@@ -97,7 +102,7 @@ fun Principal(
     {
         Spacer(modifier = Modifier.height(16.dp))
         FilBus(productoAppVM)
-        Productos(navController, estadoFiltrado, modifier)
+        Productos(carritoViewModel, navController, estadoFiltrado, modifier)
     }
 }
 
@@ -125,8 +130,8 @@ fun TopBar(
                     .padding(bottom = 15.dp)
                     .clickable {
                         if (Pantallas.RUTA_PRINCIPAL != pantallaActual?.route) {
-                            navController.navigate(Pantallas.RUTA_PRINCIPAL){
-                                popUpTo(navController.graph.id){
+                            navController.navigate(Pantallas.RUTA_PRINCIPAL) {
+                                popUpTo(navController.graph.id) {
                                     inclusive = true
                                 }
                             }
@@ -454,6 +459,7 @@ fun CheckboxItem(label: String) {
 // Falta el texto de que no sale un producto al buscarlo, porfa no le muevan
 @Composable
 fun Productos(
+    carritoViewModel: CarritoVM,
     navController: NavHostController,
     estadoLista: State<List<ProductoApp>>,
     modifier: Modifier = Modifier
@@ -489,7 +495,7 @@ fun Productos(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         rowItems.forEach { product ->
-                            ProductCard(navController, product)
+                            ProductCard(carritoViewModel,navController, product)
                         }
                     }
                 }
@@ -543,7 +549,8 @@ fun Productos(
 }
 
 @Composable
-fun ProductCard(navController: NavHostController, product: ProductoApp) {
+fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, product: ProductoApp) {
+    val openAlertDialog = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .width(180.dp)
@@ -557,7 +564,7 @@ fun ProductCard(navController: NavHostController, product: ProductoApp) {
             modifier = Modifier.padding(8.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter("http://10.48.79.109:8000/" + product.imagen),
+                painter = rememberAsyncImagePainter(ServicioRemoto.URL + product.imagen),
                 contentDescription = product.nombre,
                 modifier = Modifier
                     .size(120.dp),
@@ -579,18 +586,26 @@ fun ProductCard(navController: NavHostController, product: ProductoApp) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Button(
-                onClick = { /*TODO: Añadir al carrito*/ },
+                onClick = {
+                    val producto = ProductoCarrito(product, 1)
+                    carritoViewModel.agregarProducto(producto)
+                    openAlertDialog.value = true
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    "Añadir al carrito",
+                    "Añadir al Carrito",
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center
                 )
             }
         }
     }
+    if (openAlertDialog.value) {
+        AlertaCarrito({openAlertDialog.value = false}, {openAlertDialog.value = false})
+    }
 }
+
 
 @Composable
 fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {

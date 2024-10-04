@@ -2,38 +2,49 @@ package com.ars.zazil.Viewmodel
 
 
 import androidx.lifecycle.ViewModel
-import com.ars.zazil.Model.producto
-import com.ars.zazil.R
+import com.ars.zazil.Model.ProductoCarrito
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class CarritoVM : ViewModel() {
-    // MutableStateFlow para gestionar el estado de los productos en el carrito
-    private val _productosEnCarrito = MutableStateFlow<List<producto>>(emptyList())
-    val productosEnCarrito: StateFlow<List<producto>> = _productosEnCarrito
+    // MutableStateFlow para gestionar el estado de los productos en el Carrito
+    private val _productosEnCarrito = MutableStateFlow<List<ProductoCarrito>>(emptyList())
+    val productosEnCarrito: StateFlow<List<ProductoCarrito>> = _productosEnCarrito
 
-    // Método para agregar productos al carrito
-    fun agregarProducto(producto: producto) {
+    // Método para agregar productos al Carrito
+    fun agregarProducto(producto: ProductoCarrito) {
+
+        val productoExistente = _productosEnCarrito.value.find { it.producto.id == producto.producto.id }
+
+        if (productoExistente != null) {
+
+            val productosActualizados = _productosEnCarrito.value.map {
+                if (it == productoExistente) it.copy(cantidad = it.cantidad + 1) else it
+            }
+            _productosEnCarrito.value = productosActualizados
+            return
+        }
+        // Si el producto no está en el Carrito, agregarlo
         _productosEnCarrito.value = _productosEnCarrito.value + producto
     }
 
     // Método para obtener los productos
-    fun obtenerProductos(): StateFlow<List<producto>> {
+    fun obtenerProductos(): StateFlow<List<ProductoCarrito>> {
         return productosEnCarrito
     }
 
-    // Método para eliminar productos del carrito
-    fun eliminarProducto(producto: producto) {
+    // Método para eliminar productos del Carrito
+    fun eliminarProducto(producto: ProductoCarrito) {
         _productosEnCarrito.value = _productosEnCarrito.value - producto
     }
 
-    // Método para limpiar el carrito
+    // Método para limpiar el Carrito
     fun limpiarCarrito() {
         _productosEnCarrito.value = emptyList()
     }
 
     // Método para aumentar la cantidad de un producto
-    fun aumentarCantidad(producto: producto) {
+    fun aumentarCantidad(producto: ProductoCarrito) {
         val productosActualizados = _productosEnCarrito.value.map {
             if (it == producto) it.copy(cantidad = it.cantidad + 1) else it
         }
@@ -41,23 +52,10 @@ class CarritoVM : ViewModel() {
     }
 
     // Método para disminuir la cantidad de un producto
-    fun disminuirCantidad(producto: producto) {
+    fun disminuirCantidad(producto: ProductoCarrito) {
         val productosActualizados = _productosEnCarrito.value.map {
             if (it == producto && it.cantidad > 1) it.copy(cantidad = it.cantidad - 1) else it
         }
         _productosEnCarrito.value = productosActualizados
-    }
-
-    // Simular productos al iniciar
-    init {
-        agregarProducto(producto("Producto 1", 10.99, R.drawable.compra, 2))
-        agregarProducto(producto("Producto 2", 25.50, R.drawable.somos, 1))
-        agregarProducto(producto("Producto 3", 7.99, R.drawable.periodo, 3))
-        agregarProducto(producto("Producto 4", 10.99, R.drawable.compra, 2))
-        agregarProducto(producto("Producto 5", 25.50, R.drawable.somos, 1))
-        agregarProducto(producto("Producto 6", 7.99, R.drawable.periodo, 3))
-        agregarProducto(producto("Producto 7", 10.99, R.drawable.compra, 2))
-        agregarProducto(producto("Producto 8", 25.50, R.drawable.somos, 1))
-        agregarProducto(producto("Producto 9", 7.99, R.drawable.periodo, 3))
     }
 }

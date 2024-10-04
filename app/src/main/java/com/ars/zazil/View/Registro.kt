@@ -31,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import android.app.DatePickerDialog
 import android.widget.DatePicker
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,14 +38,18 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import java.text.SimpleDateFormat
+import androidx.navigation.navOptions
+import com.ars.zazil.Viewmodel.LoginVM
+import kotlinx.coroutines.launch
 import java.util.*
 
 
 @Composable
-fun Registro(navController: NavHostController) {
+fun Registro(loginVM: LoginVM, navController: NavHostController) {
     Surface(color = fondo) {
         Column(
             modifier = Modifier
@@ -57,47 +60,156 @@ fun Registro(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Imagen()
-            CamposDeRegistro()
-            SelectorDeGenero()
-            Fecha()
-            Spacer(modifier = Modifier.height(15.dp))
-            CrearCuenta()
-        }
-    }
-}
 
-@Composable
-fun SelectorDeGenero(){
-    var expandido by remember { mutableStateOf(false)}
-    val opciones = listOf("Femenino","Masculino", "Otro")
-    var selectedOption by remember { mutableStateOf(opciones[0]) }
+            // Campos de texto
+            var nombre by remember { mutableStateOf("") }
+            var direccion by remember { mutableStateOf("") }
+            var edad by remember { mutableStateOf("") }
+            var email by remember { mutableStateOf("") }
+            var contrasena by remember { mutableStateOf("") }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedButton(
-            onClick = { expandido= !expandido }
-        ) {
-          Text(text = selectedOption)
-          Icon(imageVector = if(expandido)Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown, contentDescription = null )
-        }
-        DropdownMenu(
-            expanded = expandido,
-            onDismissRequest = { expandido=false }
-        ) {
-            Column(){
-                opciones.forEach{label ->
-                    DropdownMenuItem(
-                        text = { Text(text = label) },
-                        onClick = {
-                            selectedOption = label
-                            expandido = false
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Campo Nombre
+                TextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },  // Actualizamos el valor con lo que escribe el usuario
+                    label = { Text("Nombre") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Campo Dirección
+                TextField(
+                    value = direccion,
+                    onValueChange = { direccion = it },  // Actualizamos el valor
+                    label = { Text("Dirección") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Campo Edad
+                TextField(
+                    value = edad,
+                    onValueChange = { edad = it },  // Actualizamos el valor
+                    label = { Text("Edad") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Campo Celular
+                TextField(
+                    value = email,
+                    onValueChange = { email = it },  // Actualizamos el valor
+                    label = { Text("email") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Campo Contraseña
+                TextField(
+                    value = contrasena,
+                    onValueChange = { contrasena = it },  // Actualizamos el valor
+                    label = { Text("Contraseña") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    visualTransformation = PasswordVisualTransformation()  // Ocultamos la contraseña
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            // Seleccion de genero
+            var expandido by remember { mutableStateOf(false)}
+            val opciones = listOf("Femenino","Masculino", "Otro")
+            var selectedOption by remember { mutableStateOf(opciones[0]) }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                OutlinedButton(
+                    onClick = { expandido= !expandido }
+                ) {
+                    Text(text = selectedOption)
+                    Icon(imageVector = if(expandido)Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown, contentDescription = null )
+                }
+                DropdownMenu(
+                    expanded = expandido,
+                    onDismissRequest = { expandido=false }
+                ) {
+                    Column(){
+                        opciones.forEach{label ->
+                            DropdownMenuItem(
+                                text = { Text(text = label) },
+                                onClick = {
+                                    selectedOption = label
+                                    expandido = false
+                                }
+                            )
                         }
-                    )
+                    }
+
                 }
             }
 
+            Fecha()
+            Spacer(modifier = Modifier.height(15.dp))
+
+            // Botón Crear Cuenta
+            val estado = loginVM.estadoRegistro.collectAsState()
+            var cambioPantalla by remember { mutableStateOf(false) }
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(!estado.value.first){
+                    Text(
+                        text = estado.value.second,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.Red
+                    )
+                }
+                if(estado.value.first && !cambioPantalla){
+                    navController.navigate(Pantallas.RUTA_INICIO_SESION){
+                        cambioPantalla = true
+                    }
+                }
+                Button(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp),
+                    onClick = {
+                        loginVM.registro(nombre,direccion,edad.toInt(),email,contrasena,selectedOption)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(size = 12.dp)
+                ) {
+                    Text(
+                        text = "Crear Cuenta",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
         }
     }
 }
@@ -128,33 +240,6 @@ fun Fecha() {
     }
 }
 
-
-@Composable
-private fun CrearCuenta() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Button(
-            modifier = Modifier
-                .height(50.dp)
-                .width(200.dp),
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            ),
-            shape = RoundedCornerShape(size = 12.dp)
-        ) {
-            Text(
-                text = "Crear Cuenta",
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-    }
-}
-
 @Composable
 private fun Imagen() {
     Image(
@@ -164,78 +249,4 @@ private fun Imagen() {
         painter = painterResource(id = R.drawable.logo_zazil),
         contentDescription = null,
     )
-}
-@Composable
-private fun CamposDeRegistro() {
-    var nombre by remember { mutableStateOf("") }
-    var direccion by remember { mutableStateOf("") }
-    var edad by remember { mutableStateOf("") }
-    var celular by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Campo Nombre
-        TextField(
-            value = nombre,
-            onValueChange = { nombre = it },  // Actualizamos el valor con lo que escribe el usuario
-            label = { Text("Nombre") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Campo Dirección
-        TextField(
-            value = direccion,
-            onValueChange = { direccion = it },  // Actualizamos el valor
-            label = { Text("Dirección") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Campo Edad
-        TextField(
-            value = edad,
-            onValueChange = { edad = it },  // Actualizamos el valor
-            label = { Text("Edad") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Campo Celular
-        TextField(
-            value = celular,
-            onValueChange = { celular = it },  // Actualizamos el valor
-            label = { Text("Celular") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Campo Contraseña
-        TextField(
-            value = contrasena,
-            onValueChange = { contrasena = it },  // Actualizamos el valor
-            label = { Text("Contraseña") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            visualTransformation = PasswordVisualTransformation()  // Ocultamos la contraseña
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-    }
 }

@@ -4,8 +4,8 @@ data class ProductoApp(
     val id: String = "",
     val nombre: String = "",
     val stock: Int = 0,
-    val precio: Float = 0f,
-    val descuento: Float = 0f,
+    val precio: Double = 0.0,
+    val descuento: Double = 0.0,
     val descripcion: String = "",
     val categoria: String = "",
     val imagen: String = ""

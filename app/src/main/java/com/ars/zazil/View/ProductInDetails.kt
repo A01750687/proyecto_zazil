@@ -21,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,16 +35,27 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.ars.zazil.Model.ProductoCarrito
+import com.ars.zazil.Model.ServicioRemoto
+import com.ars.zazil.Viewmodel.CarritoVM
 import com.ars.zazil.Viewmodel.ProductoAppVM
 
 // Preview con medidas de un celular
 @Composable
-fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifier = Modifier) {
+fun ProductInDetails(
+    carritoViewModel: CarritoVM,
+    productoAppVM: ProductoAppVM,
+    id: String,
+    modifier: Modifier = Modifier
+) {
 
     val estado = productoAppVM.estado.collectAsState()
     productoAppVM.descargarProducto(id)
 
     val scrollState = rememberScrollState()
+
+    var cantidad by remember { mutableStateOf(1) }
+
     Column(
         modifier = modifier
             .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -50,7 +65,7 @@ fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifie
     ) {
         // Imagen del producto
         Image(
-            painter = rememberAsyncImagePainter("http://10.48.79.109:8000/"+estado.value.imagen),
+            painter = rememberAsyncImagePainter(ServicioRemoto.URL + estado.value.imagen),
             contentDescription = "Producto",
             modifier = Modifier
                 .size(180.dp)
@@ -112,7 +127,11 @@ fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifie
             modifier = Modifier.padding(vertical = 8.dp)
         ) {
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                if (cantidad > 0) {
+                    cantidad++
+                }
+            }) {
                 Icon(
                     imageVector = Icons.Filled.AddCircle,
                     contentDescription = "Add"
@@ -120,12 +139,16 @@ fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifie
             }
 
             Text(
-                text = "1", // Cantidad seleccionada
+                text = "$cantidad", // Cantidad seleccionada
                 style = MaterialTheme.typography.headlineLarge,
                 fontSize = 18.sp
             )
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                if (cantidad > 0 && cantidad-1 != 0) {
+                    cantidad--
+                }
+            }) {
                 Icon(
                     imageVector = Icons.Filled.RemoveCircle,
                     contentDescription = "Remove"
@@ -136,7 +159,10 @@ fun ProductInDetails(productoAppVM: ProductoAppVM, id: String, modifier: Modifie
 
 
         ElevatedButton(
-            onClick = { /* TODO */ },
+            onClick = {
+                val producto = ProductoCarrito(estado.value, cantidad)
+                carritoViewModel.agregarProducto(producto)
+            },
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)
         )

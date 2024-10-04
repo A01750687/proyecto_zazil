@@ -8,38 +8,40 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ars.zazil.Model.producto
+import coil.compose.rememberAsyncImagePainter
+import com.ars.zazil.Model.ProductoCarrito
+import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
 
 @Composable
-fun carrito(modifier: Modifier = Modifier) {
-    // Obtén el ViewModel
-    val carritoViewModel: CarritoVM = viewModel()
+fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
 
-    // Obtener los productos del carrito usando State
-    val productos = carritoViewModel.obtenerProductos().collectAsState(initial = emptyList())
+    // Obtener los productos del Carrito usando State
+    val productos = carritoViewModel.obtenerProductos().collectAsState()
 
     // Estado del Scroll
     val scrollState = rememberScrollState()
 
-    // Calcular la suma total de los precios
-    val total = productos.value.sumOf { it.precio * it.cantidad }
+    // Calcular el total de la compra
+    val total = productos.value.sumOf{ it.producto.precio * it.cantidad }
 
     // Contenedor principal de contenido
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = 72.dp) // Espacio para los botones en la parte inferior
             .verticalScroll(scrollState)
@@ -50,11 +52,10 @@ fun carrito(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .weight(2f)
         ) {
-            // Título del carrito
+            // Título del Carrito
             Text(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp),
+                    .align(Alignment.CenterHorizontally),
                 text = "Carrito de compras",
                 style = MaterialTheme.typography.headlineLarge
             )
@@ -73,13 +74,13 @@ fun carrito(modifier: Modifier = Modifier) {
                 Text(text = "Total", modifier = Modifier.weight(1f))
             }
 
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = Color.Gray,  // Color de la línea divisoria
-                thickness = 1.dp     // Grosor de la línea
+                thickness = 1.dp,     // Grosor de la línea
+                color = Color.Gray  // Color de la línea divisoria
             )
 
-            // Mostrar los productos del carrito usando LazyColumn
+            // Mostrar los productos del Carrito usando LazyColumn
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,7 +116,6 @@ fun carrito(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -168,10 +168,8 @@ fun carrito(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
-
-        // Botón flotante de carrito, posicionado en la parte inferior derecha
+        // Botón flotante de Carrito, posicionado en la parte inferior derecha
         FloatingActionButton(
             onClick = { /* Acción al hacer clic */ },
             shape = RoundedCornerShape(50),
@@ -182,11 +180,12 @@ fun carrito(modifier: Modifier = Modifier) {
         ) {
             Text(text = "Donar", color = Color.White)
         }
+
     }
 }
 
 @Composable
-fun ProductoItem(producto: producto, carritoViewModel: CarritoVM) {
+fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,16 +193,16 @@ fun ProductoItem(producto: producto, carritoViewModel: CarritoVM) {
     ) {
         // Imagen del producto
         Image(
-            painter = painterResource(id = producto.imagen),
-            contentDescription = producto.nombre,
-            modifier = Modifier.size(64.dp)
+            painter = rememberAsyncImagePainter(model = ServicioRemoto.URL + producto.producto.imagen),
+            contentDescription = producto.producto.nombre,
+            modifier = Modifier.size(64.dp),
         )
 
         Spacer(modifier = Modifier.width(16.dp))
 
         // Nombre y precio del producto
         Column(modifier = Modifier.weight(4f)) {
-            Text(text = producto.nombre, style = MaterialTheme.typography.bodyLarge)
+            Text(text = producto.producto.nombre, style = MaterialTheme.typography.bodyLarge)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Cantidad: ", style = MaterialTheme.typography.bodyMedium)
                 TextButton(onClick = { carritoViewModel.disminuirCantidad(producto) }) {
@@ -215,11 +214,13 @@ fun ProductoItem(producto: producto, carritoViewModel: CarritoVM) {
                 }
             }
         }
-
+        IconButton(modifier = Modifier.align(Alignment.CenterVertically),onClick = { carritoViewModel.eliminarProducto(producto) }) {
+            Icon(imageVector = Icons.Filled.Delete, contentDescription = "Eliminar")
+        }
         // Precio total por cantidad
         Text(
-            text = "$" + String.format("%.2f", producto.precio * producto.cantidad),
-            modifier = Modifier.weight(1.5f)
+            text = "$" + String.format("%.2f", producto.producto.precio * producto.cantidad),
+            modifier = Modifier.weight(1.5f).align(Alignment.CenterVertically)
         )
     }
 }

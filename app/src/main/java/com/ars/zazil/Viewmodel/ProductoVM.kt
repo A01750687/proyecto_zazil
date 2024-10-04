@@ -1,13 +1,14 @@
 package com.ars.zazil.Viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.ars.zazil.Model.producto
+import com.ars.zazil.Model.ProductoApp
+import com.ars.zazil.Model.ProductoCarrito
 
 class productoVM(private val carritoVM: CarritoVM) : ViewModel() {
 
-    fun setProducto(nombre: String, precio: Double, imagen: Int, cantidad: Int) {
-        val producto = producto(nombre, precio, imagen, cantidad)
-        carritoVM.agregarProducto(producto)
+    fun setProducto(producto: ProductoApp, cantidad: Int) {
+        val nuevoproducto = ProductoCarrito(producto, cantidad)
+        carritoVM.agregarProducto(nuevoproducto)
     }
 
 
