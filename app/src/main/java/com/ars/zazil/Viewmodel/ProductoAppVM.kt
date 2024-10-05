@@ -37,6 +37,7 @@ class ProductoAppVM: ViewModel() {
         }
     }
 
+    // Filtra los productos por el nombre
     fun searchProducto(query:String) {
         val listaFiltrada = if (query.isEmpty()) {
             _estadoLista.value

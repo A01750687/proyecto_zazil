@@ -13,16 +13,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ServicioRemoto {
 
-    // Url para servicio web
+    // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.67.204:8000/"
+        const val URL = "http://192.168.23.174:8000/"
         var token = ""
     }
 
-    private var usuario = ""
-
-    private val tokenProvider = TokenProvider()
-
+    // Objeto retrofit con Cliente
     private val retrofit by lazy {
         val client = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(token))
@@ -39,28 +36,30 @@ class ServicioRemoto {
         retrofit.create(AuthService::class.java)
     }
 
-    suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Pair<Boolean, String> {
+    // Funcion para login y obteniendo token para autenticación
+    suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Pair<Boolean,String> {
         loginState.value = LoginState.Loading
         try {
             val response = authService.login(LoginRequest(email, password))
             if (response.isSuccessful) {
                 val tokenResponse = response.body()
 
-                tokenProvider.setToken(tokenResponse?.token)
                 token = tokenResponse?.token ?: ""
+                val userId = tokenResponse?.userId ?: ""
 
-                loginState.value = LoginState.Success(usuario)
-                return Pair(true, usuario)
+                loginState.value = LoginState.Success("")
+                return Pair<Boolean,String>(true,userId)
             } else {
                 loginState.value = LoginState.Error("Login failed")
-                return Pair(false, "")
+                return Pair<Boolean,String>(false,"")
             }
         } catch (e: Exception) {
             loginState.value = LoginState.Error(e.message ?: "Unknown error")
-            return Pair(false, "")
+            return Pair<Boolean,String>(false,"")
         }
     }
 
+    // Registro que devuelve si se logro el registro o no junto con mensaje del servidor
     suspend fun registroWeb(
         nombre: String,
         direccion: String,
@@ -88,6 +87,7 @@ class ServicioRemoto {
         }
     }
 
+    // Descarga el producto y en caso de algún fallo devuelve un producto vacio
     suspend fun descargarProducto(id: String): ProductoApp {
         return try {
             authService.descargarProducto(id)
@@ -96,19 +96,32 @@ class ServicioRemoto {
         }
     }
 
+    // Descarga la lista de productos y en caso de algún fallo devuelve una lista vacia
     suspend fun descargarlistaProducto(): List<ProductoApp> {
         return try {
-            Log.d("YANOSE","${tokenProvider.getToken()}")
             authService.descargarListaProducto()
         } catch (e: Exception) {
             emptyList() // Devuelve una lista vacía en caso de error
         }
     }
 
+    // Todavía pendiente
+    // Descarga los pedidos del usuario logueado
     suspend fun descargarPedidos():List<Pedido>{
         return emptyList()
     }
 
+    // Descarga los datos del usuario logueado
+    suspend fun descargarInfoUsuario(id:String):Usuario{
+        Log.d("AYUDA", token)
+        return try {
+            authService.descargarInfoUsuario(id)
+        } catch (e: Exception) {
+            Usuario() // Devuelve un Usuario vacio
+        }
+    }
+
+    // Agrega en el encabezado el token para autenticación
     class AuthInterceptor(private val tokenProvider: String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest = chain.request()
@@ -121,9 +134,10 @@ class ServicioRemoto {
     }
 }
 
+// Objeto para el estado del login
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
-    data class Success(val token: String) : LoginState()
+    data class Success(val message: String) : LoginState()
     data class Error(val message: String) : LoginState()
 }

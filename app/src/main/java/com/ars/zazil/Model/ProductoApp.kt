@@ -1,5 +1,6 @@
 package com.ars.zazil.Model
 
+// Producto con toda la información de la base de datos
 data class ProductoApp(
     val id: String = "",
     val nombre: String = "",

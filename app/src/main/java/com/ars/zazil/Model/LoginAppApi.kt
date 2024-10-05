@@ -8,6 +8,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.Call
 
+// Servicio del servidor
 interface AuthService {
 
     @POST("registerApp/")
@@ -15,8 +16,8 @@ interface AuthService {
     @POST("api-token-auth/")
     suspend fun login(@Body loginRequest: LoginRequest): Response<TokenResponse>
 
-    @GET("")
-    suspend fun descargarPedidos():List<Pedido>
+    @GET("infoUser/{id}")
+    suspend fun descargarInfoUsuario(@Path("id") id: String):Usuario
 
     @GET("JSONItem/{id}")
     suspend fun descargarProducto(@Path("id") id: String):ProductoApp
@@ -25,7 +26,9 @@ interface AuthService {
     suspend fun descargarListaProducto(): List<ProductoApp>
 }
 
+// Clases de datos usadas para la respuesta del servidor
 data class Usuario(
+    var id: String = "",
     val nombre: String = "",
     val email: String = "",
     val direccion: String = "",
@@ -57,5 +60,5 @@ data class LoginRequest(
 )
 data class TokenResponse(
     val token: String,
-    val userId: Int,
+    val userId: String,
 )

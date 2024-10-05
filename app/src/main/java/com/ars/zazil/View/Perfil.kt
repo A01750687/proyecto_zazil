@@ -40,15 +40,10 @@ import com.ars.zazil.Viewmodel.LoginVM
 @Composable
 fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = Modifier) {
     val scrollSate = rememberScrollState()
+    loginVM.descargarInfoUsuario()
 
     val loginEstado = loginVM.usuarioState.collectAsState()
 
-    var nombre by remember { mutableStateOf("") }
-    var edad by remember { mutableStateOf("") }
-    var celular by remember { mutableStateOf("") }
-    var direccion by remember { mutableStateOf("") }
-    var genero by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
