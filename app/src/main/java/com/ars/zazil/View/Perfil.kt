@@ -98,8 +98,8 @@ fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = 
                         .padding(8.dp)
                 )
                 SectionCard(
-                    title = "Celular",
-                    value = "+52 ${loginEstado.value.numero}",
+                    title = "Email",
+                    value = loginEstado.value.email,
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)

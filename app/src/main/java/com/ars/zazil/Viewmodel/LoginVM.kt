@@ -37,12 +37,10 @@ class LoginVM: ViewModel() {
     fun login(email: String, password: String): Boolean {
         viewModelScope.launch {
             val response = servicioRemoto.loginWeb(_loginState,email, password)
-            _estadoLogin.value = response.first
-            _usuarioState.value.id = response.second
+            _estadoLogin.value = response
         }
         return _estadoLogin.value
     }
-
     fun registro(nombre: String, direccion: String, edad: Int, email: String, contrasena: String,genero: String){
         viewModelScope.launch {
             val response = servicioRemoto.registroWeb(nombre, direccion, edad, email, contrasena,genero)
@@ -52,8 +50,15 @@ class LoginVM: ViewModel() {
 
     fun descargarInfoUsuario(){
         viewModelScope.launch {
-            val response = servicioRemoto.descargarInfoUsuario(_usuarioState.value.id)
+            val response = servicioRemoto.descargarInfoUsuario()
             _usuarioState.value = response
+        }
+    }
+
+    fun descargarPedidos(){
+        viewModelScope.launch {
+            val response = servicioRemoto.descargarPedidos()
+            _pedidosState.value = response
         }
     }
 

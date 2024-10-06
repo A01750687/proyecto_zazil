@@ -1,5 +1,6 @@
 package com.ars.zazil.View
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,7 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -52,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -550,7 +551,7 @@ fun Productos(
 
 @Composable
 fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, product: ProductoApp) {
-    val openAlertDialog = remember { mutableStateOf(false) }
+    val mContext = LocalContext.current
     Card(
         modifier = Modifier
             .width(180.dp)
@@ -589,7 +590,7 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
                 onClick = {
                     val producto = ProductoCarrito(product, 1)
                     carritoViewModel.agregarProducto(producto)
-                    openAlertDialog.value = true
+                    Toast.makeText(mContext,"Producto añadido al carrito",Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -600,9 +601,6 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
                 )
             }
         }
-    }
-    if (openAlertDialog.value) {
-        AlertaCarrito({openAlertDialog.value = false}, {openAlertDialog.value = false})
     }
 }
 

@@ -1,5 +1,6 @@
 package com.ars.zazil.View
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +53,8 @@ fun ProductInDetails(
 
     val estado = productoAppVM.estado.collectAsState()
     productoAppVM.descargarProducto(id)
+
+    val mContext = LocalContext.current
 
     val scrollState = rememberScrollState()
 
@@ -162,6 +166,7 @@ fun ProductInDetails(
             onClick = {
                 val producto = ProductoCarrito(estado.value, cantidad)
                 carritoViewModel.agregarProducto(producto)
+                Toast.makeText(mContext,"Producto añadido al carrito", Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)

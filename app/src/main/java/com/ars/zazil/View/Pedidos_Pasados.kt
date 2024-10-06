@@ -29,6 +29,7 @@ import com.ars.zazil.Viewmodel.LoginVM
 @Composable
 fun Pedidos_Pasados(loginVM: LoginVM, modifier: Modifier = Modifier) {
 
+    loginVM.descargarPedidos()
 
     val pedidos = loginVM.pedidosState.collectAsState()
 

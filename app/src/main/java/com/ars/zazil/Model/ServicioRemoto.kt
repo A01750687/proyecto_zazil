@@ -22,7 +22,7 @@ class ServicioRemoto {
     // Objeto retrofit con Cliente
     private val retrofit by lazy {
         val client = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(token))
+            .addInterceptor(AuthInterceptor{token})
             .build()
 
         Retrofit.Builder()
@@ -37,7 +37,7 @@ class ServicioRemoto {
     }
 
     // Funcion para login y obteniendo token para autenticación
-    suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Pair<Boolean,String> {
+    suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Boolean {
         loginState.value = LoginState.Loading
         try {
             val response = authService.login(LoginRequest(email, password))
@@ -45,17 +45,16 @@ class ServicioRemoto {
                 val tokenResponse = response.body()
 
                 token = tokenResponse?.token ?: ""
-                val userId = tokenResponse?.userId ?: ""
 
                 loginState.value = LoginState.Success("")
-                return Pair<Boolean,String>(true,userId)
+                return true
             } else {
                 loginState.value = LoginState.Error("Login failed")
-                return Pair<Boolean,String>(false,"")
+                return false
             }
         } catch (e: Exception) {
             loginState.value = LoginState.Error(e.message ?: "Unknown error")
-            return Pair<Boolean,String>(false,"")
+            return false
         }
     }
 
@@ -105,28 +104,31 @@ class ServicioRemoto {
         }
     }
 
-    // Todavía pendiente
-    // Descarga los pedidos del usuario logueado
-    suspend fun descargarPedidos():List<Pedido>{
-        return emptyList()
-    }
-
     // Descarga los datos del usuario logueado
-    suspend fun descargarInfoUsuario(id:String):Usuario{
-        Log.d("AYUDA", token)
+    suspend fun descargarInfoUsuario():Usuario{
         return try {
-            authService.descargarInfoUsuario(id)
+            authService.descargarInfoUsuario()
         } catch (e: Exception) {
             Usuario() // Devuelve un Usuario vacio
         }
     }
 
+    // Descarga los pedidos del usuario logueado
+    suspend fun descargarPedidos():List<Pedido>{
+        return try {
+            authService.descargarPedidos()
+        } catch (e: Exception) {
+            emptyList() // Devuelve un Usuario vacio
+        }
+    }
+
     // Agrega en el encabezado el token para autenticación
-    class AuthInterceptor(private val tokenProvider: String) : Interceptor {
+    class AuthInterceptor(private val tokenProvider: () -> String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
+            val token = tokenProvider() // Obtiene el token actual dinámicamente
             val originalRequest = chain.request()
             val newRequest = originalRequest.newBuilder()
-                .addHeader("Authorization", "Token $tokenProvider")
+                .addHeader("Authorization", "Token $token")
                 .build()
 
             return chain.proceed(newRequest)
