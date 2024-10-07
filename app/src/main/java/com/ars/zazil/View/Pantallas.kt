@@ -13,7 +13,7 @@ sealed class Pantallas(
 ){
     // Objeto de la clase Pantallas(static)
     companion object{
-        var listaPantallas = listOf(Contacto,Carrito,Preguntas,Pagos)
+        var listaPantallas = listOf(Contacto,Carrito,Principal,Preguntas,Pagos)
         const val RUTA_INICIO = "Inicio"
         const val RUTA_CREARCUENTA = "CrearCuenta"
         const val RUTA_INICIO_SESION = "InicioSesion"
@@ -42,7 +42,7 @@ sealed class Pantallas(
     private data object EditarPerfil: Pantallas(RUTA_EDITARPERFIL, "EditarPerfil")
     private data object Pedidos: Pantallas(RUTA_PEDIDOS, "Pedidos Pasados")
 
-    private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal")
+    private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal",R.drawable.logo_zazil)
     private data object Detalle: Pantallas(RUTA_DETALLE,"Detalle")
 
     private data object Contacto: Pantallas(RUTA_CONTACTO,"Contacto",R.drawable.telefono)
