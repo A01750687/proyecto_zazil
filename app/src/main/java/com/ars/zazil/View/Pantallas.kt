@@ -42,7 +42,7 @@ sealed class Pantallas(
     private data object EditarPerfil: Pantallas(RUTA_EDITARPERFIL, "EditarPerfil")
     private data object Pedidos: Pantallas(RUTA_PEDIDOS, "Pedidos Pasados")
 
-    private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal",R.drawable.logo_zazil)
+    private data object Principal: Pantallas(RUTA_PRINCIPAL,"Principal",R.drawable.casa)
     private data object Detalle: Pantallas(RUTA_DETALLE,"Detalle")
 
     private data object Contacto: Pantallas(RUTA_CONTACTO,"Contacto",R.drawable.telefono)
