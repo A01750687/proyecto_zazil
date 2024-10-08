@@ -1,13 +1,10 @@
 package com.ars.zazil.View
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.IconButton
@@ -16,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +28,8 @@ fun ContactUsPage(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current // Aquí obtenemos el contexto correctamente
+
     Column(
         modifier = modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -76,7 +76,17 @@ fun ContactUsPage(
         Spacer(modifier = Modifier.height(24.dp))
 
         IconButton(
-            onClick = { /* TODO */ },
+            onClick = {
+                val url = "https://www.facebook.com/FundacionTodasBrillamos?locale=es_LA"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try{
+                    context.startActivity(intent)
+                }catch (e: Exception){
+                    Toast.makeText(context, "No se encontró la aplicación", Toast.LENGTH_SHORT).show()
+                }
+
+            },
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .height(100.dp)
@@ -88,10 +98,19 @@ fun ContactUsPage(
             )
         }
 
+
         Spacer(modifier = Modifier.height(10.dp))
 
         IconButton(
-            onClick = { /* TODO */ },
+            onClick = {
+                val url = "https://www.instagram.com/fundaciontodasbrillamos/"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try{
+                    context.startActivity(intent)
+                }catch (e: Exception){
+                    Toast.makeText(context, "No se encontró la aplicación", Toast.LENGTH_SHORT).show()
+                } },
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .height(100.dp)
@@ -104,7 +123,16 @@ fun ContactUsPage(
         }
 
         IconButton(
-            onClick = { /* TODO */ },
+            onClick = {
+                val url = "https://www.youtube.com/@FundacionTodasBrillamos"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try{
+                    context.startActivity(intent)
+                }catch (e: Exception){
+                    Toast.makeText(context, "No se encontró la aplicación", Toast.LENGTH_SHORT).show()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .height(110.dp)
