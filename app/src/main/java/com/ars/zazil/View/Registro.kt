@@ -47,10 +47,15 @@ import com.ars.zazil.Viewmodel.LoginVM
 import kotlinx.coroutines.launch
 import java.util.*
 
-
 @Composable
 fun Registro(loginVM: LoginVM, navController: NavHostController) {
     Surface(color = fondo) {
+        // Valores de los campos (gestión central del estado)
+        var nombre by remember { mutableStateOf("") }
+        var direccion by remember { mutableStateOf("") }
+        var edad by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
+        var contrasena by remember { mutableStateOf("") }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,161 +65,239 @@ fun Registro(loginVM: LoginVM, navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Imagen()
-
-            // Campos de texto
-            var nombre by remember { mutableStateOf("") }
-            var direccion by remember { mutableStateOf("") }
-            var edad by remember { mutableStateOf("") }
-            var email by remember { mutableStateOf("") }
-            var contrasena by remember { mutableStateOf("") }
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Campo Nombre
-                TextField(
-                    value = nombre,
-                    onValueChange = { nombre = it },  // Actualizamos el valor con lo que escribe el usuario
-                    label = { Text("Nombre") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Campo Dirección
-                TextField(
-                    value = direccion,
-                    onValueChange = { direccion = it },  // Actualizamos el valor
-                    label = { Text("Dirección") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Campo Edad
-                TextField(
-                    value = edad,
-                    onValueChange = { edad = it },  // Actualizamos el valor
-                    label = { Text("Edad") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Campo Celular
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },  // Actualizamos el valor
-                    label = { Text("email") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Campo Contraseña
-                TextField(
-                    value = contrasena,
-                    onValueChange = { contrasena = it },  // Actualizamos el valor
-                    label = { Text("Contraseña") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    visualTransformation = PasswordVisualTransformation()  // Ocultamos la contraseña
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-
-            // Seleccion de genero
-            var expandido by remember { mutableStateOf(false)}
-            val opciones = listOf("Femenino","Masculino", "Otro")
-            var selectedOption by remember { mutableStateOf(opciones[0]) }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                OutlinedButton(
-                    onClick = { expandido= !expandido }
-                ) {
-                    Text(text = selectedOption)
-                    Icon(imageVector = if(expandido)Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown, contentDescription = null )
-                }
-                DropdownMenu(
-                    expanded = expandido,
-                    onDismissRequest = { expandido=false }
-                ) {
-                    Column(){
-                        opciones.forEach{label ->
-                            DropdownMenuItem(
-                                text = { Text(text = label) },
-                                onClick = {
-                                    selectedOption = label
-                                    expandido = false
-                                }
-                            )
-                        }
-                    }
-
-                }
-            }
-
-            Fecha()
+            CamposRegistro(
+                nombre = nombre,
+                onNombreChange = { nombre = it },
+                direccion = direccion,
+                onDireccionChange = { direccion = it },
+                edad = edad,
+                onEdadChange = { edad = it },
+                email = email,
+                onEmailChange = { email = it },
+                contrasena = contrasena,
+                onContrasenaChange = { contrasena = it })
+            SeleccionGenero()
             Spacer(modifier = Modifier.height(15.dp))
+            BotonCrearCuenta(loginVM, navController, nombre, direccion, edad, email, contrasena)
+        }
+    }
+}
 
-            // Botón Crear Cuenta
-            val estado = loginVM.estadoRegistro.collectAsState()
-            var cambioPantalla by remember { mutableStateOf(false) }
 
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if(!estado.value.first){
-                    Text(
-                        text = estado.value.second,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.Red
-                    )
-                }
-                if(estado.value.first && !cambioPantalla){
-                    navController.navigate(Pantallas.RUTA_INICIO_SESION){
-                        cambioPantalla = true
-                    }
-                }
-                Button(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp),
+@Composable
+private fun Imagen() {
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(top = 10.dp),
+        painter = painterResource(id = R.drawable.logo_zazil),
+        contentDescription = null,
+    )
+}
+
+@Composable
+fun CamposRegistro(
+    nombre: String, onNombreChange: (String) -> Unit,
+    direccion: String,
+    onDireccionChange: (String) -> Unit,
+    edad: String,
+    onEdadChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    contrasena: String,
+    onContrasenaChange: (String) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Darnombre(nombre, onNombreChange)
+        Spacer(modifier = Modifier.height(10.dp))
+        DarDireccion(direccion, onDireccionChange)
+        Spacer(modifier = Modifier.height(10.dp))
+        DarEdad(edad, onEdadChange)
+        Spacer(modifier = Modifier.height(10.dp))
+        DarCelular(email, onEmailChange)
+        Spacer(modifier = Modifier.height(10.dp))
+        DarContraseña(contrasena, onContrasenaChange)
+    }
+}
+
+@Composable
+fun SeleccionGenero() {
+    var expandido by remember { mutableStateOf(false) }
+    val opciones = listOf("Femenino", "Masculino", "Otro")
+    var selectedOption by remember { mutableStateOf(opciones[0]) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        OutlinedButton(
+            onClick = { expandido = !expandido }
+        ) {
+            Text(text = selectedOption)
+            Icon(
+                imageVector = if (expandido) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                contentDescription = null
+            )
+        }
+        DropdownMenu(
+            expanded = expandido,
+            onDismissRequest = { expandido = false }
+        ) {
+            opciones.forEach { label ->
+                DropdownMenuItem(
+                    text = { Text(text = label) },
                     onClick = {
-                        loginVM.registro(nombre,direccion,edad.toInt(),email,contrasena,selectedOption)
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(size = 12.dp)
-                ) {
-                    Text(
-                        text = "Crear Cuenta",
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
+                        selectedOption = label
+                        expandido = false
+                    }
+                )
             }
         }
     }
 }
 
+fun isValidEmail(email: String): Boolean {
+    val emailPattern = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+    return emailPattern.matches(email)
+}
+
 @Composable
+fun BotonCrearCuenta(
+    loginVM: LoginVM,
+    navController: NavHostController,
+    nombre: String,
+    direccion: String,
+    edad: String,
+    email: String,
+    contrasena: String
+) {
+    val estado = loginVM.estadoRegistro.collectAsState()
+    var cambioPantalla by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Mostrar error en caso de que algún campo esté vacío o el correo sea inválido
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
+        if (!estado.value.first) {
+            Text(
+                text = estado.value.second,
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.Red
+            )
+        }
+
+        if (estado.value.first && !cambioPantalla) {
+            navController.navigate(Pantallas.RUTA_INICIO_SESION) {
+                cambioPantalla = true
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .height(50.dp)
+                .width(200.dp),
+            onClick = {
+                // Validaciones de los campos
+                if (nombre.isEmpty() || direccion.isEmpty() || edad.isEmpty() || email.isEmpty() || contrasena.isEmpty()) {
+                    errorMessage = "Por favor, llene todos los campos."
+                } else if (!isValidEmail(email)) {
+                    errorMessage = "Correo electrónico no válido."
+                } else {
+                    errorMessage = ""
+                    loginVM.registro(nombre, direccion, edad.toInt(), email, contrasena, "Femenino")
+                }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(size = 12.dp)
+        ) {
+            Text(
+                text = "Crear Cuenta",
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    }
+}
+
+@Composable
+fun DarContraseña(contrasena: String, onContrasenaChange: (String) -> Unit) {
+    TextField(
+        value = contrasena,
+        onValueChange = onContrasenaChange,  // Actualizamos el valor
+        label = { Text("Contraseña") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        visualTransformation = PasswordVisualTransformation()  // Ocultamos la contraseña
+    )
+}
+
+@Composable
+fun DarCelular(email: String, onEmailChange: (String) -> Unit) {
+    TextField(
+        value = email,
+        onValueChange = onEmailChange,  // Actualizamos el valor
+        label = { Text("email") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+fun DarEdad(edad: String, onEdadChange: (String) -> Unit) {
+    TextField(
+        value = edad,
+        onValueChange = onEdadChange,  // Actualizamos el valor
+        label = { Text("Edad") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+fun DarDireccion(direccion: String, onDireccionChange: (String) -> Unit) {
+    TextField(
+        value = direccion,
+        onValueChange = onDireccionChange,  // Actualizamos el valor
+        label = { Text("Dirección") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+fun Darnombre(nombre: String, onNombreChange: (String) -> Unit) {
+    TextField(
+        value = nombre,
+        onValueChange = onNombreChange,  // Actualizamos el valor con lo que escribe el usuario
+        label = { Text("Nombre") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+/*@Composable
 fun Fecha() {
     val context = LocalContext.current
     var date by remember { mutableStateOf("") }
@@ -238,15 +321,4 @@ fun Fecha() {
         Text(text = if (date.isBlank()) "Seleccionar Fecha" else date)
         Icon(imageVector = Icons.Filled.CalendarToday, contentDescription = null)
     }
-}
-
-@Composable
-private fun Imagen() {
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
-        painter = painterResource(id = R.drawable.logo_zazil),
-        contentDescription = null,
-    )
-}
+}*/
