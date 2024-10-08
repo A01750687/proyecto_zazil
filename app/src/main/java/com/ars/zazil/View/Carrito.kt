@@ -133,6 +133,7 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
                 )
             }
 
+            
             // Otro botón (ejemplo)
             IconButton(
                 onClick = { carritoViewModel.limpiarCarrito() },

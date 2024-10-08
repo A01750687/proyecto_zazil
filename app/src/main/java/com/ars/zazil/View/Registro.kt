@@ -120,7 +120,7 @@ fun CamposRegistro(
         Spacer(modifier = Modifier.height(10.dp))
         DarCelular(email, onEmailChange)
         Spacer(modifier = Modifier.height(10.dp))
-        DarContraseña(contrasena, onContrasenaChange)
+        DarContrasena(contrasena, onContrasenaChange)
     }
 }
 
@@ -237,7 +237,7 @@ fun BotonCrearCuenta(
 }
 
 @Composable
-fun DarContraseña(contrasena: String, onContrasenaChange: (String) -> Unit) {
+fun DarContrasena(contrasena: String, onContrasenaChange: (String) -> Unit) {
     TextField(
         value = contrasena,
         onValueChange = onContrasenaChange,  // Actualizamos el valor
