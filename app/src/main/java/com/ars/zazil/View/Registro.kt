@@ -189,7 +189,7 @@ fun BotonCrearCuenta(
                 text = errorMessage,
                 color = Color.Red,
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(12.dp)
             )
         }
 
@@ -289,7 +289,7 @@ fun DarDireccion(direccion: String, onDireccionChange: (String) -> Unit) {
 fun Darnombre(nombre: String, onNombreChange: (String) -> Unit) {
     TextField(
         value = nombre,
-        onValueChange = onNombreChange,  // Actualizamos el valor con lo que escribe el usuario
+        onValueChange = onNombreChange,
         label = { Text("Nombre") },
         modifier = Modifier
             .fillMaxWidth()

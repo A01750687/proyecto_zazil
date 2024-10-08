@@ -10,7 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-
+/**
+ * GoogleVM
+ * Este ViewModel gestiona el proceso de autenticación a través de Google utilizando Firebase.
+ * Proporciona funciones para iniciar y cerrar sesión, y mantiene el estado de autenticación.
+ */
 class GoogleVM : ViewModel() {
 
     //Auth de firebase
@@ -20,14 +24,32 @@ class GoogleVM : ViewModel() {
     private val _estadoLogin = MutableStateFlow(false)
     val estadoLogin: StateFlow<Boolean> = _estadoLogin
 
+    /**
+     * setEstadoLogin
+     * Cambia manualmente el estado de autenticación del usuario.
+     * @param nuevoEstado Nuevo estado de autenticación (true si el usuario está autenticado, false si no).
+     */
     fun setEstadoLogin(nuevoEstado: Boolean) {
         _estadoLogin.value = nuevoEstado
     }
 
+    /**
+     * hacerlogout
+     * Cierra la sesión del usuario utilizando FirebaseAuth y actualiza el estado de login.
+     */
     fun hacerlogout () {
         auth.signOut()
         _estadoLogin.value = false
     }
+
+    /**
+     * hacerLoginGoogle
+     * Realiza el inicio de sesión en Firebase utilizando las credenciales de Google.
+     * Si el login es exitoso, se ejecuta la función `home` para navegar a la página principal.
+     *
+     * @param credencial Credenciales de autenticación de Google.
+     * @param home Función lambda que se ejecuta si el login es exitoso.
+     */
     fun hacerLoginGoogle(credencial: AuthCredential, home: () -> Unit) =
         viewModelScope.launch {
             try {

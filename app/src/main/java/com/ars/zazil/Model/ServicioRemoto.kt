@@ -67,7 +67,6 @@ class ServicioRemoto {
         contrasena: String,
         genero: String
     ): Pair<Boolean, String> {
-        Log.d("RegistroWeb", "Campos : $nombre, $direccion, $edad, $email, $contrasena, $genero")
         return try {
             val response = authService.register(
                 RegisterRequest(nombre, direccion, edad, email, contrasena,genero)

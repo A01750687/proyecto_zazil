@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
+/**
+ * LoginVM
+ * Esta clase es un ViewModel que maneja el estado de la autenticación (login) y el registro de usuarios en la aplicación.
+ * Se utiliza `MutableStateFlow` para controlar los estados de login, registro, información de usuario, y pedidos.
+ */
 class LoginVM: ViewModel() {
 
     private val servicioRemoto = ServicioRemoto()
@@ -34,6 +40,15 @@ class LoginVM: ViewModel() {
     private val _pedidosState = MutableStateFlow(listOf<Pedido>())
     val pedidosState: StateFlow<List<Pedido>> = _pedidosState
 
+    /**
+     * login
+     * Realiza la autenticación del usuario a través del servicio remoto.
+     * Actualiza el estado de login y retorna un valor booleano indicando el éxito.
+     *
+     * @param email Correo electrónico del usuario.
+     * @param password Contraseña del usuario.
+     * @return Boolean Resultado del proceso de login (true si es exitoso, false en caso contrario).
+     */
     fun login(email: String, password: String): Boolean {
         viewModelScope.launch {
             val response = servicioRemoto.loginWeb(_loginState,email, password)
@@ -41,6 +56,19 @@ class LoginVM: ViewModel() {
         }
         return _estadoLogin.value
     }
+
+    /**
+     * registro
+     * Registra un nuevo usuario en el sistema mediante el servicio remoto.
+     * Actualiza el estado del registro con un valor booleano (éxito/fallo) y un mensaje.
+     *
+     * @param nombre Nombre del usuario.
+     * @param direccion Dirección del usuario.
+     * @param edad Edad del usuario.
+     * @param email Correo electrónico del usuario.
+     * @param contrasena Contraseña del usuario.
+     * @param genero Género del usuario.
+     */
     fun registro(nombre: String, direccion: String, edad: Int, email: String, contrasena: String,genero: String){
         viewModelScope.launch {
             val response = servicioRemoto.registroWeb(nombre, direccion, edad, email, contrasena,genero)
@@ -48,6 +76,11 @@ class LoginVM: ViewModel() {
         }
     }
 
+    /**
+     * descargarInfoUsuario
+     * Descarga la información del usuario actual desde el servicio remoto.
+     * Actualiza el estado del usuario con la información descargada.
+     */
     fun descargarInfoUsuario(){
         viewModelScope.launch {
             val response = servicioRemoto.descargarInfoUsuario()
@@ -55,6 +88,11 @@ class LoginVM: ViewModel() {
         }
     }
 
+    /**
+     * descargarPedidos
+     * Descarga la lista de pedidos realizados por el usuario actual desde el servicio remoto.
+     * Actualiza el estado de pedidos con la lista descargada.
+     */
     fun descargarPedidos(){
         viewModelScope.launch {
             val response = servicioRemoto.descargarPedidos()
@@ -62,6 +100,12 @@ class LoginVM: ViewModel() {
         }
     }
 
+    /**
+     * setEstadoLogin
+     * Establece manualmente el estado de login utilizado para cambiar el estado de autenticación del usuario.
+     *
+     * @param estado Boolean Estado de autenticación (true si el usuario está autenticado, false si no lo está).
+     */
     fun setEstadoLogin(estado: Boolean){
         _estadoLogin.value = estado
     }
