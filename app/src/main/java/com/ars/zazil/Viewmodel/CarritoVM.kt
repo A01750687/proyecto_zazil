@@ -32,7 +32,7 @@ class CarritoVM : ViewModel() {
         if (productoExistente != null) {
 
             val productosActualizados = _productosEnCarrito.value.map {
-                if (it == productoExistente) it.copy(cantidad = it.cantidad + 1) else it
+                if (it == productoExistente) it.copy(cantidad = it.cantidad + producto.cantidad) else it
             }
             _productosEnCarrito.value = productosActualizados
             return
