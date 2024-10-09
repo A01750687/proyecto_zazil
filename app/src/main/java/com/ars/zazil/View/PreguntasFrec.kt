@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -64,17 +65,23 @@ fun preguntasFrec(modifier: Modifier, viewModel: PreguntasViewModel = viewModel(
 
 @Composable
 fun detallePregunta(pregunta: Qa, navController: NavHostController, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
-        Text(text = pregunta.pregunta,
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp))
+    LazyColumn(modifier = modifier.fillMaxWidth().padding(16.dp)) {
+        item {
+            Text(
+                text = pregunta.pregunta,
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .padding(16.dp)
+            )
+        }
 
-        Text(text = pregunta.respuesta,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp))
+        item {
+            Text(
+                text = pregunta.respuesta,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .padding(16.dp)
+            )
+        }
     }
 }
