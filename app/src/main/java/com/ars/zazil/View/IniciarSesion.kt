@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
+import com.ars.zazil.Model.LoginState
 import com.ars.zazil.R
 import com.ars.zazil.View.Pantallas
 import com.ars.zazil.Viewmodel.LoginVM
@@ -75,6 +76,8 @@ private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
         isConnected = checkInternetConnection(context)
     }
     val loginEstado = loginVM.estadoLogin.collectAsState()
+    val loginState = loginVM.loginState.collectAsState()
+
     var logueado by remember { mutableStateOf(false) }
 
     val uiColor = if (isSystemInDarkTheme()) Color.White else Black
@@ -95,7 +98,8 @@ private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
             .fillMaxSize()
             .padding(horizontal = 30.dp)
     ) {
-        if(showError){
+        if(showError || loginState.value is LoginState.Error ){
+            errorMessage = (loginState.value as? LoginState.Error)?.message ?: "Error desconocido"
             Text(
                 text = errorMessage,
                 color = Color.Red,

@@ -15,7 +15,7 @@ class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.84.20:8000/"
+        const val URL = "http://10.48.73.189:8000/"
         var token = ""
     }
 
@@ -43,13 +43,16 @@ class ServicioRemoto {
             val response = authService.login(LoginRequest(email, password))
             if (response.isSuccessful) {
                 val tokenResponse = response.body()
-
                 token = tokenResponse?.token ?: ""
 
                 loginState.value = LoginState.Success("")
                 return true
             } else {
-                loginState.value = LoginState.Error("Login failed")
+                if(response.code() == 406){
+                    loginState.value = LoginState.Error("Correo no encontrado")
+                } else if (response.code() == 401){
+                    loginState.value = LoginState.Error("Contraseña incorrecta")
+                }
                 return false
             }
         } catch (e: Exception) {
