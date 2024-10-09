@@ -15,7 +15,7 @@ class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.97.163:8000/"
+        const val URL = "http://10.48.84.20:8000/"
         var token = ""
     }
 
