@@ -9,7 +9,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -206,12 +208,22 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
             Text(text = producto.producto.nombre, style = MaterialTheme.typography.bodyLarge)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Cantidad: ", style = MaterialTheme.typography.bodyMedium)
-                TextButton(onClick = { carritoViewModel.disminuirCantidad(producto) }) {
-                    Text(text = "-", color = Color.Red, fontSize = 20.sp)
+                IconButton(onClick = {
+                    carritoViewModel.disminuirCantidad(producto)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.RemoveCircle,
+                        contentDescription = "Remove"
+                    )
                 }
                 Text(text = "${producto.cantidad}",style = MaterialTheme.typography.bodyMedium)
-                TextButton(onClick = { carritoViewModel.aumentarCantidad(producto) }) {
-                    Text(text = "+", color = Color.Green, fontSize = 20.sp)
+                IconButton(onClick = {
+                    carritoViewModel.aumentarCantidad(producto)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.AddCircle,
+                        contentDescription = "Add"
+                    )
                 }
             }
         }

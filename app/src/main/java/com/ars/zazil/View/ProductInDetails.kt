@@ -132,13 +132,13 @@ fun ProductInDetails(
         ) {
 
             IconButton(onClick = {
-                if (cantidad > 0) {
-                    cantidad++
+                if (cantidad > 0 && cantidad-1 != 0) {
+                    cantidad--
                 }
             }) {
                 Icon(
-                    imageVector = Icons.Filled.AddCircle,
-                    contentDescription = "Add"
+                    imageVector = Icons.Filled.RemoveCircle,
+                    contentDescription = "Remove"
                 )
             }
 
@@ -149,13 +149,16 @@ fun ProductInDetails(
             )
 
             IconButton(onClick = {
-                if (cantidad > 0 && cantidad-1 != 0) {
-                    cantidad--
+                if (cantidad > 0 && cantidad < estado.value.stock) {
+                    cantidad++
+                }
+                else{
+                    Toast.makeText(mContext,"No hay más productos disponibles", Toast.LENGTH_SHORT).show()
                 }
             }) {
                 Icon(
-                    imageVector = Icons.Filled.RemoveCircle,
-                    contentDescription = "Remove"
+                    imageVector = Icons.Filled.AddCircle,
+                    contentDescription = "Add"
                 )
             }
 
