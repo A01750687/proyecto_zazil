@@ -71,13 +71,11 @@ import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
 import com.ars.zazil.ui.theme.fondo
 import com.ars.zazil.Viewmodel.ProductoAppVM
-import com.mags.pruebas.View.Calendario
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
 fun Principal(
-    abrirCalendario: MutableState<Boolean>,
     navController: NavHostController,
     carritoViewModel: CarritoVM,
     productoAppVM: ProductoAppVM,
@@ -90,11 +88,6 @@ fun Principal(
 
     productoAppVM.descargarListaProducto()
 
-    if (abrirCalendario.value) {
-        PopupCalendario {
-            abrirCalendario.value = false
-        }
-    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -110,7 +103,6 @@ fun Principal(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    abrirCalendario: MutableState<Boolean>,
     drawerState: DrawerState,
     navController: NavHostController,
     modifier: Modifier = Modifier
@@ -128,7 +120,7 @@ fun TopBar(
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp)
+                    .padding(bottom = 15.dp, end = 20.dp)
                     .clickable {
                         if (Pantallas.RUTA_PRINCIPAL != pantallaActual?.route) {
                             navController.navigate(Pantallas.RUTA_PRINCIPAL) {
@@ -141,19 +133,7 @@ fun TopBar(
             )
         },
         modifier = Modifier.height(70.dp),
-        actions = {
-            IconButton(
-                onClick = {
-                    abrirCalendario.value = true
-                },
-                modifier = Modifier.padding(bottom = 15.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.calendario),
-                    contentDescription = "Calendario"
-                )
-            }
-        },
+
         navigationIcon = {
             IconButton(
                 onClick = {
@@ -173,19 +153,6 @@ fun TopBar(
             containerColor = fondo
         )
     )
-}
-
-@Composable
-fun PopupCalendario(
-    onDismissRequest: () -> Unit
-) {
-    Dialog(
-        onDismissRequest = { onDismissRequest() },
-    ) {
-        Card {
-            Calendario()
-        }
-    }
 }
 
 @Composable

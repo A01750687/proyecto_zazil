@@ -93,7 +93,7 @@ fun Contenido(
                         .height(50.dp)
                         .background(color = naranja)
                     )
-                    TopBar(abrirCalendario, drawerState,navController, modifier = Modifier)
+                    TopBar(drawerState,navController, modifier = Modifier)
                 }
             }
         },
@@ -110,7 +110,7 @@ fun Contenido(
             }
         }
     ) { innerPadding ->
-        AppNavHost(carritoViewModel,abrirCalendario,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
+        AppNavHost(carritoViewModel,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
     }
 }
 
@@ -118,7 +118,6 @@ fun Contenido(
 @Composable
 fun AppNavHost(
     carritoViewModel: CarritoVM,
-    abrirCalendario: MutableState<Boolean>,
     productoAppVM: ProductoAppVM,
     loginVM: LoginVM,
     navController: NavHostController,
@@ -149,7 +148,7 @@ fun AppNavHost(
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {
-            Principal(abrirCalendario,navController,carritoViewModel,productoAppVM,modifier)
+            Principal(navController,carritoViewModel,productoAppVM,modifier)
         }
         composable(Pantallas.RUTA_DETALLE + "/{id}") {
             val id = it.arguments?.getString("id") ?: "0"
