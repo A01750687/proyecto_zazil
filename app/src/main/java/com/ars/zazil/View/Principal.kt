@@ -490,7 +490,7 @@ fun Productos(
                 }
 
                 Text(
-                    text = "${currentPage + 1}",
+                    text = "${currentPage + 1} / $totalPag",
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                 )
