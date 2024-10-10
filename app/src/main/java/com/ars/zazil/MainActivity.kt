@@ -16,7 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +54,8 @@ import com.mags.pruebas.View.Pedidos_Pasados
 
 class MainActivity : ComponentActivity() {
 
+    private val loginVM: LoginVM by viewModels()
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +64,15 @@ class MainActivity : ComponentActivity() {
             ZazilTheme {
                 val navController = rememberNavController()
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                Sidebar(navController = navController, drawerState = drawerState) {
-                    Contenido(drawerState = drawerState,navController = navController)
+
+                val estadologin = loginVM.estadoLogin.collectAsState()
+
+                if(estadologin.value){
+                    Sidebar(navController = navController, drawerState = drawerState) {
+                        Contenido(loginVM = loginVM,drawerState = drawerState,navController = navController)
+                    }
+                }else{
+                    Contenido(loginVM = loginVM,drawerState = drawerState,navController = navController)
                 }
 
             }
@@ -76,13 +85,11 @@ fun Contenido(
     carritoViewModel: CarritoVM = viewModel(),
     productoAppVM: ProductoAppVM = viewModel(),
     drawerState: DrawerState,
-    loginVM: LoginVM = viewModel(),
-    navController: NavHostController
+    loginVM: LoginVM,
+    navController: NavHostController,
 ){
 
     val loginEstado = loginVM.estadoLogin.collectAsState()
-
-    val abrirCalendario = remember { mutableStateOf(false) }
 
     Scaffold (
         topBar = {
