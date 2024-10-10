@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -118,9 +119,10 @@ fun TopBar(
                 text = "Zazil",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
+                color = Color.Black,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp, end = 20.dp)
+                    .padding(end = 20.dp)
                     .clickable {
                         if (Pantallas.RUTA_PRINCIPAL != pantallaActual?.route) {
                             navController.navigate(Pantallas.RUTA_PRINCIPAL) {
@@ -143,7 +145,7 @@ fun TopBar(
                 },
                 modifier = Modifier.padding(bottom = 15.dp)
             ) {
-                Icon(
+                Image(
                     painter = painterResource(id = R.drawable.tres),
                     contentDescription = "Lateral"
                 )
@@ -170,7 +172,7 @@ fun FilBus(productoAppVM: ProductoAppVM) {
             IconButton(onClick = {
                 verFiltros = true
             }) {
-                Icon(
+                Image(
                     painter = painterResource(id = R.drawable.filtro),
                     contentDescription = "Filtro"
                 )
@@ -178,7 +180,8 @@ fun FilBus(productoAppVM: ProductoAppVM) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Filtros",
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = Color.Black
             )
         }
         TextField(
@@ -231,6 +234,7 @@ fun Filtros(onDismiss: () -> Unit) {
                         text = "Filtros",
                         fontSize = 24.sp,
                         style = MaterialTheme.typography.headlineSmall,
+                        color = Color.Black,
                         modifier = Modifier
                             .padding(8.dp)
                     )
@@ -525,7 +529,10 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
             .padding(8.dp)
             .clickable {
                 navController.navigate(Pantallas.RUTA_DETALLE + "/${product.id}")
-            }
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = fondo
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
