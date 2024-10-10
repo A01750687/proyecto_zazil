@@ -18,8 +18,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -68,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 val estadologin = loginVM.estadoLogin.collectAsState()
 
                 if(estadologin.value){
-                    Sidebar(navController = navController, drawerState = drawerState) {
+                    Sidebar(loginVM = loginVM,navController = navController, drawerState = drawerState) {
                         Contenido(loginVM = loginVM,drawerState = drawerState,navController = navController)
                     }
                 }else{
