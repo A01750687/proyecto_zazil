@@ -25,7 +25,7 @@ sealed class ItemSidebar(
         "Mis Pedidos pasados",
         Pantallas.RUTA_PEDIDOS
     )
-    private data object Logout: ItemSidebar(
+    data object Logout: ItemSidebar(
         Icons.Outlined.Close,
         "Cerrar Sesión",
         ""

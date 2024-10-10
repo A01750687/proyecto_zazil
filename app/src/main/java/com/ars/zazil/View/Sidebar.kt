@@ -23,20 +23,27 @@ fun Sidebar(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(modifier = Modifier.width(180.dp)) {
-                ItemSidebar.listaItems.forEach{item ->
+                ItemSidebar.listaItems.forEach { item ->
                     NavigationDrawerItem(
                         icon = {
-                            Icon(item.icono,null)
+                            Icon(item.icono, contentDescription = null)
                         },
                         label = { Text(text = item.titulo) },
                         selected = false,
                         onClick = {
-                            navController.navigate(item.ruta)
-                        })
-
+                            if (item is ItemSidebar.Logout) {
+                                navController.navigate(Pantallas.RUTA_INICIO) {
+                                    popUpTo(0)
+                                }
+                            } else {
+                                navController.navigate(item.ruta)
+                            }
+                        }
+                    )
                 }
             }
-    }) {
+        }
+    ) {
         contenido()
     }
 }
