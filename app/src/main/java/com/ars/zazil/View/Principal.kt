@@ -205,12 +205,12 @@ fun FilBus(productoAppVM: ProductoAppVM) {
         )
     }
     if (verFiltros) {
-        Filtros(onDismiss = { verFiltros = false })
+        Filtros(onDismiss = { verFiltros = false }, productoAppVM)
     }
 }
 
 @Composable
-fun Filtros(onDismiss: () -> Unit) {
+fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
     var SelectedCategoria by remember { mutableStateOf("Categoria") }
 
     Dialog(onDismissRequest = onDismiss) {
@@ -241,7 +241,10 @@ fun Filtros(onDismiss: () -> Unit) {
                             .padding(8.dp)
                     )
                     TextButton(
-                        onClick = { /*Reiniciar filtros*/ },
+                        onClick = {
+                            productoAppVM.limpiarLista()
+
+                        },
                         modifier = Modifier.padding(8.dp)
                     ) {
                         Text(
@@ -315,7 +318,7 @@ fun Filtros(onDismiss: () -> Unit) {
                                             "Kit"
                                         )
                                     ) { category ->
-                                        CheckboxItem(category)
+                                        CheckboxItem(category, productoAppVM)
                                     }
                                 }
                             }
@@ -330,7 +333,7 @@ fun Filtros(onDismiss: () -> Unit) {
                                             "Teen"
                                         )
                                     ) { size ->
-                                        CheckboxItem(size)
+                                        CheckboxItem(size, productoAppVM)
                                     }
                                 }
                             }
@@ -352,7 +355,7 @@ fun Filtros(onDismiss: () -> Unit) {
                                             "Pink Lace"
                                         )
                                     ) { color ->
-                                        CheckboxItem(color)
+                                        CheckboxItem(color, productoAppVM)
                                     }
                                 }
                             }
@@ -384,7 +387,7 @@ fun Filtros(onDismiss: () -> Unit) {
 
                     }
                 }
-                Button(onClick = { /*logica de aplicar filtros*/
+                Button(onClick = { productoAppVM.aplicarFiltros()
                     onDismiss()
                 }) {
                     Text("Aplicar filtros")
@@ -415,20 +418,25 @@ fun CategoryButton(label: String, isSelected: Boolean = false, onClick: () -> Un
 }
 
 @Composable
-fun CheckboxItem(label: String) {
-    var Estado by remember { mutableStateOf(false) }
+fun CheckboxItem(label: String, productoAppVM: ProductoAppVM) {
+    val checkboxStates by productoAppVM.checkboxStates.collectAsState()
+    val isChecked = checkboxStates[label] ?: false
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
     ) {
         Checkbox(
-            checked = Estado,
-            onCheckedChange = { Estado = it }
+            checked = isChecked,
+            onCheckedChange = { checked ->
+                productoAppVM.updateCheckboxState(label, checked)
+            }
         )
         Text(text = label, fontSize = 14.sp)
     }
 }
+
 
 // Falta el texto de que no sale un producto al buscarlo, porfa no le muevan
 @Composable

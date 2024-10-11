@@ -21,6 +21,8 @@ class ProductoAppVM: ViewModel() {
     private val _estado = MutableStateFlow(ProductoApp())
     val estado: StateFlow<ProductoApp> = _estado
 
+
+
     private val _estadoLista = MutableStateFlow(listOf<ProductoApp>())
     val estadoLista: StateFlow<List<ProductoApp>> = _estadoLista
 
@@ -66,5 +68,56 @@ class ProductoAppVM: ViewModel() {
             _estadoLista.value.filter { it.nombre.contains(query, ignoreCase = true) }
         }
         _estadoFiltrado.value = listaFiltrada
+    }
+
+    private val _multipleQuery = MutableStateFlow<List<String>>(emptyList())
+    val multipleQuery: StateFlow<List<String>> = _multipleQuery
+
+    fun agregarElemento(nuevoElemento: String) {
+        _multipleQuery.value = _multipleQuery.value + nuevoElemento
+        println(_multipleQuery.value)
+    }
+
+    // Función para eliminar un elemento de la lista
+    fun eliminarElemento(elemento: String) {
+        _multipleQuery.value = _multipleQuery.value - elemento
+        println(_multipleQuery.value)
+    }
+
+    fun limpiarLista() {
+        _multipleQuery.value = emptyList()
+        _checkboxStates.value = emptyMap()
+        println(_multipleQuery.value)
+    }
+
+
+    fun aplicarFiltros() {
+        println("Términos de búsqueda: ${_multipleQuery.value}")
+        val listaFiltrada = if (_multipleQuery.value.isEmpty()) {
+            _estadoLista.value
+        } else {
+            _estadoLista.value.filter { producto ->
+                _multipleQuery.value.all { query ->
+                    producto.nombre.contains(query, ignoreCase = true)
+                }
+            }
+        }
+        println("Productos filtrados: ${listaFiltrada.map { it.nombre }}")
+        _estadoFiltrado.value = listaFiltrada
+    }
+
+    private val _checkboxStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val checkboxStates: StateFlow<Map<String, Boolean>> = _checkboxStates
+
+    fun updateCheckboxState(label: String, isChecked: Boolean) {
+        _checkboxStates.value = _checkboxStates.value.toMutableMap().apply {
+            this[label] = isChecked
+        }
+
+        if (isChecked) {
+            agregarElemento(label)
+        } else {
+            eliminarElemento(label)
+        }
     }
 }
