@@ -87,9 +87,10 @@ class ProductoAppVM: ViewModel() {
     fun limpiarLista() {
         _multipleQuery.value = emptyList()
         _checkboxStates.value = emptyMap()
+        _minPrice.value = null
+        _maxPrice.value = null
         println(_multipleQuery.value)
     }
-
 
     fun aplicarFiltros() {
         println("Términos de búsqueda: ${_multipleQuery.value}")
@@ -102,9 +103,19 @@ class ProductoAppVM: ViewModel() {
                 }
             }
         }
-        println("Productos filtrados: ${listaFiltrada.map { it.nombre }}")
-        _estadoFiltrado.value = listaFiltrada
+
+        // Filtrar por precio
+        val listaFiltradaPorPrecio = listaFiltrada.filter { producto ->
+            val min = _minPrice.value
+            val max = _maxPrice.value
+            val precio = producto.precio
+            (min == null || precio >= min) && (max == null || precio <= max)
+        }
+
+        println("Productos filtrados: ${listaFiltradaPorPrecio.map { it.nombre }}")
+        _estadoFiltrado.value = listaFiltradaPorPrecio
     }
+
 
     private val _checkboxStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val checkboxStates: StateFlow<Map<String, Boolean>> = _checkboxStates
@@ -120,4 +131,19 @@ class ProductoAppVM: ViewModel() {
             eliminarElemento(label)
         }
     }
+
+    private val _minPrice = MutableStateFlow<Double?>(null)
+    val minPrice: StateFlow<Double?> = _minPrice
+
+    private val _maxPrice = MutableStateFlow<Double?>(null)
+    val maxPrice: StateFlow<Double?> = _maxPrice
+
+    fun setMinPrice(price: Double?) {
+        _minPrice.value = price
+    }
+
+    fun setMaxPrice(price: Double?) {
+        _maxPrice.value = price
+    }
+
 }

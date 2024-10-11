@@ -1,6 +1,8 @@
 package com.ars.zazil.View
 
 import android.widget.Toast
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -212,6 +214,8 @@ fun FilBus(productoAppVM: ProductoAppVM) {
 @Composable
 fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
     var SelectedCategoria by remember { mutableStateOf("Categoria") }
+    var minPrice by remember { mutableStateOf("") }
+    var maxPrice by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -247,11 +251,21 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                         },
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        Text(
-                            text = "Restablecer",
-                            color = Color.Blue,
-                            style = TextStyle(fontSize = 20.sp)
-                        )
+                        TextButton(
+                            onClick = {
+                                productoAppVM.limpiarLista()
+                                minPrice = ""
+                                maxPrice = ""
+                            },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(
+                                text = "Restablecer",
+                                color = Color.Blue,
+                                style = TextStyle(fontSize = 20.sp)
+                            )
+                        }
+
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -363,25 +377,36 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                             "Precio" -> {
                                 Column {
                                     TextField(
-                                        value = "",
-                                        onValueChange = {},
+                                        value = minPrice,
+                                        onValueChange = { newValue ->
+                                            minPrice = newValue
+                                            val min = newValue.toDoubleOrNull()
+                                            productoAppVM.setMinPrice(min)
+                                        },
                                         label = { Text("Min") },
                                         placeholder = { Text("$ MIN") },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(8.dp)
                                     )
                                     TextField(
-                                        value = "",
-                                        onValueChange = {},
+                                        value = maxPrice,
+                                        onValueChange = { newValue ->
+                                            maxPrice = newValue
+                                            val max = newValue.toDoubleOrNull()
+                                            productoAppVM.setMaxPrice(max)
+                                        },
                                         label = { Text("Max") },
                                         placeholder = { Text("$ MAX") },
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(8.dp)
                                     )
                                 }
                             }
+
                         }
                         //Aplicar filtro
 

@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation("androidx.compose.ui:ui-text:1.7.0")
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation("io.coil-kt:coil-compose:2.7.0")
