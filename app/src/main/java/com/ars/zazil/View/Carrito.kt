@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +36,7 @@ import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
+import com.ars.zazil.ui.theme.rosa
 
 @Composable
 fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
@@ -49,6 +52,9 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
 
     //Mostrar la informacion de pago
     val mostrarDatosPago = remember { mutableStateOf(false) }
+
+    // Mostar ventana de donacion
+    val mostrarDonacion = remember { mutableStateOf(false) }
 
     // Contenedor principal de contenido
     Column(
@@ -183,6 +189,14 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
         )
     }
 
+    if (mostrarDonacion.value) {
+        Donacion(
+            onDismiss = {
+                mostrarDonacion.value = false
+            }
+        )
+    }
+
     // Contenedor principal
     Box(
         modifier = modifier
@@ -190,7 +204,7 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
     ) {
         // Botón flotante de Carrito, posicionado en la parte inferior derecha
         FloatingActionButton(
-            onClick = { /* Acción al hacer clic */ },
+            onClick = { mostrarDonacion.value = true },
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -200,6 +214,7 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
             Text(text = "Donar", color = Color.White)
         }
     }
+
 }
 
 @Composable
@@ -216,7 +231,7 @@ fun DatosPago(onDismiss: () -> Unit) {
                     .padding(start = 8.dp, end = 8.dp)
             ) {
                 Text(
-                    text = "Datos de la cuenta a Pagar",
+                    text = "Datos de la cuenta a pagar",
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.headlineLarge,
                     color = Color.Black,
@@ -282,7 +297,7 @@ fun DatosPago(onDismiss: () -> Unit) {
                             "\nde la tranferencia/depósito por" +
                             "\nmensaje al siguiente número!",
                     textAlign = TextAlign.Center,
-                    color = Color.Black)
+                    color = rosa)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -293,6 +308,144 @@ fun DatosPago(onDismiss: () -> Unit) {
                     modifier = Modifier
                         .padding(bottom = 8.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun Donacion(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card (
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.size(width = 350.dp, height = 400.dp)
+        ) {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(16.dp)
+            ) {
+                item {
+                    Text(
+                        text = "¡Gracias por su interés al donar!",
+                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(10.dp)) }
+                item {
+                    Text(
+                        text = "Por favor, ayúdenos con los siguientes datos",
+                        color = rosa
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(10.dp)) }
+                item {
+                    Row {
+                        Text(
+                            text = "Nombre:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .weight(1.4f)
+                                .padding(top = 13.dp)
+                        )
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier
+                                .weight(4f)
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        )
+                    }
+                }
+                item { Spacer(modifier = Modifier.height(10.dp)) }
+                item {
+                    Row {
+                        Text(
+                            text = "CURP:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .weight(1.4f)
+                                .padding(top = 13.dp)
+                        )
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier
+                                .weight(4f)
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        )
+                    }
+                }
+                item { Spacer(modifier = Modifier.height(10.dp)) }
+                item {
+                    Row {
+                        Text(
+                            text = "Cantidad a donar:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1.4f)
+                        )
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier
+                                .weight(4f)
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            leadingIcon = {
+                                Text(text = "$")
+                            }
+                        )
+                    }
+                }
+                item { Spacer(modifier = Modifier.height(10.dp)) }
+                item{
+                    Text(
+                        text = "Pagar con:",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                item {
+                    IconButton(
+                        onClick = { /*Pagar donación con paypal*/ },
+                        modifier = Modifier.size(150.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.paypalimg),
+                            contentDescription = "Continuar compra"
+                        )
+                    }
+                }
+                item {
+                    Row {
+                        Text(
+                            text = "NOTA:",
+                            color = rosa,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = "En caso de querer realizar una donación por medio" +
+                                    " de transferencia o depósito, por favor, siga las" +
+                                    " instrucciones mostradas en los botones al cerrar" +
+                                    " esta ventana y proporcione los mismos datos que" +
+                                    " en esta se piden por medio de un mensaje al número" +
+                                    " indicado, gracias.",
+                            color = Color.Black,
+                            modifier = Modifier.weight(4f)
+                        )
+                    }
+                }
             }
         }
     }
