@@ -551,7 +551,8 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(

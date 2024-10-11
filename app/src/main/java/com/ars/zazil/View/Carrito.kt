@@ -2,6 +2,7 @@ package com.ars.zazil.View
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,13 +16,18 @@ import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ars.zazil.Model.ProductoCarrito
@@ -40,6 +46,9 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
 
     // Calcular el total de la compra
     val total = productos.value.sumOf{ it.producto.precio * it.cantidad }
+
+    //Mostrar la informacion de pago
+    val mostrarDatosPago = remember { mutableStateOf(false) }
 
     // Contenedor principal de contenido
     Column(
@@ -138,7 +147,7 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
             
             // Otro botón (ejemplo)
             IconButton(
-                onClick = { carritoViewModel.limpiarCarrito() },
+                onClick = { mostrarDatosPago.value = true },
                 modifier = Modifier
                     .size(200.dp)
                     .padding(4.dp)
@@ -152,7 +161,7 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
 
             // Otro botón (ejemplo)
             IconButton(
-                onClick = { carritoViewModel.limpiarCarrito() },
+                onClick = { mostrarDatosPago.value= true },
                 modifier = Modifier
                     .size(200.dp)
                     .padding(4.dp)
@@ -165,7 +174,14 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
             }
         }
     }
-
+    if (mostrarDatosPago.value) {
+        DatosPago(
+            onDismiss = {
+                mostrarDatosPago.value = false
+                carritoViewModel.limpiarCarrito()
+            }
+        )
+    }
 
     // Contenedor principal
     Box(
@@ -183,7 +199,102 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
         ) {
             Text(text = "Donar", color = Color.White)
         }
+    }
+}
 
+@Composable
+fun DatosPago(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
+                Text(
+                    text = "Datos de la cuenta a Pagar",
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Número de cuenta:",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = "1096319621",
+                    color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Cuenta CLABE:",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text(
+                    text = "072180010963196216",
+                    color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Nombre del titular:",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text(
+                    text = "Fundación Todas Brillamos A.C.",
+                    color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Banco:",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text(
+                    text = "Banorte",
+                    color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Concepto:",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black)
+                Text(
+                    text = "Cuota de Recuperación + tu nombre",
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "¡Favor de mandar tu comprobante" +
+                            "\nde la tranferencia/depósito por" +
+                            "\nmensaje al siguiente número!",
+                    textAlign = TextAlign.Center,
+                    color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "+52 56 2808 3883",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                )
+            }
+        }
     }
 }
 
@@ -233,7 +344,9 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
         // Precio total por cantidad
         Text(
             text = "$" + String.format("%.2f", producto.producto.precio * producto.cantidad),
-            modifier = Modifier.weight(1.5f).align(Alignment.CenterVertically)
+            modifier = Modifier
+                .weight(1.5f)
+                .align(Alignment.CenterVertically)
         )
     }
 }
