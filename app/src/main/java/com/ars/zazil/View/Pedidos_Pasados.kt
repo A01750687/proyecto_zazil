@@ -3,9 +3,7 @@ package com.mags.pruebas.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -19,15 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.ars.zazil.Model.ServicioRemoto
+import com.ars.zazil.View.Pantallas
 import com.ars.zazil.Viewmodel.LoginVM
 
 @Composable
-fun Pedidos_Pasados(loginVM: LoginVM, modifier: Modifier = Modifier) {
+fun Pedidos_Pasados(
+    navController: NavHostController,
+    loginVM: LoginVM,
+    modifier: Modifier = Modifier
+) {
 
     loginVM.descargarPedidos()
 
@@ -67,7 +70,7 @@ fun Pedidos_Pasados(loginVM: LoginVM, modifier: Modifier = Modifier) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(text = "DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(text = pedido.fecha, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 if(pedido.estado){
                                     Text(text = "Enviado", style = MaterialTheme.typography.bodyMedium,fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 }else{
@@ -92,7 +95,9 @@ fun Pedidos_Pasados(loginVM: LoginVM, modifier: Modifier = Modifier) {
                                         Text(text = "Cantidad: ${item.cantidad}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Button(
-                                            onClick = { /* TODO */ },
+                                            onClick = {
+                                                navController.navigate(Pantallas.RUTA_DETALLE + "/${item.producto.id}")
+                                            },
                                             colors = ButtonDefaults.buttonColors(
                                                 containerColor = Color(0xFF7572CB),
                                                 contentColor = Color.Black

@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ZazilTheme {
+            ZazilTheme(dynamicColor = false, darkTheme = false) {
                 val navController = rememberNavController()
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -146,11 +146,11 @@ fun AppNavHost(
             Perfil(loginVM,navController,modifier)
         }
         composable(Pantallas.RUTA_EDITARPERFIL) {
-            EditarP(modifier)
+            EditarP(loginVM,navController,modifier)
         }
 
         composable(Pantallas.RUTA_PEDIDOS) {
-            Pedidos_Pasados(loginVM,modifier)
+            Pedidos_Pasados(navController,loginVM,modifier)
         }
 
         composable(Pantallas.RUTA_CREDITOS){

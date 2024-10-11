@@ -40,6 +40,10 @@ class LoginVM: ViewModel() {
     private val _pedidosState = MutableStateFlow(listOf<Pedido>())
     val pedidosState: StateFlow<List<Pedido>> = _pedidosState
 
+    // Estado Edicion Perfil
+    private val _estadoEditar = MutableStateFlow(false)
+    val estadoEditar: StateFlow<Boolean> = _estadoEditar
+
     /**
      * login
      * Realiza la autenticación del usuario a través del servicio remoto.
@@ -85,6 +89,27 @@ class LoginVM: ViewModel() {
         viewModelScope.launch {
             val response = servicioRemoto.descargarInfoUsuario()
             _usuarioState.value = response
+        }
+    }
+
+    fun editarUsuario(
+        nombre: String,
+        direccion: String,
+        edad: Int,
+        email: String,
+        numero: String,
+        contrasena: String
+    ){
+        viewModelScope.launch {
+            val response = servicioRemoto.editarPerfil(
+                nombre,
+                direccion,
+                edad,
+                email,
+                numero,
+                contrasena
+            )
+            _estadoEditar.value = response
         }
     }
 

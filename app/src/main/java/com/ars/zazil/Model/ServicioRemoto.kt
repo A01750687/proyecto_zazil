@@ -74,18 +74,38 @@ class ServicioRemoto {
             val response = authService.register(
                 RegisterRequest(nombre, direccion, edad, email, contrasena,genero)
             )
-            Log.d("RegistroWeb", "Código de estado: ${response.code()}")
             if (response.isSuccessful) {
                 val registerResponse = response.body()
                 val message = registerResponse?.message ?: "Registro exitoso"
-                Log.d("RegistroWeb", "Respuesta del servidor: $registerResponse")
                 Pair(true, message)
             } else {
-                Log.d("RegistroWeb", "Error en el registro: ${response.errorBody() ?: "Error desconocido"}")
                 Pair(false, "Registro fallido: ${response.errorBody() ?: "Error desconocido"}")
             }
         } catch (e: Exception) {
             Pair(false, "Error: ${e.message}")
+        }
+    }
+
+    suspend fun editarPerfil(
+        nombre: String,
+        direccion: String,
+        edad: Int,
+        email: String,
+        numero: String,
+        contrasena: String
+    ):Boolean{
+        return try {
+            val response = authService.editarPerfil(
+                EditarUsuario(nombre,direccion,edad,email,numero,contrasena)
+            )
+            if (response.isSuccessful) {
+                return true
+            } else {
+                return false
+            }
+
+        } catch (e: Exception){
+            return false
         }
     }
 

@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -459,7 +461,7 @@ fun Productos(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .padding(16.dp)
+                    .padding(4.dp)
             ) {
                 items(productosMostrados[currentPage].chunked(2)) { rowItems ->
                     Row(
@@ -556,12 +558,13 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "$${product.precio}",
+                text = "Stock:${product.stock} $${product.precio}",
                 color = Color.Black,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
             Button(
+                colors = ButtonDefaults.buttonColors(containerColor = Color(232, 98, 61)),
                 onClick = {
                     val producto = ProductoCarrito(product, 1)
                     carritoViewModel.agregarProducto(producto)
@@ -572,7 +575,7 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
                 Text(
                     "Añadir al Carrito",
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }

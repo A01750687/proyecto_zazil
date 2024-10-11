@@ -1,5 +1,6 @@
 package com.ars.zazil.View
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,9 +15,9 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Creditos(modifier: Modifier) {
-    Column {
+    Column(modifier = modifier) {
         Text(text = "Créditos",
-            modifier = Modifier.fillMaxWidth().padding(100.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineLarge,
             color = Color.Black)

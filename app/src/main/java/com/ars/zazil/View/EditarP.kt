@@ -1,5 +1,6 @@
 package com.ars.zazil.View
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,17 +16,41 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.ars.zazil.Viewmodel.LoginVM
 
-@Preview(showBackground = true, widthDp = 340, heightDp = 600)
 @Composable
-fun EditarP(modifier: Modifier = Modifier) {
+fun EditarP(loginVM: LoginVM, navController: NavHostController, modifier: Modifier = Modifier) {
     val scrollSate = rememberScrollState()
+    val mContext = LocalContext.current
+
+    val estadoUsuario = loginVM.usuarioState.collectAsState()
+
+    // Valores de los campos (gestión central del estado)
+    var nombre by remember { mutableStateOf(estadoUsuario.value.nombre) }
+    var direccion by remember { mutableStateOf(estadoUsuario.value.direccion) }
+    var edad by remember { mutableStateOf(estadoUsuario.value.edad.toString()) }
+    var email by remember { mutableStateOf(estadoUsuario.value.email) }
+    var numero by remember { mutableStateOf(estadoUsuario.value.numero) }
+    var contrasena by remember { mutableStateOf("") }
+
+    val estadoEditar = loginVM.estadoEditar.collectAsState()
+
+    if(estadoEditar.value){
+        Toast.makeText(mContext,"Información actualizada correctamente",Toast.LENGTH_SHORT).show()
+    }
 
     Column (modifier = modifier
         .fillMaxSize()
@@ -44,8 +69,12 @@ fun EditarP(modifier: Modifier = Modifier) {
 
         Row () {
             Text(text = "Nombre:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
+                modifier = Modifier
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = nombre, onValueChange = {
+                nombre = it
+            },
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
@@ -54,8 +83,12 @@ fun EditarP(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.padding(10.dp))
         Row (){
             Text(text = "Dirección:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
+                modifier = Modifier
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = direccion, onValueChange = {
+                direccion = it
+            },
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
@@ -64,8 +97,26 @@ fun EditarP(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.padding(10.dp))
         Row (){
             Text(text = "Edad:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
+                modifier = Modifier
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = edad, onValueChange = {
+                edad = it
+            },
+                modifier = Modifier
+                    .weight(4f)
+                    .fillMaxWidth()
+                    .height(50.dp))
+        }
+        Spacer(modifier = Modifier.padding(10.dp))
+        Row (){
+            Text(text = "Email:",
+                modifier = Modifier
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = email, onValueChange = {
+                email = it
+            },
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
@@ -74,18 +125,12 @@ fun EditarP(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.padding(10.dp))
         Row (){
             Text(text = "Celular:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
                 modifier = Modifier
-                    .weight(4f)
-                    .fillMaxWidth()
-                    .height(50.dp))
-        }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Row (){
-            Text(text = "Género:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = numero, onValueChange = {
+                numero = it
+            },
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
@@ -94,15 +139,21 @@ fun EditarP(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.padding(10.dp))
         Row (){
             Text(text = "Contraseña:",
-                modifier = Modifier.weight(1.4f).padding(top = 17.dp))
-            OutlinedTextField(value = "", onValueChange = {},
+                modifier = Modifier
+                    .weight(1.4f)
+                    .padding(top = 17.dp))
+            OutlinedTextField(value = contrasena, onValueChange = {
+                contrasena = it
+            },
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
                     .height(50.dp))
         }
         Spacer(modifier = Modifier.padding(10.dp))
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = {
+            loginVM.editarUsuario(nombre,direccion,edad.toInt(),email,numero,contrasena)
+        }) {
             Text(text = "Guardar")
         }
     }

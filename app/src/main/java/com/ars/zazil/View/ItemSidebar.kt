@@ -13,7 +13,7 @@ sealed class ItemSidebar(
     val ruta: String
 ) {
     companion object{
-        var listaItems = listOf(Perfil,PedidosPasados,Logout,Creditos)
+        var listaItems = listOf(Perfil,PedidosPasados,Creditos,Logout)
     }
 
     private data object Perfil: ItemSidebar(

@@ -82,14 +82,13 @@ fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = 
 
         // Datos del usuario
         Column(modifier = Modifier.fillMaxWidth()) {
+            SectionCard(
+                title = "Nombre",
+                value = loginEstado.value.nombre,
+                modifier = Modifier
+                    .padding(8.dp)
+            )
             Row(modifier = Modifier.fillMaxWidth()) {
-                SectionCard(
-                    title = "Nombre",
-                    value = loginEstado.value.nombre,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                )
                 SectionCard(
                     title = "Edad",
                     value = "${loginEstado.value.edad}",
@@ -98,15 +97,19 @@ fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = 
                         .padding(8.dp)
                 )
                 SectionCard(
-                    title = "Email",
-                    value = loginEstado.value.email,
+                    title = "Género",
+                    value = "Femenino",
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(30.dp))
+            SectionCard(
+                title = "Email",
+                value = loginEstado.value.email,
+                modifier = Modifier
+                    .padding(8.dp)
+            )
 
             SectionCard(
                 title = "Dirección",
@@ -118,20 +121,6 @@ fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = 
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                SectionCard(
-                    title = "Género",
-                    value = "Femenino",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp))
-                SectionCard(
-                    title = "Contraseña",
-                    value = "********",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp))
-            }
         }
     }
 }
