@@ -1,6 +1,7 @@
 package com.ars.zazil.View
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -458,6 +460,7 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
+        val context = LocalContext.current
         // Imagen del producto
         Image(
             painter = rememberAsyncImagePainter(model = ServicioRemoto.URL + producto.producto.imagen),
@@ -483,6 +486,9 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
                 Text(text = "${producto.cantidad}",style = MaterialTheme.typography.bodyMedium)
                 IconButton(onClick = {
                     carritoViewModel.aumentarCantidad(producto)
+                    if (producto.cantidad == producto.producto.stock) {
+                        Toast.makeText(context, "No hay más productos disponibles", Toast.LENGTH_SHORT).show()
+                    }
                 }) {
                     Icon(
                         imageVector = Icons.Filled.AddCircle,

@@ -39,6 +39,7 @@ import com.ars.zazil.View.Registro
 import com.ars.zazil.View.Sidebar
 import com.ars.zazil.View.TopBar
 import com.ars.zazil.View.Carrito
+import com.ars.zazil.View.Creditos
 import com.ars.zazil.View.detallePregunta
 import com.ars.zazil.View.pagos
 import com.ars.zazil.View.preguntas
@@ -150,6 +151,10 @@ fun AppNavHost(
 
         composable(Pantallas.RUTA_PEDIDOS) {
             Pedidos_Pasados(loginVM,modifier)
+        }
+
+        composable(Pantallas.RUTA_CREDITOS){
+            Creditos(modifier)
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {

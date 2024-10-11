@@ -21,25 +21,39 @@ class CarritoVM : ViewModel() {
     /**
      * agregarProducto
      * Agrega un producto al carrito. Si el producto ya está en el carrito, incrementa su cantidad.
-     * Si no está, lo agrega a la lista.
+     * Si no está, lo agrega a la lista. Retorna un valor booleano que indica si la operación fue exitosa.
      *
      * @param producto El producto que se desea agregar al carrito.
+     * @return `true` si el producto se agregó o se actualizó exitosamente,
+     *         `false` si no se pudo agregar debido a que se excede el stock disponible.
      */
-    fun agregarProducto(producto: ProductoCarrito) {
+    fun agregarProducto(producto: ProductoCarrito): Boolean {
 
         val productoExistente = _productosEnCarrito.value.find { it.producto.id == producto.producto.id }
 
         if (productoExistente != null) {
-
-            val productosActualizados = _productosEnCarrito.value.map {
-                if (it == productoExistente && it.cantidad + producto.cantidad <= producto.producto.stock) it.copy(cantidad = it.cantidad + producto.cantidad) else it
+            // Verificar si se puede aumentar la cantidad sin exceder el stock
+            val nuevaCantidad = productoExistente.cantidad + producto.cantidad
+            if (nuevaCantidad <= producto.producto.stock) {
+                val productosActualizados = _productosEnCarrito.value.map {
+                    if (it == productoExistente) it.copy(cantidad = nuevaCantidad) else it
+                }
+                _productosEnCarrito.value = productosActualizados
+                return true // Producto actualizado exitosamente
+            } else {
+                return false // No se puede agregar más productos debido al límite de stock
             }
-            _productosEnCarrito.value = productosActualizados
-            return
         }
-        // Si el producto no está en el Carrito, agregarlo
-        _productosEnCarrito.value = _productosEnCarrito.value + producto
+
+        // Si el producto no está en el carrito, agregarlo
+        if (producto.cantidad <= producto.producto.stock) {
+            _productosEnCarrito.value = _productosEnCarrito.value + producto
+            return true // Producto agregado exitosamente
+        }
+
+        return false // No se puede agregar porque la cantidad inicial excede el stock
     }
+
 
     /**
      * obtenerProductos
@@ -49,6 +63,16 @@ class CarritoVM : ViewModel() {
      */
     fun obtenerProductos(): StateFlow<List<ProductoCarrito>> {
         return productosEnCarrito
+    }
+
+    /**
+     * ObtenerProducto
+     * Devuelve un producto específico del carrito según su nombre.
+     *
+     * @param name El nombre del producto que se desea obtener.
+     */
+    fun obtenerProducto(name: String): ProductoCarrito? {
+        return _productosEnCarrito.value.find { it.producto.nombre == name }
     }
 
     /**

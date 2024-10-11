@@ -3,6 +3,7 @@ package com.ars.zazil.View
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Laptop
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -12,7 +13,7 @@ sealed class ItemSidebar(
     val ruta: String
 ) {
     companion object{
-        var listaItems = listOf(Perfil,PedidosPasados,Logout)
+        var listaItems = listOf(Perfil,PedidosPasados,Logout,Creditos)
     }
 
     private data object Perfil: ItemSidebar(
@@ -30,4 +31,10 @@ sealed class ItemSidebar(
         "Cerrar Sesión",
         ""
     )
+    data object Creditos: ItemSidebar(
+        Icons.Outlined.Laptop,
+        "Créditos",
+        Pantallas.RUTA_CREDITOS
+    )
+
 }

@@ -32,6 +32,8 @@ sealed class Pantallas(
 
         const val RUTA_LISTAPREGUNTAS = "ListaPreguntas"
         const val RUTA_DETALLEPREGUNTA = "DetallePregunta"
+
+        const val RUTA_CREDITOS = "Creditos"
     }
     //Pantallas
     private data object Inicio: Pantallas(RUTA_INICIO,"Inicio")
@@ -52,4 +54,6 @@ sealed class Pantallas(
 
     private data object ListaPreguntas: Pantallas(RUTA_LISTAPREGUNTAS,"ListaPreguntas")
     private data object DetallePregunta: Pantallas(RUTA_DETALLEPREGUNTA,"DetallePregunta")
+
+    private data object Creditos: Pantallas(RUTA_CREDITOS,"Creditos")
 }

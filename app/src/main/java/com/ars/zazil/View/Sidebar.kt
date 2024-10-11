@@ -37,7 +37,8 @@ fun Sidebar(
                                     popUpTo(0)
                                     loginVM.setEstadoLogin(false)
                                 }
-                            } else {
+                            }
+                            else {
                                 navController.navigate(item.ruta)
                             }
                         }

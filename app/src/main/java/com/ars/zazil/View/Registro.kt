@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,6 +41,8 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
@@ -55,6 +58,7 @@ fun Registro(loginVM: LoginVM, navController: NavHostController) {
         var direccion by remember { mutableStateOf("") }
         var edad by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
+        var isChecked by remember { mutableStateOf(false) }
         var contrasena by remember { mutableStateOf("") }
         Column(
             modifier = Modifier
@@ -76,9 +80,9 @@ fun Registro(loginVM: LoginVM, navController: NavHostController) {
                 onEmailChange = { email = it },
                 contrasena = contrasena,
                 onContrasenaChange = { contrasena = it })
-            SeleccionGenero()
+            CheckboxWithTerms{ isChecked = it }
             Spacer(modifier = Modifier.height(15.dp))
-            BotonCrearCuenta(loginVM, navController, nombre, direccion, edad, email, contrasena)
+            BotonCrearCuenta(loginVM, navController, nombre, direccion, edad, email, contrasena, isChecked)
         }
     }
 }
@@ -173,7 +177,8 @@ fun BotonCrearCuenta(
     direccion: String,
     edad: String,
     email: String,
-    contrasena: String
+    contrasena: String,
+    isCheck: Boolean
 ) {
     val estado = loginVM.estadoRegistro.collectAsState()
     var cambioPantalla by remember { mutableStateOf(false) }
@@ -217,7 +222,10 @@ fun BotonCrearCuenta(
                     errorMessage = "Por favor, llene todos los campos."
                 } else if (!isValidEmail(email)) {
                     errorMessage = "Correo electrónico no válido."
-                } else {
+                } else if (!isCheck) {
+                    errorMessage = "Debe aceptar los términos y condiciones."
+                }
+                else {
                     errorMessage = ""
                     loginVM.registro(nombre, direccion, edad.toInt(), email, contrasena, "Femenino")
                 }
@@ -296,6 +304,40 @@ fun Darnombre(nombre: String, onNombreChange: (String) -> Unit) {
             .padding(horizontal = 16.dp)
     )
 }
+
+@Composable
+fun CheckboxWithTerms(
+    onAcceptTerms: (Boolean) -> Unit // Callback para manejar si aceptó los términos
+) {
+    // Estado del Checkbox
+    val isChecked = remember { mutableStateOf(false) }
+    val showDialogSeguridad = remember { mutableStateOf(false) }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(
+            checked = isChecked.value,
+            onCheckedChange = {
+                isChecked.value = it
+                onAcceptTerms(it) // Notificamos afuera si el usuario aceptó o no los términos
+            }
+        )
+        Text(text = "Acepto los:",
+            color = Color.Black)
+        // Botón para mostrar términos y condiciones
+        TextButton(onClick = { showDialogSeguridad.value = true }) {
+            Text(text = "Términos y Condiciones", color = Color.Blue,
+                style = TextStyle(textDecoration = TextDecoration.Underline)
+            )
+        }
+    }
+
+    // Diálogo de los términos y condiciones
+    if (showDialogSeguridad.value) {
+        AlertaSeguridad(onDismiss = { showDialogSeguridad.value = false })
+    }
+}
+
+
 
 /*@Composable
 fun Fecha() {

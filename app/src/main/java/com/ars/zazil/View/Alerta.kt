@@ -1,8 +1,13 @@
 package com.ars.zazil.View
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -117,9 +122,9 @@ fun AlertaDevolucion(onDismiss: () -> Unit) {
                 Text("Aceptar")
             }
         },
-        title = { Text("¿Cómo devolver un producto?") },
+        title = { Text("Politica de devolución") },
         text = {
-            Text("A través de la página de contacto")
+            Text("Por ser una prenda íntima y de uso personal, los cambios en este producto no son procedentes. Atendiendo a la Ley Federal de Protección al consumidor en México (PROFECO) únicamente realizaremos cambios por defecto de fábrica. * Aplica únicamente dentro de los primeros 5 días posteriores a la entrega *")
         },
         icon = {
             Icon(
@@ -139,15 +144,55 @@ fun AlertaSeguridad(onDismiss: () -> Unit) {
                 Text("Aceptar")
             }
         },
-        title = { Text("Seguridad") },
+        title = { Text("Privacidad") },
         text = {
-            Text("a")
+            // Añadimos scroll al contenido del AlertDialog
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    """
+                    AVISO DE PRIVACIDAD
+                    
+                    En Fundación Todas Brillamos AC, valoramos la privacidad de nuestros clientes y nos comprometemos a proteger la información personal que nos proporcionan. Esta política de privacidad explica cómo recopilamos, utilizamos y protegemos sus datos personales.
+                    
+                    INFORMACIÓN RECOLECTADA
+                    
+                    Datos personales: nombre, dirección, correo electrónico, número de teléfono
+                    Información de pago: tarjeta de crédito, débito o PayPal
+                    
+                    USO DE LA INFORMACIÓN
+                    
+                    Procesar y enviar pedidos
+                    Enviar correos electrónicos con promociones y ofertas especiales
+                    Mejorar nuestra tienda online y experiencia de usuario
+                    
+                    PROTECCIÓN DE LA INFORMACIÓN
+                    
+                    Utilizamos medidas de seguridad para proteger sus datos personales
+                    No compartimos información personal con terceros, excepto para procesar pedidos y envíos
+                    
+                    DERECHOS DE LOS CLIENTES
+                    
+                    Acceder, rectificar o cancelar su información personal en cualquier momento
+                    Oponerse al uso de su información para fines de marketing
+                    
+                    CAMBIOS EN LA POLÍTICA DE PRIVACIDAD
+                    
+                    Podemos actualizar esta política de privacidad en cualquier momento
+                    Se notificará a los clientes de cualquier cambio significativo
+                    
+                    FECHA DE ÚLTIMA ACTUALIZACIÓN: 2 de Septiembre 2024
+                    
+                    Si tienes alguna pregunta o inquietud, por favor no dudes en contactarnos.
+                    """.trimIndent()
+                )
+            }
         },
         icon = {
             Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = "Alerta Compra"
+                imageVector = Icons.Default.ListAlt,
+                contentDescription = "Alerta Seguridad"
             )
-        }
+        },
+        modifier = Modifier.fillMaxHeight(0.8f) // Ajustar el tamaño del AlertDialog
     )
 }

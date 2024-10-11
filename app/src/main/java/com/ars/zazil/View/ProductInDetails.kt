@@ -149,11 +149,22 @@ fun ProductInDetails(
             )
 
             IconButton(onClick = {
-                if (cantidad > 0 && cantidad < estado.value.stock) {
-                    cantidad++
-                }
-                else{
-                    Toast.makeText(mContext,"No hay más productos disponibles", Toast.LENGTH_SHORT).show()
+                val productoEnCarrito = carritoViewModel.obtenerProducto(estado.value.nombre)
+
+                if (productoEnCarrito == null) {
+                    // El producto no está en el carrito, puedes añadirlo si es necesario
+                    if (cantidad > 0 && cantidad < estado.value.stock) {
+                        cantidad++
+                    } else {
+                        Toast.makeText(mContext, "No hay más productos disponibles", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // El producto ya está en el carrito, verifica su cantidad
+                    if (cantidad > 0 && (cantidad + productoEnCarrito.cantidad) < estado.value.stock) {
+                        cantidad++
+                    } else {
+                        Toast.makeText(mContext, "No hay más productos disponibles", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }) {
                 Icon(
@@ -162,14 +173,20 @@ fun ProductInDetails(
                 )
             }
 
+
         }
 
 
         ElevatedButton(
             onClick = {
                 val producto = ProductoCarrito(estado.value, cantidad)
-                carritoViewModel.agregarProducto(producto)
-                Toast.makeText(mContext,"Producto añadido al carrito", Toast.LENGTH_SHORT).show()
+                val resultado = carritoViewModel.agregarProducto(producto)
+                if (resultado) {
+                    Toast.makeText(mContext,"Producto añadido al carrito", Toast.LENGTH_SHORT).show()}
+                else{
+                    Toast.makeText(mContext,"No se pudo agregar el producto, existencias insuficientes", Toast.LENGTH_SHORT).show()
+                }
+
             },
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)

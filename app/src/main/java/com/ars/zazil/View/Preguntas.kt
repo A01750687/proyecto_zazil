@@ -81,7 +81,7 @@ fun preguntas(modifier: Modifier, navController: NavHostController) {
             Text(text = "¿Cómo comprar?",
                 modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth().align(Alignment.CenterVertically),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-            Text(text = "¿Cómo devolver?",
+            Text(text = "Política de devolución",
                 modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth().align(Alignment.CenterVertically),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
@@ -177,7 +177,7 @@ fun preguntas(modifier: Modifier, navController: NavHostController) {
             Text(text = "¿Quiénes somos?",
                 modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth().align(Alignment.CenterVertically),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-            Text(text = "Seguridad",
+            Text(text = "Aviso de Privacidad",
                 modifier = Modifier.weight(1f).padding(8.dp).fillMaxWidth().align(Alignment.CenterVertically),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
