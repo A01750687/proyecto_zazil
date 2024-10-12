@@ -21,8 +21,6 @@ class ProductoAppVM: ViewModel() {
     private val _estado = MutableStateFlow(ProductoApp())
     val estado: StateFlow<ProductoApp> = _estado
 
-
-
     private val _estadoLista = MutableStateFlow(listOf<ProductoApp>())
     val estadoLista: StateFlow<List<ProductoApp>> = _estadoLista
 
@@ -70,49 +68,72 @@ class ProductoAppVM: ViewModel() {
         _estadoFiltrado.value = listaFiltrada
     }
 
+    // Estado interno para almacenar múltiples términos de búsqueda como una lista de cadenas.
     private val _multipleQuery = MutableStateFlow<List<String>>(emptyList())
+    // Exposición de _multipleQuery como un StateFlow para ser observado externamente.
     val multipleQuery: StateFlow<List<String>> = _multipleQuery
 
+    // Función para agregar un nuevo término a la lista de búsqueda.
     fun agregarElemento(nuevoElemento: String) {
+        // Actualiza _multipleQuery añadiendo el nuevo término al final de la lista.
         _multipleQuery.value = _multipleQuery.value + nuevoElemento
+        // Imprime el contenido actualizado de la lista en consola.
         println(_multipleQuery.value)
     }
 
-    // Función para eliminar un elemento de la lista
+    // Función para eliminar un término específico de la lista de búsqueda.
     fun eliminarElemento(elemento: String) {
+        // Actualiza _multipleQuery eliminando el término especificado de la lista.
         _multipleQuery.value = _multipleQuery.value - elemento
+        // Imprime el contenido actualizado de la lista en consola.
         println(_multipleQuery.value)
     }
 
+    // Función para limpiar la lista de búsqueda y reiniciar todos los filtros.
     fun limpiarLista() {
+        // Establece _multipleQuery a una lista vacía, eliminando todos los términos de búsqueda.
         _multipleQuery.value = emptyList()
+        // Restablece el estado de las casillas de verificación a un mapa vacío.
         _checkboxStates.value = emptyMap()
+        // Restablece los valores de precio mínimo y máximo a nulos.
         _minPrice.value = null
         _maxPrice.value = null
+        // Imprime la lista vacía en consola, indicando que se ha limpiado.
         println(_multipleQuery.value)
     }
 
+
+    // Función que aplica filtros a una lista de productos basada en términos de búsqueda y rangos de precios.
     fun aplicarFiltros() {
+        // Imprime en consola los términos de búsqueda activos.
         println("Términos de búsqueda: ${_multipleQuery.value}")
+
+        // Filtra la lista de productos según los términos de búsqueda.
+        // Si no hay términos, devuelve la lista completa; si hay, filtra los productos cuyos nombres contienen todos los términos.
         val listaFiltrada = if (_multipleQuery.value.isEmpty()) {
-            _estadoLista.value
+            _estadoLista.value // Retorna la lista original si no hay términos de búsqueda.
         } else {
             _estadoLista.value.filter { producto ->
+                // Filtra los productos para que contengan todos los términos de búsqueda ignorando mayúsculas/minúsculas.
                 _multipleQuery.value.all { query ->
                     producto.nombre.contains(query, ignoreCase = true)
                 }
             }
         }
 
-        // Filtrar por precio
+        // Aplica un segundo filtro basado en el rango de precios, verificando el precio mínimo y el máximo.
         val listaFiltradaPorPrecio = listaFiltrada.filter { producto ->
-            val min = _minPrice.value
-            val max = _maxPrice.value
+            val min = _minPrice.value // Obtiene el precio mínimo (si está definido).
+            val max = _maxPrice.value // Obtiene el precio máximo (si está definido).
             val precio = producto.precio
+            // Verifica que el precio del producto esté dentro del rango de precios especificado.
             (min == null || precio >= min) && (max == null || precio <= max)
         }
 
+        // Imprime en consola los nombres de los productos que pasaron los filtros.
         println("Productos filtrados: ${listaFiltradaPorPrecio.map { it.nombre }}")
+
+        // Actualiza el estado de la lista filtrada para que se pueda observar externamente.
         _estadoFiltrado.value = listaFiltradaPorPrecio
     }
 
@@ -120,30 +141,40 @@ class ProductoAppVM: ViewModel() {
     private val _checkboxStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val checkboxStates: StateFlow<Map<String, Boolean>> = _checkboxStates
 
+    // Función para actualizar el estado de una casilla de verificación
     fun updateCheckboxState(label: String, isChecked: Boolean) {
+        // Actualiza el estado de las casillas de verificación en el MutableStateFlow.
         _checkboxStates.value = _checkboxStates.value.toMutableMap().apply {
-            this[label] = isChecked
+            this[label] = isChecked // Asigna el valor (true o false) a la etiqueta correspondiente.
         }
 
+        // Agrega o elimina el elemento en función de si la casilla está marcada o no.
         if (isChecked) {
-            agregarElemento(label)
+            agregarElemento(label) // Llama a agregarElemento si la casilla se marca.
         } else {
-            eliminarElemento(label)
+            eliminarElemento(label) // Llama a eliminarElemento si la casilla se desmarca.
         }
     }
 
+    // Declaración de una variable de estado para el precio mínimo (nullable).
     private val _minPrice = MutableStateFlow<Double?>(null)
+    // Exposición de la variable de estado _minPrice como un StateFlow para ser observada externamente.
     val minPrice: StateFlow<Double?> = _minPrice
 
+    // Declaración de una variable de estado para el precio máximo (nullable).
     private val _maxPrice = MutableStateFlow<Double?>(null)
+    // Exposición de la variable de estado _maxPrice como un StateFlow para ser observada externamente.
     val maxPrice: StateFlow<Double?> = _maxPrice
 
+    // Función para establecer el valor del precio mínimo.
     fun setMinPrice(price: Double?) {
-        _minPrice.value = price
+        _minPrice.value = price // Asigna el valor proporcionado a la variable de estado _minPrice.
     }
 
+    // Función para establecer el valor del precio máximo.
     fun setMaxPrice(price: Double?) {
-        _maxPrice.value = price
+        _maxPrice.value = price // Asigna el valor proporcionado a la variable de estado _maxPrice.
     }
+
 
 }
