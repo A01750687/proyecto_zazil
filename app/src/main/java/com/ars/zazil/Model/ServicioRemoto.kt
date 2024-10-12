@@ -1,21 +1,24 @@
 package com.ars.zazil.Model
 
 
-import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+/**
+ * Servicio Remoto
+ * Establece conexión con el servidor y manda las peticiones.
+ *
+ */
 
 class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.79.44:8000/"
+        const val URL = "http://192.168.23.174:8000/"
         var token = ""
     }
 
@@ -36,7 +39,14 @@ class ServicioRemoto {
         retrofit.create(AuthService::class.java)
     }
 
-    // Funcion para login y obteniendo token para autenticación
+    /**
+     * loginWeb
+     * Envia las credenciales de una cuenta y permite el paso o da feedback al usuario
+     * del porque no pudo realizar el login
+     *
+     * @param email Correo electrónico del usuario.
+     * @param password Contraseña del usuario.
+     */
     suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Boolean {
         loginState.value = LoginState.Loading
         try {
@@ -61,7 +71,18 @@ class ServicioRemoto {
         }
     }
 
-    // Registro que devuelve si se logro el registro o no junto con mensaje del servidor
+    /**
+     * registroWeb
+     * Registra un nuevo usuario en el sistema mediante el servicio remoto.
+     * Actualiza el estado del registro con un valor booleano (éxito/fallo) y un mensaje.
+     *
+     * @param nombre Nombre del usuario.
+     * @param direccion Dirección del usuario.
+     * @param edad Edad del usuario.
+     * @param email Correo electrónico del usuario.
+     * @param contrasena Contraseña del usuario.
+     * @param genero Género del usuario.
+     */
     suspend fun registroWeb(
         nombre: String,
         direccion: String,
@@ -86,6 +107,18 @@ class ServicioRemoto {
         }
     }
 
+    /**
+     * editarPerfil
+     * Con el usuario logueado se realiza una modificación al parametro que el usuario
+     * haya modificado y da return si se realizaron cambios
+     *
+     * @param nombre Nombre del usuario.
+     * @param direccion Dirección del usuario.
+     * @param edad Edad del usuario.
+     * @param email Correo electrónico del usuario.
+     * @param contrasena Contraseña del usuario.
+     * @param genero Género del usuario.
+     */
     suspend fun editarPerfil(
         nombre: String,
         direccion: String,
@@ -109,7 +142,11 @@ class ServicioRemoto {
         }
     }
 
-    // Descarga el producto y en caso de algún fallo devuelve un producto vacio
+    /**
+     * descargarProducto
+     * Descarga la información de un producto específico desde un servicio remoto.
+     * @param id Identificador del producto a descargar.
+     */
     suspend fun descargarProducto(id: String): ProductoApp {
         return try {
             authService.descargarProducto(id)
@@ -118,7 +155,11 @@ class ServicioRemoto {
         }
     }
 
-    // Descarga la lista de productos y en caso de algún fallo devuelve una lista vacia
+    /**
+     * descargarListaProducto
+     * Descarga la lista completa de productos desde el servicio remoto.
+     * Almacena la lista en _estadoLista y _estadoFiltrado para su uso en la aplicación.
+     */
     suspend fun descargarlistaProducto(): List<ProductoApp> {
         return try {
             authService.descargarListaProducto()
@@ -127,7 +168,11 @@ class ServicioRemoto {
         }
     }
 
-    // Descarga los datos del usuario logueado
+    /**
+     * descargarInfoUsuario
+     * Descarga la información del usuario actual desde el servicio remoto.
+     * Actualiza el estado del usuario con la información descargada.
+     */
     suspend fun descargarInfoUsuario():Usuario{
         return try {
             authService.descargarInfoUsuario()
@@ -136,7 +181,11 @@ class ServicioRemoto {
         }
     }
 
-    // Descarga los pedidos del usuario logueado
+    /**
+     * descargarPedidos
+     * Descarga la lista de pedidos realizados por el usuario actual desde el servicio remoto.
+     * Actualiza el estado de pedidos con la lista descargada.
+     */
     suspend fun descargarPedidos():List<Pedido>{
         return try {
             authService.descargarPedidos()
@@ -145,7 +194,9 @@ class ServicioRemoto {
         }
     }
 
-    // Agrega en el encabezado el token para autenticación
+    /**
+     * Agrega en el encabezado de las peticiones el token recibido en login
+     */
     class AuthInterceptor(private val tokenProvider: () -> String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val token = tokenProvider() // Obtiene el token actual dinámicamente

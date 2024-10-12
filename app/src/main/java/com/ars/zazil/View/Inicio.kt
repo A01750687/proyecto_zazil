@@ -38,20 +38,20 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
-fun Inicio(navController: NavHostController) {
+fun Inicio(googleVM: GoogleVM, navController: NavHostController) {
     Surface(color = fondo) {
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
             Imagen()
-            Botones(navController)
+            Botones(googleVM,navController)
         }
     }
 
 }
 
 @Composable
-private fun Botones(navController: NavHostController) {
+private fun Botones(googleVM: GoogleVM, navController: NavHostController) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -73,13 +73,13 @@ private fun Botones(navController: NavHostController) {
         Spacer(
             modifier = Modifier.height(25.dp)
         )
-        BotGoogle()
+        BotGoogle(googleVM,navController)
 
     }
 }
 
 @Composable
-fun BotGoogle(googleVM: GoogleVM = GoogleVM()) {
+fun BotGoogle(googleVM: GoogleVM,navController: NavHostController) {
     val token = "783043939229-10fm2pgnufnis20oqhihb437s41rlkar.apps.googleusercontent.com"
     val contexto = LocalContext.current
 
@@ -111,6 +111,7 @@ fun BotGoogle(googleVM: GoogleVM = GoogleVM()) {
                 .build()
             val clienteGoogle = GoogleSignIn.getClient(contexto, opciones)
             launcher.launch(clienteGoogle.signInIntent)
+            navController.navigate(Pantallas.RUTA_CREARCUENTA)
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,

@@ -1,5 +1,6 @@
 package com.ars.zazil.Viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.AuthCredential
@@ -23,6 +24,9 @@ class GoogleVM : ViewModel() {
     //Estado login /autenticacion
     private val _estadoLogin = MutableStateFlow(false)
     val estadoLogin: StateFlow<Boolean> = _estadoLogin
+
+    private val _estadoEmail = MutableStateFlow("")
+    val estadoEmail: StateFlow<String> = _estadoEmail
 
     /**
      * setEstadoLogin
@@ -56,6 +60,10 @@ class GoogleVM : ViewModel() {
                 auth.signInWithCredential(credencial)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            val user = auth.currentUser
+                            val email = user?.email
+                            _estadoEmail.value = email?: ""
+                            Log.d("GOOGLE","Correo electrónico del usuario: $email")
                             println("Login con Google, EXITOSO")
                             home()
                         }
@@ -64,7 +72,7 @@ class GoogleVM : ViewModel() {
                         println("ERROR al hacer login con Google")
                     }
             } catch (e: Exception) {
-                println("EXCEPCIÓN al hacer login: ${e.localizedMessage}")
+                Log.d("FALLO","EXCEPCIÓN al hacer login: ${e.localizedMessage}")
             }
         }
 }

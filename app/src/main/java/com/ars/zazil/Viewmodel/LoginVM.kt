@@ -92,6 +92,13 @@ class LoginVM: ViewModel() {
         }
     }
 
+    /**
+     * editarPerfil
+     * Cambia los datos del perfil del usuario logueado
+     *
+     * Actualiza el estadoEditar si es que los cambios se realizaron.
+     */
+
     fun editarUsuario(
         nombre: String,
         direccion: String,

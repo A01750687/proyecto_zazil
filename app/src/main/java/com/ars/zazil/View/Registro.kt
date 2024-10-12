@@ -46,18 +46,22 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
+import com.ars.zazil.Viewmodel.GoogleVM
 import com.ars.zazil.Viewmodel.LoginVM
 import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun Registro(loginVM: LoginVM, navController: NavHostController) {
+fun Registro(googleVM: GoogleVM = GoogleVM(), loginVM: LoginVM, navController: NavHostController) {
+
+    var estadoEmail = googleVM.estadoEmail.collectAsState()
+
     Surface(color = fondo) {
         // Valores de los campos (gestión central del estado)
         var nombre by remember { mutableStateOf("") }
         var direccion by remember { mutableStateOf("") }
         var edad by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf(estadoEmail.value) }
         var isChecked by remember { mutableStateOf(false) }
         var contrasena by remember { mutableStateOf("") }
         Column(
@@ -262,7 +266,7 @@ fun DarCelular(email: String, onEmailChange: (String) -> Unit) {
     TextField(
         value = email,
         onValueChange = onEmailChange,  // Actualizamos el valor
-        label = { Text("email") },
+        label = { Text("Email") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)

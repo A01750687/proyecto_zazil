@@ -45,6 +45,7 @@ import com.ars.zazil.View.pagos
 import com.ars.zazil.View.preguntas
 import com.ars.zazil.View.preguntasFrec
 import com.ars.zazil.Viewmodel.CarritoVM
+import com.ars.zazil.Viewmodel.GoogleVM
 import com.ars.zazil.ui.theme.ZazilTheme
 import com.ars.zazil.ui.theme.naranja
 import com.ars.zazil.Viewmodel.LoginVM
@@ -83,6 +84,7 @@ class MainActivity : ComponentActivity() {
 fun Contenido(
     carritoViewModel: CarritoVM = viewModel(),
     productoAppVM: ProductoAppVM = viewModel(),
+    googleVM: GoogleVM = viewModel(),
     drawerState: DrawerState,
     loginVM: LoginVM,
     navController: NavHostController,
@@ -116,13 +118,14 @@ fun Contenido(
             }
         }
     ) { innerPadding ->
-        AppNavHost(carritoViewModel,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
+        AppNavHost(googleVM,carritoViewModel,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(
+    googleVM: GoogleVM,
     carritoViewModel: CarritoVM,
     productoAppVM: ProductoAppVM,
     loginVM: LoginVM,
@@ -133,10 +136,10 @@ fun AppNavHost(
         startDestination = Pantallas.RUTA_INICIO,
     ){
         composable(Pantallas.RUTA_INICIO){
-            Inicio(navController)
+            Inicio(googleVM,navController)
         }
         composable(Pantallas.RUTA_CREARCUENTA){
-            Registro(loginVM,navController)
+            Registro(googleVM,loginVM,navController)
         }
         composable(Pantallas.RUTA_INICIO_SESION){
             IniciarSesion(loginVM,navController)
