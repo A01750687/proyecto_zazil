@@ -172,7 +172,7 @@ fun AppNavHost(
             ContactUsPage(modifier = modifier)
         }
         composable(Pantallas.RUTA_CARRITO){
-            Carrito(carritoViewModel,modifier)
+            Carrito(loginVM,carritoViewModel,modifier)
         }
         composable(Pantallas.RUTA_PREGUNTAS) {
             preguntas(modifier, navController = navController)

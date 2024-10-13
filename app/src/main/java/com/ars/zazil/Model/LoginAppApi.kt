@@ -17,6 +17,9 @@ interface AuthService {
     @POST("editarP/")
     suspend fun editarPerfil(@Body editarUsuario: EditarUsuario): Response<RegisterResponse>
 
+    @POST("crearPedido/")
+    suspend fun crearPedido(@Body pedido: List<ProductoCarrito>): Response<RegisterResponse>
+
     @GET("JSONItem/{id}")
     suspend fun descargarProducto(@Path("id") id: String):ProductoApp
 

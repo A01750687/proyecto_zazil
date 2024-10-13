@@ -131,11 +131,7 @@ class ServicioRemoto {
             val response = authService.editarPerfil(
                 EditarUsuario(nombre,direccion,edad,email,numero,contrasena)
             )
-            if (response.isSuccessful) {
-                return true
-            } else {
-                return false
-            }
+            return response.isSuccessful
 
         } catch (e: Exception){
             return false
@@ -191,6 +187,20 @@ class ServicioRemoto {
             authService.descargarPedidos()
         } catch (e: Exception) {
             emptyList() // Devuelve un Usuario vacio
+        }
+    }
+
+    /**
+     * crearPedido
+     * Crea el pedido con los items guardados en el carrito
+     * @param pedido listado y cantidad de items en el carrito.
+     */
+    suspend fun crearPedido(pedido: List<ProductoCarrito>):Boolean{
+        return try {
+            val response = authService.crearPedido(pedido)
+            return response.isSuccessful
+        }catch (e:Exception){
+            return false
         }
     }
 

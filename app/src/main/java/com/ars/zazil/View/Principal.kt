@@ -630,13 +630,12 @@ fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
             NavigationBarItem(
                 selected = pantalla.ruta == pantallaActual?.route,
                 onClick = {
-                    navController.navigate(pantalla.ruta) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (pantalla.ruta != pantallaActual?.route) {
+                        navController.navigate(pantalla.ruta) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
                         }
-                        launchSingleTop = true
-                        restoreState = true
-
                     }
                 },
                 icon = {

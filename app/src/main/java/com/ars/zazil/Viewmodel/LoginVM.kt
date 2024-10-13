@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ars.zazil.Model.LoginState
 import com.ars.zazil.Model.Pedido
+import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.Model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,9 @@ class LoginVM: ViewModel() {
     // Estado Edicion Perfil
     private val _estadoEditar = MutableStateFlow(false)
     val estadoEditar: StateFlow<Boolean> = _estadoEditar
+
+    private val _estadoPedidoCreado = MutableStateFlow(false)
+    val estadoPedidoCreado: StateFlow<Boolean> = _estadoPedidoCreado
 
     /**
      * login
@@ -117,6 +121,17 @@ class LoginVM: ViewModel() {
                 contrasena
             )
             _estadoEditar.value = response
+        }
+    }
+
+    /**
+     * crearPedido
+     * Crea el pedido con los items guardados en el carrito
+     * @param pedido listado y cantidad de items en el carrito.
+     */
+    fun crearPedido(pedido: List<ProductoCarrito>){
+        viewModelScope.launch {
+            _estadoPedidoCreado.value = servicioRemoto.crearPedido(pedido)
         }
     }
 

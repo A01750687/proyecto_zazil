@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,19 +31,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
+import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.ui.theme.rosa
 
 @Composable
-fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
+fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = Modifier) {
 
     // Obtener los productos del Carrito usando State
     val productos = carritoViewModel.obtenerProductos().collectAsState()
+
+    // Obtener si se creo correctamente el pedido
+    val estadoPedido = loginVM.estadoPedidoCreado.collectAsState()
 
     // Estado del Scroll
     val scrollState = rememberScrollState()
@@ -140,7 +142,9 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
         ) {
             // Botón "Continuar compra"
             IconButton(
-                onClick = { carritoViewModel.limpiarCarrito() },
+                onClick = {
+                    carritoViewModel.limpiarCarrito()
+                },
                 modifier = Modifier
                     .size(200.dp)
                     .padding(4.dp)
@@ -182,13 +186,22 @@ fun Carrito(carritoViewModel: CarritoVM,modifier: Modifier = Modifier) {
             }
         }
     }
+    val mContext = LocalContext.current
+
     if (mostrarDatosPago.value) {
         DatosPago(
             onDismiss = {
                 mostrarDatosPago.value = false
-                carritoViewModel.limpiarCarrito()
+                if(productos.value.isNotEmpty()){
+                    loginVM.crearPedido(productos.value)
+                    carritoViewModel.limpiarCarrito()
+                }
             }
         )
+    }
+
+    if(estadoPedido.value){
+        Toast.makeText(mContext,"Pedido Creado",Toast.LENGTH_SHORT).show()
     }
 
     if (mostrarDonacion.value) {
