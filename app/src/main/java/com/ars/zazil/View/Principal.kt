@@ -471,7 +471,7 @@ fun Productos(
     estadoLista: State<List<ProductoApp>>,
     modifier: Modifier = Modifier
 ) {
-
+    //print("funciona")
     var currentPage by remember { mutableStateOf(0) }
     var productosMostrados by remember { mutableStateOf<List<List<ProductoApp>>>(emptyList()) }
 
@@ -625,6 +625,7 @@ fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
 
         val pilaNavegacion by navController.currentBackStackEntryAsState()
         val pantallaActual = pilaNavegacion?.destination
+        //print("funciona")
         Pantallas.listaPantallas.forEach { pantalla ->
 
             NavigationBarItem(
