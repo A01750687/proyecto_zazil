@@ -34,7 +34,6 @@ import com.ars.zazil.Viewmodel.LoginVM
 @Composable
 fun EditarP(loginVM: LoginVM, navController: NavHostController, modifier: Modifier = Modifier) {
     val scrollSate = rememberScrollState()
-    val mContext = LocalContext.current
 
     val estadoUsuario = loginVM.usuarioState.collectAsState()
 
@@ -46,11 +45,7 @@ fun EditarP(loginVM: LoginVM, navController: NavHostController, modifier: Modifi
     var numero by remember { mutableStateOf(estadoUsuario.value.numero) }
     var contrasena by remember { mutableStateOf("") }
 
-    val estadoEditar = loginVM.estadoEditar.collectAsState()
 
-    if(estadoEditar.value){
-        Toast.makeText(mContext,"Información actualizada correctamente",Toast.LENGTH_SHORT).show()
-    }
 
     Column (modifier = modifier
         .fillMaxSize()
@@ -153,6 +148,7 @@ fun EditarP(loginVM: LoginVM, navController: NavHostController, modifier: Modifi
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(onClick = {
             loginVM.editarUsuario(nombre,direccion,edad.toInt(),email,numero,contrasena)
+            navController.navigate(Pantallas.RUTA_PERFIL)
         }) {
             Text(text = "Guardar")
         }

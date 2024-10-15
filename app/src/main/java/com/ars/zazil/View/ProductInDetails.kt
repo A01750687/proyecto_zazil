@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +92,7 @@ fun ProductInDetails(
                         fontSize = 16.sp
                     )
                 ) {
-                    append("${estado.value.precio}")
+                    append("${String.format("%.2f",estado.value.precio)}")
                 }
             }
         )
@@ -109,9 +112,10 @@ fun ProductInDetails(
                         fontSize = 18.sp
                     )
                 ) {
-                    append(estado.value.categoria)
+                    append(" ${estado.value.categoria}")
                 }
-            }
+            },
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -188,10 +192,11 @@ fun ProductInDetails(
                 }
 
             },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(232, 98, 61)),
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)
         )
-        { Text(text = "Añadir al carro") }
+        { Text(text = "Añadir al carrito") }
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -202,107 +207,11 @@ fun ProductInDetails(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append("• Toalla reutilizable para flujo")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFE47B4C),
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append(" moderado")
-                    }
-                }
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("• Alta absorción, impermeable, mantiene la piel fresca y libre de olores brindando una experiencia más cómoda")
-                    }
-                },
-                fontSize = 16.sp
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append("• Almohadilla interior transpirable adecuada para un flujo")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFE47B4C),
-                            fontSize = 18.sp
-                        )
-                    ) {
-                        append(" moderado")
-                    }
-                }
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("• Broches de plástico en alas mejorando la fijación en la ropa interior aumentando la seguridad")
-                    }
-                },
-                fontSize = 16.sp
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("• Lavable y reutilizable, fácil de limpiar y secar")
-                    }
-                },
-                fontSize = 16.sp
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("• Hipoalergénica")
-                    }
-                },
-                fontSize = 16.sp
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append("• Con una medida de")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFE47B4C),
-                            fontSize = 16.sp
-                        )
-                    ) {
-                        append(" 27 x 7 cm")
-                    }
-                }
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("• Hecha a mano con telas de algodón")
-                    }
-                },
-                fontSize = 16.sp
+                text = estado.value.descripcion,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp
+                )
             )
         }
     }

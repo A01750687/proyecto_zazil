@@ -8,10 +8,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ars.zazil.Viewmodel.LoginVM
+import kotlinx.coroutines.launch
 
 @Composable
 fun Sidebar(
@@ -20,6 +22,9 @@ fun Sidebar(
     drawerState: DrawerState,
     contenido: @Composable () -> Unit,
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -32,14 +37,16 @@ fun Sidebar(
                         label = { Text(text = item.titulo) },
                         selected = false,
                         onClick = {
-                            if (item is ItemSidebar.Logout) {
-                                navController.navigate(Pantallas.RUTA_INICIO) {
-                                    popUpTo(0)
-                                    loginVM.setEstadoLogin(false)
+                            coroutineScope.launch {
+                                if (item is ItemSidebar.Logout) {
+                                    navController.navigate(Pantallas.RUTA_INICIO) {
+                                        popUpTo(0)
+                                        loginVM.setEstadoLogin(false)
+                                    }
+                                    drawerState.close()
+                                } else {
+                                    navController.navigate(item.ruta)
                                 }
-                            }
-                            else {
-                                navController.navigate(item.ruta)
                             }
                         }
                     )
