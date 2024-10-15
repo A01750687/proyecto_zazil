@@ -1,5 +1,6 @@
 package com.ars.zazil.View
 
+import android.content.Context
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Sidebar(
+    context: Context,
     loginVM: LoginVM,
     navController: NavController,
     drawerState: DrawerState,
@@ -41,7 +43,7 @@ fun Sidebar(
                                 if (item is ItemSidebar.Logout) {
                                     navController.navigate(Pantallas.RUTA_INICIO) {
                                         popUpTo(0)
-                                        loginVM.setEstadoLogin(false)
+                                        loginVM.delToken(context)
                                     }
                                     drawerState.close()
                                 } else {

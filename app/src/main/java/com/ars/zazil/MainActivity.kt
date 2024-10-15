@@ -56,9 +56,9 @@ class MainActivity : ComponentActivity() {
 
     private val loginVM: LoginVM by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loginVM.inicializarToken(this)
         enableEdgeToEdge()
         setContent {
             ZazilTheme(dynamicColor = false, darkTheme = false) {
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 val estadologin = loginVM.estadoLogin.collectAsState()
 
                 if(estadologin.value){
-                    Sidebar(loginVM = loginVM,navController = navController, drawerState = drawerState) {
+                    Sidebar(this,loginVM = loginVM,navController = navController, drawerState = drawerState) {
                         Contenido(loginVM = loginVM,drawerState = drawerState,navController = navController)
                     }
                 }else{
@@ -90,7 +90,17 @@ fun Contenido(
     navController: NavHostController,
 ){
 
+    loginVM.getToken()
+
     val loginEstado = loginVM.estadoLogin.collectAsState()
+
+    val startDestination: String
+
+    if(loginEstado.value){
+        startDestination = Pantallas.RUTA_PRINCIPAL
+    }else{
+        startDestination = Pantallas.RUTA_INICIO
+    }
 
     Scaffold (
         topBar = {
@@ -113,13 +123,14 @@ fun Contenido(
             }
         }
     ) { innerPadding ->
-        AppNavHost(googleVM,carritoViewModel,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
+        AppNavHost(startDestination,googleVM,carritoViewModel,productoAppVM,loginVM,navController,modifier = Modifier.padding(innerPadding))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(
+    startDestination: String,
     googleVM: GoogleVM,
     carritoViewModel: CarritoVM,
     productoAppVM: ProductoAppVM,
@@ -128,7 +139,7 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ){
     NavHost(navController = navController,
-        startDestination = Pantallas.RUTA_INICIO,
+        startDestination = startDestination,
     ){
         composable(Pantallas.RUTA_INICIO){
             Inicio(googleVM,navController)

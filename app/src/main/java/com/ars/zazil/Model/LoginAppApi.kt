@@ -20,6 +20,9 @@ interface AuthService {
     @POST("crearPedido/")
     suspend fun crearPedido(@Body pedido: List<ProductoCarrito>): Response<RegisterResponse>
 
+    @POST("crearDonacion/")
+    suspend fun crearDonacion(@Body donacion:Donacion):Response<RegisterResponse>
+
     @GET("JSONItem/{id}")
     suspend fun descargarProducto(@Path("id") id: String):ProductoApp
 
@@ -34,6 +37,11 @@ interface AuthService {
 }
 
 // Clases de datos usadas para la respuesta del servidor
+data class Donacion(
+    val cantidad: Double = 0.0,
+    val curp: String = ""
+)
+
 data class EditarUsuario(
     val nombre:String = "",
     var direccion:String = "",

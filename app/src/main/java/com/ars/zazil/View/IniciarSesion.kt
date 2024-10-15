@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -119,6 +121,9 @@ private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
                     color = uiColor
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ),
             colors = TextFieldDefaults.colors(
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.unfocusedTextFieldText,
                 focusedPlaceholderColor = MaterialTheme.colorScheme.focusedTextFieldText,
@@ -179,7 +184,7 @@ private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
                     errorMessage = "Por favor ingresa un email válido."
                 } else {
                     showError = false
-                    val response = loginVM.login(mail, contrasena)
+                    val response = loginVM.login(context,mail, contrasena)
                     loginVM.setEstadoLogin(response)
                 }
             },

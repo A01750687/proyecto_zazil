@@ -1,6 +1,9 @@
 package com.ars.zazil.Model
 
 
+import android.content.Context
+import android.content.Intent
+import com.ars.zazil.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,8 +21,14 @@ class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.65.30:8000/"
+        const val URL = "http://10.48.73.189:8000/"
         var token = ""
+    }
+
+    // Inicia con el token que hay en memoria
+    fun inicializarToken(context: Context) {
+        token = cargarToken(context)
+        println(token)
     }
 
     // Objeto retrofit con Cliente
@@ -47,12 +56,17 @@ class ServicioRemoto {
      * @param email Correo electrónico del usuario.
      * @param password Contraseña del usuario.
      */
-    suspend fun loginWeb(loginState: MutableStateFlow<LoginState>, email: String, password: String): Boolean {
+    suspend fun loginWeb(context: Context,loginState: MutableStateFlow<LoginState>, email: String, password: String): Boolean {
         loginState.value = LoginState.Loading
         try {
             val response = authService.login(LoginRequest(email, password))
             if (response.isSuccessful) {
                 val tokenResponse = response.body()
+
+                val sharedPreferences = context.getSharedPreferences("MiPref",Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("token",tokenResponse?.token ?: "")
+                editor.apply()
                 token = tokenResponse?.token ?: ""
 
                 loginState.value = LoginState.Success("")
@@ -138,6 +152,14 @@ class ServicioRemoto {
         }
     }
 
+    suspend fun crearDonacion(cantidad:Double,curp: String){
+        try {
+            authService.crearDonacion(Donacion(cantidad,curp))
+        } catch (e:Exception){
+            println(e)
+        }
+    }
+
     /**
      * descargarProducto
      * Descarga la información de un producto específico desde un servicio remoto.
@@ -205,6 +227,23 @@ class ServicioRemoto {
     }
 
     /**
+     * Devuelve el token
+     */
+    fun getToken(): String {
+        return token
+    }
+
+    /**
+     * Elimina el Token de memoria y reinicia la aplicación
+     */
+    fun delToken(context: Context) {
+        eliminarToken(context)
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    }
+
+    /**
      * Agrega en el encabezado de las peticiones el token recibido en login
      */
     class AuthInterceptor(private val tokenProvider: () -> String) : Interceptor {
@@ -218,6 +257,20 @@ class ServicioRemoto {
             return chain.proceed(newRequest)
         }
     }
+}
+
+// Funcion para cargar el Token de memoria
+fun cargarToken(context: Context): String {
+    val sharedPreferences = context.getSharedPreferences("MiPref", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("token", "") ?: ""
+}
+
+// Funcion para eliminar el Token de memoria
+fun eliminarToken(context: Context){
+    val sharedPreferences = context.getSharedPreferences("MiPref", Context.MODE_PRIVATE)
+    val edito = sharedPreferences.edit()
+    edito.putString("token","")
+    edito.apply()
 }
 
 // Objeto para el estado del login

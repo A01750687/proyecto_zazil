@@ -1,7 +1,10 @@
 package com.ars.zazil.Viewmodel
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ars.zazil.MainActivity
 import com.ars.zazil.Model.LoginState
 import com.ars.zazil.Model.Pedido
 import com.ars.zazil.Model.ProductoCarrito
@@ -57,9 +60,9 @@ class LoginVM: ViewModel() {
      * @param password Contraseña del usuario.
      * @return Boolean Resultado del proceso de login (true si es exitoso, false en caso contrario).
      */
-    fun login(email: String, password: String): Boolean {
+    fun login(context:Context,email: String, password: String): Boolean {
         viewModelScope.launch {
-            val response = servicioRemoto.loginWeb(_loginState,email, password)
+            val response = servicioRemoto.loginWeb(context,_loginState,email, password)
             _estadoLogin.value = response
         }
         return _estadoLogin.value
@@ -93,6 +96,28 @@ class LoginVM: ViewModel() {
         viewModelScope.launch {
             val response = servicioRemoto.descargarInfoUsuario()
             _usuarioState.value = response
+        }
+    }
+
+    fun getToken(){
+        if(servicioRemoto.getToken() != ""){
+            _estadoLogin.value = true
+        }else {
+            _estadoLogin.value = false
+        }
+    }
+
+    fun delToken(context: Context){
+        servicioRemoto.delToken(context)
+    }
+
+    fun inicializarToken(context: Context){
+        servicioRemoto.inicializarToken(context)
+    }
+
+    fun crearDonacion(cantidad:Double,curp:String){
+        viewModelScope.launch {
+            servicioRemoto.crearDonacion(cantidad,curp)
         }
     }
 
