@@ -76,12 +76,29 @@ class ProductoAppVM: ViewModel() {
     // Exposición de _multipleQuery como un StateFlow para ser observado externamente.
     val multipleQuery: StateFlow<List<String>> = _multipleQuery
 
+    private val _queryCategory = MutableStateFlow<List<String>>(emptyList())
+    val queryCategory: StateFlow<List<String>> = _queryCategory
+
     // Función para agregar un nuevo término a la lista de búsqueda.
     fun agregarElemento(nuevoElemento: String) {
         // Actualiza _multipleQuery añadiendo el nuevo término al final de la lista.
         _multipleQuery.value = _multipleQuery.value + nuevoElemento
         // Imprime el contenido actualizado de la lista en consola.
-        println(_multipleQuery.value)
+        println("(AGREGAR) LISTA DE TERMINOS: ${_multipleQuery.value}")
+    }
+
+    fun agregarCategoria(nuevaCategoria: String) {
+        // Actualiza _multipleQuery añadiendo el nuevo término al final de la lista.
+        _queryCategory.value = _queryCategory.value + nuevaCategoria
+        // Imprime el contenido actualizado de la lista en consola.
+        println("(AGREGADO) LISTA DE CATEGORIAS: ${_queryCategory.value}")
+    }
+
+    fun eliminarCategoria(nuevaCategoria: String) {
+        // Actualiza _multipleQuery añadiendo el nuevo término al final de la lista.
+        _queryCategory.value = _queryCategory.value - nuevaCategoria
+        // Imprime el contenido actualizado de la lista en consola.
+        println("(ELIMINADO) LISTA DE CATEGORIAS: ${_queryCategory.value}")
     }
 
     // Función para eliminar un término específico de la lista de búsqueda.
@@ -89,7 +106,7 @@ class ProductoAppVM: ViewModel() {
         // Actualiza _multipleQuery eliminando el término especificado de la lista.
         _multipleQuery.value = _multipleQuery.value - elemento
         // Imprime el contenido actualizado de la lista en consola.
-        println(_multipleQuery.value)
+        println("(ELIMINADO) LISTA DE TERMINOS: ${_multipleQuery.value}")
     }
 
     // Función para limpiar la lista de búsqueda y reiniciar todos los filtros.
@@ -98,6 +115,7 @@ class ProductoAppVM: ViewModel() {
         _multipleQuery.value = emptyList()
         // Restablece el estado de las casillas de verificación a un mapa vacío.
         _checkboxStates.value = emptyMap()
+        _queryCategory.value = emptyList()
         // Restablece los valores de precio mínimo y máximo a nulos.
         _minPrice.value = null
         _maxPrice.value = null
@@ -124,8 +142,21 @@ class ProductoAppVM: ViewModel() {
             }
         }
 
+        val listaFiltradaPorCategoria = if (_queryCategory.value.isEmpty()) {
+            _estadoLista.value // Retorna la lista original si no hay términos de búsqueda.
+        }else {
+            _estadoLista.value.filter { producto ->
+                println("Producto actual: ${producto.categoria}")
+                // Filtra los productos para que contengan todos los términos de búsqueda ignorando mayúsculas/minúsculas.
+                _queryCategory.value.all { query ->
+                    producto.categoria.contains(query, ignoreCase = true)
+                }
+            }
+        }
+
+
         // Aplica un segundo filtro basado en el rango de precios, verificando el precio mínimo y el máximo.
-        val listaFiltradaPorPrecio = listaFiltrada.filter { producto ->
+        val listaFiltradaPorPrecio = listaFiltradaPorCategoria.filter { producto ->
             val min = _minPrice.value // Obtiene el precio mínimo (si está definido).
             val max = _maxPrice.value // Obtiene el precio máximo (si está definido).
             val precio = producto.precio
@@ -144,8 +175,6 @@ class ProductoAppVM: ViewModel() {
         }
     }
 
-
-
     private val _checkboxStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val checkboxStates: StateFlow<Map<String, Boolean>> = _checkboxStates
 
@@ -158,9 +187,17 @@ class ProductoAppVM: ViewModel() {
 
         // Agrega o elimina el elemento en función de si la casilla está marcada o no.
         if (isChecked) {
-            agregarElemento(label) // Llama a agregarElemento si la casilla se marca.
+            if(label == "Flujo Abundante" || label == "Flujo Moderado" || label =="Flujo Ligero" || label =="Kit"){
+                agregarCategoria(label)
+            }else{
+                agregarElemento(label)
+            }
         } else {
-            eliminarElemento(label) // Llama a eliminarElemento si la casilla se desmarca.
+            if(label == "Flujo Abundante" || label == "Flujo Moderado" || label =="Flujo Ligero" || label =="Kit"){
+                eliminarCategoria(label)
+            }else{
+                eliminarElemento(label)
+            }
         }
     }
 
