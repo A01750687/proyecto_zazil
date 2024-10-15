@@ -27,6 +27,9 @@ class ProductoAppVM: ViewModel() {
     private val _estadoFiltrado = MutableStateFlow(listOf<ProductoApp>())
     val estadoFiltrado: StateFlow<List<ProductoApp>> = _estadoFiltrado
 
+    private val _sinProductosDialog = MutableStateFlow(false)
+    val sinProductosDialog: StateFlow<Boolean> = _sinProductosDialog
+
     /**
      * descargarProducto
      * Descarga la información de un producto específico desde un servicio remoto.
@@ -130,12 +133,17 @@ class ProductoAppVM: ViewModel() {
             (min == null || precio >= min) && (max == null || precio <= max)
         }
 
-        // Imprime en consola los nombres de los productos que pasaron los filtros.
-        println("Productos filtrados: ${listaFiltradaPorPrecio.map { it.nombre }}")
-
-        // Actualiza el estado de la lista filtrada para que se pueda observar externamente.
-        _estadoFiltrado.value = listaFiltradaPorPrecio
+        if (listaFiltradaPorPrecio.isEmpty()) {
+            println("No se encontraron productos que coincidan con los filtros.")
+            println("TODOS LOS PRODUCTOS: ${_estadoFiltrado.value.map { it.nombre }}")
+            _sinProductosDialog.value = true
+            println("ESTADO DEL DIALOGO: ${_sinProductosDialog.value}")
+        } else {
+            println("Productos filtrados: ${listaFiltradaPorPrecio.map { it.nombre }}")
+            _estadoFiltrado.value = listaFiltradaPorPrecio
+        }
     }
+
 
 
     private val _checkboxStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
@@ -176,5 +184,9 @@ class ProductoAppVM: ViewModel() {
         _maxPrice.value = price // Asigna el valor proporcionado a la variable de estado _maxPrice.
     }
 
+    fun setSinProductosDialogFalse() {
+        _sinProductosDialog.value = false
+        println("ESTADO DEL DIALOGO: ${_sinProductosDialog.value}")
+    }
 
 }

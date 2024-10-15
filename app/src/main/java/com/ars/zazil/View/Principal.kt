@@ -25,9 +25,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,7 +45,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -65,7 +64,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.rememberAsyncImagePainter
@@ -88,8 +86,7 @@ fun Principal(
 ) {
 
     val estadoFiltrado = productoAppVM.estadoFiltrado.collectAsState()
-
-    val estadoLista = productoAppVM.estadoLista.collectAsState()
+    val sinProductosDialog = productoAppVM.sinProductosDialog.collectAsState()
 
     productoAppVM.descargarListaProducto()
 
@@ -101,8 +98,33 @@ fun Principal(
     {
         Spacer(modifier = Modifier.height(16.dp))
         FilBus(productoAppVM)
-        Productos(carritoViewModel, navController, estadoFiltrado, modifier)
+        Productos(carritoViewModel, navController, estadoFiltrado, sinProductosDialog, productoAppVM)
     }
+}
+
+@Composable
+fun ShowFilterDialog(productoAppVM: ProductoAppVM) {
+    AlertDialog(
+        onDismissRequest = {
+            productoAppVM.setSinProductosDialogFalse()
+        },
+        title = {
+            Text(text = "Sin Resultados")
+        },
+        text = {
+            Text(text = "No hay productos que coincidan con los filtros introducidos.")
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    productoAppVM.setSinProductosDialogFalse()
+                }
+            ) {
+                Text("Aceptar")
+            }
+        }
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -468,17 +490,22 @@ fun CheckboxItem(label: String, productoAppVM: ProductoAppVM) {
 fun Productos(
     carritoViewModel: CarritoVM,
     navController: NavHostController,
-    estadoLista: State<List<ProductoApp>>,
-    modifier: Modifier = Modifier
+    estadoFiltrado: State<List<ProductoApp>>,
+    sinProductosDialog: State<Boolean>,
+    productoAppVM: ProductoAppVM,
 ) {
-    //print("funciona")
+
     var currentPage by remember { mutableStateOf(0) }
     var productosMostrados by remember { mutableStateOf<List<List<ProductoApp>>>(emptyList()) }
 
-    LaunchedEffect(estadoLista.value) {
-        if (estadoLista.value.isNotEmpty()) {
-            productosMostrados = estadoLista.value.chunked(10)
+    LaunchedEffect(estadoFiltrado.value) {
+        if (estadoFiltrado.value.isNotEmpty()) {
+            productosMostrados = estadoFiltrado.value.chunked(10)
         }
+    }
+
+    if (sinProductosDialog.value) {
+        ShowFilterDialog(productoAppVM)
     }
 
     if (productosMostrados.isNotEmpty()) {
