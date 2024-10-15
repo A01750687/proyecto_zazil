@@ -20,8 +20,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -165,6 +167,7 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
 
     if (mostrarDonacion.value) {
         Donacion(
+            loginVM,
             onDismiss = {
                 mostrarDonacion.value = false
             }
@@ -345,7 +348,11 @@ fun DatosPago(onDismiss: () -> Unit) {
 }
 
 @Composable
-fun Donacion(onDismiss: () -> Unit) {
+fun Donacion(loginVM: LoginVM, onDismiss: () -> Unit) {
+
+    var cantidad by remember { mutableStateOf("")}
+    var curp by remember { mutableStateOf("")}
+
     Dialog(onDismissRequest = onDismiss) {
         Card (
             shape = RoundedCornerShape(16.dp),
@@ -377,26 +384,6 @@ fun Donacion(onDismiss: () -> Unit) {
                 item {
                     Row {
                         Text(
-                            text = "Nombre:",
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .weight(1.4f)
-                                .padding(top = 13.dp)
-                        )
-                        OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
-                            modifier = Modifier
-                                .weight(4f)
-                                .fillMaxWidth()
-                                .height(50.dp)
-                        )
-                    }
-                }
-                item { Spacer(modifier = Modifier.height(10.dp)) }
-                item {
-                    Row {
-                        Text(
                             text = "CURP:",
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -404,8 +391,8 @@ fun Donacion(onDismiss: () -> Unit) {
                                 .padding(top = 13.dp)
                         )
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = curp,
+                            onValueChange = {curp = it},
                             modifier = Modifier
                                 .weight(4f)
                                 .fillMaxWidth()
@@ -422,8 +409,8 @@ fun Donacion(onDismiss: () -> Unit) {
                             modifier = Modifier.weight(1.4f)
                         )
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = cantidad,
+                            onValueChange = {cantidad = it},
                             modifier = Modifier
                                 .weight(4f)
                                 .fillMaxWidth()
@@ -448,7 +435,9 @@ fun Donacion(onDismiss: () -> Unit) {
                 }
                 item {
                     IconButton(
-                        onClick = { /*Pagar donación con paypal*/ },
+                        onClick = { /*Pagar donación con paypal*/
+                            loginVM.crearDonacion(cantidad.toDouble(),curp)
+                        },
                         modifier = Modifier.size(150.dp)
                     ) {
                         Image(

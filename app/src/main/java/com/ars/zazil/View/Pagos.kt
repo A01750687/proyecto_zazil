@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,10 +62,10 @@ fun pagos(modifier: Modifier) {
             Text(text = "Pago en bancos o tienda como Oxxo.",
                 modifier = Modifier.weight(1f).padding(start = 16.dp, end = 16.dp, bottom = 16.dp))
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(vertical = 16.dp),
-            color = Color.Gray,  // El color de la línea
             thickness = 1.dp,    // Grosor de la línea
+            color = Color.Gray  // El color de la línea
         )
         Spacer(
             modifier = Modifier.height(8.dp)
@@ -91,8 +92,8 @@ fun ColorBoxWithText(boxColor: Color, text: String) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = text,
-            color = Color.White, // Color del texto
-            fontSize = 14.sp,
+            color = Color.Black, // Color del texto
+            fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
     }
