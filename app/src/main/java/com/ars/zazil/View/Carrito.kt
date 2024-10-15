@@ -4,6 +4,7 @@ package com.ars.zazil.View
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +56,9 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
     // Calcular el total de la compra
     val total = productos.value.sumOf{ it.producto.precio * it.cantidad }
 
+    //Mostrar menú de pago
+    val menuPago = remember { mutableStateOf(false) }
+
     //Mostrar la informacion de pago
     val mostrarDatosPago = remember { mutableStateOf(false) }
 
@@ -64,14 +69,14 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = 72.dp) // Espacio para los botones en la parte inferior
+            .padding(horizontal = 16.dp)
             .verticalScroll(scrollState)
     ) {
         // Contenedor de la parte superior
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(2f)
+                .weight(3f)
         ) {
             // Título del Carrito
             Text(
@@ -80,14 +85,6 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
                 text = "Carrito de compras",
                 style = MaterialTheme.typography.headlineLarge
             )
-
-            // Botón para seguir comprando
-            TextButton(
-                onClick = { /* Acción para seguir comprando */ },
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text(text = "Seguir comprando")
-            }
 
             // Cabecera de la tabla
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -140,49 +137,11 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Botón "Continuar compra"
-            IconButton(
-                onClick = {
-                    carritoViewModel.limpiarCarrito()
-                },
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(4.dp)
-                    .weight(1f)
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = Color(232, 98, 61)),
+                onClick = { menuPago.value = true }
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.paypalimg),
-                    contentDescription = "Continuar compra"
-                )
-            }
-
-
-            // Otro botón (ejemplo)
-            IconButton(
-                onClick = { mostrarDatosPago.value = true },
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(4.dp)
-                    .weight(1f)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.tb),
-                    contentDescription = "Otro botón"
-                )
-            }
-
-            // Otro botón (ejemplo)
-            IconButton(
-                onClick = { mostrarDatosPago.value= true },
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(4.dp)
-                    .weight(1f)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.dep),
-                    contentDescription = "Otro botón"
-                )
+                Text(text = "Proceder al pago")
             }
         }
     }
@@ -212,6 +171,13 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
         )
     }
 
+    if(menuPago.value){
+        menuPagos(carritoViewModel,mostrarDatosPago
+        ) {
+            menuPago.value = false
+        }
+    }
+
     // Contenedor principal
     Box(
         modifier = modifier
@@ -230,6 +196,56 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
         }
     }
 
+}
+
+@Composable
+fun menuPagos(
+    carritoViewModel: CarritoVM,
+    mostrarDatosPago: MutableState<Boolean>,
+    function: () -> Unit,
+){
+    Dialog(onDismissRequest = {function()}) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(50.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                        function()
+                        carritoViewModel.limpiarCarrito()
+                    },
+                    painter = painterResource(id = R.drawable.paypalimg),
+                    contentDescription = "Continuar compra",
+
+                    )
+                Image(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                        function()
+                        mostrarDatosPago.value = true
+                    },
+                    painter = painterResource(id = R.drawable.tb),
+                    contentDescription = "Otro botón"
+                )
+                Image(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                        function()
+                        mostrarDatosPago.value = true
+                    },
+                    painter = painterResource(id = R.drawable.dep),
+                    contentDescription = "Otro botón"
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -485,9 +501,9 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
 
         // Nombre y precio del producto
         Column(modifier = Modifier.weight(4f)) {
-            Text(text = producto.producto.nombre, style = MaterialTheme.typography.bodyLarge)
+            Text(text = producto.producto.nombre, style = MaterialTheme.typography.bodyMedium)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Cantidad: ", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "Cantidad:", style = MaterialTheme.typography.bodySmall)
                 IconButton(onClick = {
                     carritoViewModel.disminuirCantidad(producto)
                 }) {
@@ -516,6 +532,7 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
         // Precio total por cantidad
         Text(
             text = "$" + String.format("%.2f", producto.producto.precio * producto.cantidad),
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .weight(1.5f)
                 .align(Alignment.CenterVertically)

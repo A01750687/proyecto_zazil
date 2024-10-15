@@ -591,7 +591,7 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Stock:${product.stock} $${product.precio}",
+                text = "Stock:${product.stock} $${String.format("%.2f",product.precio)}",
                 color = Color.Black,
                 fontSize = 14.sp
             )
@@ -620,7 +620,7 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
 fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
     BottomAppBar(
         containerColor = fondo,
-        modifier = Modifier.height(60.dp)
+        modifier = Modifier.height(85.dp)
     ) {
 
         val pilaNavegacion by navController.currentBackStackEntryAsState()
@@ -641,6 +641,7 @@ fun BottomBar(navController: NavHostController, modifier: Modifier = Modifier) {
                 },
                 icon = {
                     Icon(
+                        modifier = Modifier.size(30.dp),
                         painter = painterResource(id = pantalla.iconId!!),
                         contentDescription = pantalla.etiqueta
                     )

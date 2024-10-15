@@ -143,5 +143,27 @@ fun ContactUsPage(
                 modifier = Modifier.size(80.dp)
             )
         }
+
+        IconButton(
+            onClick = {
+                val url = "https://www.tiktok.com/@todas.brillamos?_t=8qYBCcvyg3q&_r=1"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try{
+                    context.startActivity(intent)
+                }catch (e: Exception){
+                    Toast.makeText(context, "No se encontró la aplicación", Toast.LENGTH_SHORT).show()
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .height(110.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.tiktok),
+                contentDescription = "Tiktok",
+                modifier = Modifier.size(80.dp)
+            )
+        }
     }
 }

@@ -109,11 +109,6 @@ fun Contenido(
             if(loginEstado.value){
                 Column {
                     BottomBar(navController,modifier = Modifier)
-                    Box (modifier = Modifier
-                        .fillMaxWidth()
-                        .height(25.dp)
-                        .background(color = naranja)
-                    )
                 }
             }
         }
