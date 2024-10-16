@@ -154,16 +154,7 @@ private fun BottomSection(loginVM: LoginVM, navController: NavHostController) {
                 focusedPlaceholderColor = MaterialTheme.colorScheme.focusedTextFieldText,
                 unfocusedContainerColor = MaterialTheme.colorScheme.textFieldContainer,
                 focusedContainerColor = MaterialTheme.colorScheme.textFieldContainer,
-            ),
-            trailingIcon = {
-                TextButton(onClick = {}) {
-                    Text(
-                        text = "Olvidaste tu contaseña?",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = uiColor
-                    )
-                }
-            }
+            )
         )
         Spacer(
             modifier = Modifier.height(15.dp)
