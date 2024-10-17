@@ -43,7 +43,7 @@ fun pagos(modifier: Modifier) {
                 contentDescription = null,
                 modifier = Modifier.weight(1f).padding(8.dp)
             )
-            Text(text = "Pago con tarjetas de débito/crédito por medio de PayPal.",
+            Text(text = "Pago por medio de stripe.",
                 modifier = Modifier.weight(1f).padding(8.dp))
         }
         Spacer(
