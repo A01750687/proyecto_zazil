@@ -152,6 +152,20 @@ class ServicioRemoto {
         }
     }
 
+    suspend fun descargarCategorias():List<Categoria>{
+        return try{
+            authService.descargarCategoria()
+        }catch (e:Exception){
+            emptyList()
+        }
+    }
+
+    /**
+     * crearDonacion
+     * Hace un POST al servidor con los datos del donador
+     * @param cantidad cantidad donada.
+     * @param curp
+     */
     suspend fun crearDonacion(cantidad:Double,curp: String){
         try {
             authService.crearDonacion(Donacion(cantidad,curp))

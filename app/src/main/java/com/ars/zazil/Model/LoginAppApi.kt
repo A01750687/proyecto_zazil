@@ -26,6 +26,9 @@ interface AuthService {
     @GET("JSONItem/{id}")
     suspend fun descargarProducto(@Path("id") id: String):ProductoApp
 
+    @GET("JSONCategoria/")
+    suspend fun descargarCategoria(): List<Categoria>
+
     @GET("JSONlistadoItems/")
     suspend fun descargarListaProducto(): List<ProductoApp>
 
@@ -37,6 +40,10 @@ interface AuthService {
 }
 
 // Clases de datos usadas para la respuesta del servidor
+data class Categoria(
+    val nombre: String = ""
+)
+
 data class Donacion(
     val cantidad: Double = 0.0,
     val curp: String = ""

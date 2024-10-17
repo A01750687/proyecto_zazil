@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ars.zazil.MainActivity
+import com.ars.zazil.Model.Categoria
 import com.ars.zazil.Model.LoginState
 import com.ars.zazil.Model.Pedido
 import com.ars.zazil.Model.ProductoCarrito
@@ -50,6 +51,9 @@ class LoginVM: ViewModel() {
 
     private val _estadoPedidoCreado = MutableStateFlow(false)
     val estadoPedidoCreado: StateFlow<Boolean> = _estadoPedidoCreado
+
+    private val _estadoCategoria = MutableStateFlow(listOf<Categoria>())
+    val estadoCategoria: StateFlow<List<Categoria>> = _estadoCategoria
 
     /**
      * login
@@ -118,6 +122,12 @@ class LoginVM: ViewModel() {
     fun crearDonacion(cantidad:Double,curp:String){
         viewModelScope.launch {
             servicioRemoto.crearDonacion(cantidad,curp)
+        }
+    }
+
+    fun descargarCategoria(){
+        viewModelScope.launch {
+            _estadoCategoria.value = servicioRemoto.descargarCategorias()
         }
     }
 

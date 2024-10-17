@@ -72,6 +72,7 @@ import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
+import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.ui.theme.fondo
 import com.ars.zazil.Viewmodel.ProductoAppVM
 import kotlinx.coroutines.launch
@@ -79,6 +80,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun Principal(
+    loginVM: LoginVM,
     navController: NavHostController,
     carritoViewModel: CarritoVM,
     productoAppVM: ProductoAppVM,
@@ -89,6 +91,7 @@ fun Principal(
     val sinProductosDialog = productoAppVM.sinProductosDialog.collectAsState()
 
     productoAppVM.descargarListaProducto()
+    loginVM.descargarCategoria()
 
     Column(
         modifier = modifier
@@ -97,7 +100,7 @@ fun Principal(
     )
     {
         Spacer(modifier = Modifier.height(16.dp))
-        FilBus(productoAppVM)
+        FilBus(loginVM, productoAppVM)
         Productos(carritoViewModel, navController, estadoFiltrado, sinProductosDialog, productoAppVM)
     }
 }
@@ -184,7 +187,7 @@ fun TopBar(
 }
 
 @Composable
-fun FilBus(productoAppVM: ProductoAppVM) {
+fun FilBus(loginVM: LoginVM,productoAppVM: ProductoAppVM) {
     var query by remember { mutableStateOf("") }
     var verFiltros by remember { mutableStateOf(false) }
 
@@ -229,12 +232,12 @@ fun FilBus(productoAppVM: ProductoAppVM) {
         )
     }
     if (verFiltros) {
-        Filtros(onDismiss = { verFiltros = false }, productoAppVM)
+        Filtros(loginVM,onDismiss = { verFiltros = false }, productoAppVM)
     }
 }
 
 @Composable
-fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
+fun Filtros(loginVM: LoginVM,onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
     var SelectedCategoria by remember { mutableStateOf("Categoria") }
     var minPrice by remember { mutableStateOf("") }
     var maxPrice by remember { mutableStateOf("") }
@@ -291,7 +294,6 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-
                 //Filtros Y sus opciones
                 Row(
                     modifier = Modifier
@@ -318,12 +320,6 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                             SelectedCategoria = "Tamaño"
                         }
                         CategoryButton(
-                            label = "Colores",
-                            isSelected = SelectedCategoria == "Colores"
-                        ) {
-                            SelectedCategoria = "Colores"
-                        }
-                        CategoryButton(
                             label = "Precio",
                             isSelected = SelectedCategoria == "Precio"
                         ) {
@@ -343,18 +339,14 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                             modifier = Modifier
                                 .padding(bottom = 4.dp)
                         )
+                        val categorias = loginVM.estadoCategoria.collectAsState()
                         when (SelectedCategoria) {
                             "Categoría" -> {
                                 LazyColumn {
-                                    items(
-                                        listOf(
-                                            "Flujo Abundante",
-                                            "Flujo Moderado",
-                                            "Flujo Ligero",
-                                            "Kit"
-                                        )
-                                    ) { category ->
-                                        CheckboxItem(category, productoAppVM)
+                                    categorias.value.forEach { category ->
+                                        item{
+                                            CheckboxItem(category.nombre, productoAppVM)
+                                        }
                                     }
                                 }
                             }
@@ -370,28 +362,6 @@ fun Filtros(onDismiss: () -> Unit, productoAppVM: ProductoAppVM) {
                                         )
                                     ) { size ->
                                         CheckboxItem(size, productoAppVM)
-                                    }
-                                }
-                            }
-
-                            "Colores" -> {
-                                LazyColumn(modifier = Modifier.weight(1f)) {
-                                    items(
-                                        listOf(
-                                            "Negro",
-                                            "Black Rock",
-                                            "Apple",
-                                            "Picton Blue",
-                                            "Dodger Blue",
-                                            "Aero Blue",
-                                            "Violet Red",
-                                            "Froly",
-                                            "Mauve",
-                                            "Red",
-                                            "Pink Lace"
-                                        )
-                                    ) { color ->
-                                        CheckboxItem(color, productoAppVM)
                                     }
                                 }
                             }

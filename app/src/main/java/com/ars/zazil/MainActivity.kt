@@ -167,7 +167,7 @@ fun AppNavHost(
         }
 
         composable(Pantallas.RUTA_PRINCIPAL) {
-            Principal(navController,carritoViewModel,productoAppVM,modifier)
+            Principal(loginVM,navController,carritoViewModel,productoAppVM,modifier)
         }
         composable(Pantallas.RUTA_DETALLE + "/{id}") {
             val id = it.arguments?.getString("id") ?: "0"
