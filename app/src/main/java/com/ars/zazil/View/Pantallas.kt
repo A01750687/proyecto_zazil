@@ -9,11 +9,14 @@ import com.ars.zazil.R
 sealed class Pantallas(
     val ruta: String,
     val etiqueta: String,
-    val iconId: Int? = null
+    val iconId: Int? = null,
 ){
     // Objeto de la clase Pantallas(static)
     companion object{
         var listaPantallas = listOf(Contacto,Carrito,Principal,Preguntas,Pagos)
+
+        var cantidad:Long = 0
+
         const val RUTA_INICIO = "Inicio"
         const val RUTA_CREARCUENTA = "CrearCuenta"
         const val RUTA_INICIO_SESION = "InicioSesion"

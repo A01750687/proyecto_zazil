@@ -12,6 +12,7 @@ import com.ars.zazil.Model.Pedido
 import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.Model.Usuario
+import com.ars.zazil.View.Pantallas
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -213,8 +214,8 @@ class LoginVM: ViewModel() {
     fun handleCheckoutButtonPressed() {
         val intentConfig = PaymentSheet.IntentConfiguration(
             mode = PaymentSheet.IntentConfiguration.Mode.Payment(
-                amount = 1099,
-                currency = "usd",
+                amount = Pantallas.cantidad,
+                currency = "mxn",
             ),
             // Other configuration options...
         )

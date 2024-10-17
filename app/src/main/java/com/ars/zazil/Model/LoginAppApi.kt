@@ -31,7 +31,7 @@ interface AuthService {
     suspend fun descargarCategoria(): List<Categoria>
 
     @POST("STRIPEpago/") // Reemplaza con tu endpoint correcto
-    fun getPaymentSheet(@Body cantidad: Double): Call<PaymentResponse>
+    fun getPaymentSheet(@Body cantidad: Long): Call<PaymentResponse>
 
     @GET("JSONlistadoItems/")
     suspend fun descargarListaProducto(): List<ProductoApp>

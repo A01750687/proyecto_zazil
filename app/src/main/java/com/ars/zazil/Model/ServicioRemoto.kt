@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import com.ars.zazil.MainActivity
+import com.ars.zazil.View.Pantallas
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.CreateIntentResult
 import com.stripe.android.paymentsheet.PaymentSheet
@@ -27,7 +28,7 @@ class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://192.168.23.225:8000/"
+        const val URL = "http://10.48.73.189:8000/"
         var token = ""
     }
 
@@ -65,7 +66,7 @@ class ServicioRemoto {
             createIntentCallback = { _, _ ->
                 // Make a request to your server to create a PaymentIntent and return its client secret
                 try {
-                    val response = authService.getPaymentSheet(0.0).awaitResponse()
+                    val response = authService.getPaymentSheet(Pantallas.cantidad).awaitResponse()
                     val responseBody = response.body()
                     if (responseBody != null) {
                         _estadoClientKey.value = responseBody.paymentIntent

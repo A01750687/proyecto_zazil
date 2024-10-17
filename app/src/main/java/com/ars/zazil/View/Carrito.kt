@@ -334,6 +334,7 @@ fun menuPagos(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
+                            Pantallas.cantidad = (total * 100).toLong()
                             loginVM.handleCheckoutButtonPressed()
                             val clientSecret = loginVM.estadoClientKey.value
                             function()
@@ -368,38 +369,6 @@ fun menuPagos(
                     contentDescription = "Otro botón"
                 )
             }
-        }
-    }
-}
-
-private fun handleCheckoutButtonPressed(paymentSheet: PaymentSheet) {
-    val intentConfig = PaymentSheet.IntentConfiguration(
-        mode = PaymentSheet.IntentConfiguration.Mode.Payment(
-            amount = 1099,
-            currency = "mxn",
-        ),
-        // Other configuration options...
-    )
-
-    paymentSheet.presentWithIntentConfiguration(
-        intentConfiguration = intentConfig,
-        // Optional configuration - See the "Customize the sheet" section in this guide
-        configuration = PaymentSheet.Configuration(
-            merchantDisplayName = "Zazil",
-        )
-    )
-}
-
-fun onPaymentResult(paymentResult: PaymentSheetResult) {
-    when (paymentResult) {
-        is PaymentSheetResult.Canceled -> {
-            // Manejar cancelación
-        }
-        is PaymentSheetResult.Failed -> {
-            // Manejar error
-        }
-        is PaymentSheetResult.Completed -> {
-            // Manejar éxito
         }
     }
 }
