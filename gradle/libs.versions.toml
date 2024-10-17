@@ -15,6 +15,7 @@ retrofit = "2.11.0"
 gson = "2.11.0"
 navigationRuntimeKtx = "2.8.1"
 firebaseAuthKtx = "23.0.0"
+runtimeLivedata = "1.7.3"
 
 [libraries]
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -38,6 +39,7 @@ material3 = { module = "androidx.compose.material3:material3", version.ref = "ma
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

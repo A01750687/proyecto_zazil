@@ -1,6 +1,7 @@
 package com.ars.zazil.Model
 
 
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,6 +30,9 @@ interface AuthService {
     @GET("JSONCategoria/")
     suspend fun descargarCategoria(): List<Categoria>
 
+    @POST("STRIPEpago/") // Reemplaza con tu endpoint correcto
+    fun getPaymentSheet(@Body cantidad: Double): Call<PaymentResponse>
+
     @GET("JSONlistadoItems/")
     suspend fun descargarListaProducto(): List<ProductoApp>
 
@@ -40,6 +44,13 @@ interface AuthService {
 }
 
 // Clases de datos usadas para la respuesta del servidor
+data class PaymentResponse(
+    val paymentIntent: String,
+    val customer: String,
+    val ephemeralKey: String,
+    val publishableKey: String
+)
+
 data class Categoria(
     val nombre: String = ""
 )

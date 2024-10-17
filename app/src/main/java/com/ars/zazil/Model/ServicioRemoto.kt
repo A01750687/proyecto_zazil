@@ -3,12 +3,18 @@ package com.ars.zazil.Model
 
 import android.content.Context
 import android.content.Intent
+import androidx.activity.ComponentActivity
 import com.ars.zazil.MainActivity
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.CreateIntentResult
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
+import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
@@ -21,7 +27,7 @@ class ServicioRemoto {
 
     // Url para servicio web y token para autenticación de usuario
     companion object {
-        const val URL = "http://10.48.73.189:8000/"
+        const val URL = "http://192.168.23.225:8000/"
         var token = ""
     }
 
@@ -46,6 +52,57 @@ class ServicioRemoto {
 
     private val authService by lazy {
         retrofit.create(AuthService::class.java)
+    }
+
+    suspend fun pagoStripe(
+        context: Context,
+        activity: ComponentActivity,
+        _estadoCustomer: MutableStateFlow<PaymentSheet.CustomerConfiguration>,
+        _estadoClientKey: MutableStateFlow<String>,):PaymentSheet{
+
+        return PaymentSheet(
+            activity = activity,
+            createIntentCallback = { _, _ ->
+                // Make a request to your server to create a PaymentIntent and return its client secret
+                try {
+                    val response = authService.getPaymentSheet(0.0).awaitResponse()
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        _estadoClientKey.value = responseBody.paymentIntent
+                        _estadoCustomer.value = PaymentSheet.CustomerConfiguration(
+                            id = responseBody.customer,
+                            ephemeralKeySecret = responseBody.ephemeralKey
+                        )
+                        val publishableKey = responseBody.publishableKey
+                        PaymentConfiguration.init(context, publishableKey,_estadoCustomer.value.id)
+                    }
+                    CreateIntentResult.Success(responseBody?.paymentIntent?:"")
+
+                } catch (e: Exception) {
+                    CreateIntentResult.Failure(
+                        cause = e,
+                        displayMessage = e.message
+                    )
+                }
+            },
+            paymentResultCallback = ::onPaymentSheetResult,
+        )
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                // Customer canceled - you should probably do nothing.
+            }
+            is PaymentSheetResult.Failed -> {
+                print("Error: ${paymentSheetResult.error}")
+                // PaymentSheet encountered an unrecoverable error. You can display the error to the user, log it, etc.
+            }
+            is PaymentSheetResult.Completed -> {
+                // Display, for example, an order confirmation screen
+                print("Completed")
+            }
+        }
     }
 
     /**

@@ -1,16 +1,19 @@
 package com.ars.zazil.Viewmodel
 
 import android.content.Context
-import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ars.zazil.MainActivity
 import com.ars.zazil.Model.Categoria
 import com.ars.zazil.Model.LoginState
 import com.ars.zazil.Model.Pedido
 import com.ars.zazil.Model.ProductoCarrito
 import com.ars.zazil.Model.ServicioRemoto
 import com.ars.zazil.Model.Usuario
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -119,6 +122,12 @@ class LoginVM: ViewModel() {
         servicioRemoto.inicializarToken(context)
     }
 
+    private val _estadoCustomer = MutableStateFlow(PaymentSheet.CustomerConfiguration("",""))
+    val estadoCustomer: StateFlow<PaymentSheet.CustomerConfiguration> = _estadoCustomer
+
+    private val _estadoClientKey = MutableStateFlow("")
+    val estadoClientKey: StateFlow<String> = _estadoClientKey
+
     fun crearDonacion(cantidad:Double,curp:String){
         viewModelScope.launch {
             servicioRemoto.crearDonacion(cantidad,curp)
@@ -191,5 +200,49 @@ class LoginVM: ViewModel() {
     fun setEstadoLogin(estado: Boolean){
         _estadoLogin.value = estado
     }
+
+
+    private val _paymentSheet = MutableLiveData<PaymentSheet>()
+    val paymentSheet: LiveData<PaymentSheet> = _paymentSheet
+
+    fun initializePaymentSheet(context: Context,activity: ComponentActivity) {
+        viewModelScope.launch {
+            _paymentSheet.value = servicioRemoto.pagoStripe(context,activity,_estadoCustomer,_estadoClientKey)
+        }
+    }
+    fun handleCheckoutButtonPressed() {
+        val intentConfig = PaymentSheet.IntentConfiguration(
+            mode = PaymentSheet.IntentConfiguration.Mode.Payment(
+                amount = 1099,
+                currency = "usd",
+            ),
+            // Other configuration options...
+        )
+
+        paymentSheet.value?.presentWithIntentConfiguration(
+            intentConfiguration = intentConfig,
+            // Optional configuration - See the "Customize the sheet" section in this guide
+            configuration = PaymentSheet.Configuration(
+                merchantDisplayName = "Zazil",
+            )
+        )
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                // Customer canceled - you should probably do nothing.
+            }
+            is PaymentSheetResult.Failed -> {
+                print("Error: ${paymentSheetResult.error}")
+                // PaymentSheet encountered an unrecoverable error. You can display the error to the user, log it, etc.
+            }
+            is PaymentSheetResult.Completed -> {
+                // Display, for example, an order confirmation screen
+                print("Completed")
+            }
+        }
+    }
+
 }
 

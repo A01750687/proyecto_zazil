@@ -51,14 +51,24 @@ import com.ars.zazil.ui.theme.naranja
 import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.Viewmodel.ProductoAppVM
 import com.mags.pruebas.View.Pedidos_Pasados
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 
 class MainActivity : ComponentActivity() {
 
     private val loginVM: LoginVM by viewModels()
 
+    private lateinit var paymentSheet: PaymentSheet
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginVM.inicializarToken(this)
+        loginVM.initializePaymentSheet(this,this)
+        PaymentConfiguration.init(
+            this,
+            "pk_test_51QAhEw2K799XBlDvFa90HJL1N9TF96Zc2Lxhap0t3xqORw2E4qwmADNVoIO9O9o4ED775BGs8DamhEnriVxpor5m00fd7MTDQk",
+        )
         enableEdgeToEdge()
         setContent {
             ZazilTheme(dynamicColor = false, darkTheme = false) {

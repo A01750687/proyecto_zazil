@@ -45,24 +45,12 @@ import com.ars.zazil.ui.theme.rosa
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.json.responseJson
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.fuel.json.responseJson
-import com.stripe.android.paymentsheet.rememberPaymentSheet
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
 import com.github.kittinunf.result.Result
 import com.stripe.android.paymentsheet.ExperimentalCustomerSessionApi
 
@@ -75,7 +63,7 @@ fun App() {
     var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(context) {
-        "Your backend endpoint/payment-sheet".httpPost().responseJson { _, _, result ->
+        "http://192.168.23.225:8000/STRIPEpago".httpPost().responseJson { _, _, result ->
             if (result is Result.Success) {
                 val responseJson = result.get().obj()
                 paymentIntentClientSecret = responseJson.getString("paymentIntent")
@@ -111,7 +99,7 @@ private fun presentPaymentSheet(
     paymentSheet.presentWithPaymentIntent(
         paymentIntentClientSecret,
         PaymentSheet.Configuration(
-            merchantDisplayName = "My merchant name",
+            merchantDisplayName = "Zazil",
             customer = customerConfig,
             // Set `allowsDelayedPaymentMethods` to true if your business handles
             // delayed notification payment methods like US bank accounts.
@@ -268,7 +256,7 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
     }
 
     if(menuPago.value){
-        menuPagos(carritoViewModel,mostrarDatosPago
+        menuPagos(productos,loginVM,carritoViewModel,mostrarDatosPago
         ) {
             menuPago.value = false
         }
@@ -296,25 +284,65 @@ fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = 
 
 @Composable
 fun menuPagos(
+    productos: State<List<ProductoCarrito>>,
+    loginVM: LoginVM,
     carritoViewModel: CarritoVM,
     mostrarDatosPago: MutableState<Boolean>,
     function: () -> Unit,
 ){
+
+    val appearance = PaymentSheet.Appearance(
+        colorsLight = PaymentSheet.Colors(
+            primary = Color(red = 36, green = 36, blue = 47),
+            surface = Color.White,
+            component = Color(red = 243, green = 248, blue = 245),
+            componentBorder = Color.Transparent,
+            componentDivider = Color.Black,
+            onComponent = Color.Black,
+            subtitle = Color.Black,
+            placeholderText = Color(red = 115, green = 117, blue = 123),
+            onSurface = Color.Black,
+            appBarIcon = Color.Black,
+            error = Color.Red,
+        ),
+        shapes = PaymentSheet.Shapes(
+            cornerRadiusDp = 12.0f,
+            borderStrokeWidthDp = 0.5f
+        ),
+        primaryButton = PaymentSheet.PrimaryButton(
+            shape = PaymentSheet.PrimaryButtonShape(
+                cornerRadiusDp = 20f
+            ),
+        )
+    )
+    val context = LocalContext.current
+    val paymentSheet = loginVM.paymentSheet.observeAsState()
+
+    val total = productos.value.sumOf{ it.producto.precio * it.cantidad }
+
     Dialog(onDismissRequest = {function()}) {
         Card(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(50.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(50.dp)
             ) {
                 Image(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                        function()
-                        carritoViewModel.limpiarCarrito()
-                    },
+                            loginVM.handleCheckoutButtonPressed()
+                            val clientSecret = loginVM.estadoClientKey.value
+                            function()
+                            paymentSheet.value?.presentWithPaymentIntent(
+                                clientSecret,
+                                PaymentSheet.Configuration("Zazil",appearance = appearance)
+                            )
+                            //carritoViewModel.limpiarCarrito()
+                        },
                     painter = painterResource(id = R.drawable.stripeimg),
                     contentDescription = "Continuar compra",
 
@@ -323,9 +351,9 @@ fun menuPagos(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                        function()
-                        mostrarDatosPago.value = true
-                    },
+                            function()
+                            mostrarDatosPago.value = true
+                        },
                     painter = painterResource(id = R.drawable.tb),
                     contentDescription = "Otro botón"
                 )
@@ -333,13 +361,45 @@ fun menuPagos(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                        function()
-                        mostrarDatosPago.value = true
-                    },
+                            function()
+                            mostrarDatosPago.value = true
+                        },
                     painter = painterResource(id = R.drawable.dep),
                     contentDescription = "Otro botón"
                 )
             }
+        }
+    }
+}
+
+private fun handleCheckoutButtonPressed(paymentSheet: PaymentSheet) {
+    val intentConfig = PaymentSheet.IntentConfiguration(
+        mode = PaymentSheet.IntentConfiguration.Mode.Payment(
+            amount = 1099,
+            currency = "mxn",
+        ),
+        // Other configuration options...
+    )
+
+    paymentSheet.presentWithIntentConfiguration(
+        intentConfiguration = intentConfig,
+        // Optional configuration - See the "Customize the sheet" section in this guide
+        configuration = PaymentSheet.Configuration(
+            merchantDisplayName = "Zazil",
+        )
+    )
+}
+
+fun onPaymentResult(paymentResult: PaymentSheetResult) {
+    when (paymentResult) {
+        is PaymentSheetResult.Canceled -> {
+            // Manejar cancelación
+        }
+        is PaymentSheetResult.Failed -> {
+            // Manejar error
+        }
+        is PaymentSheetResult.Completed -> {
+            // Manejar éxito
         }
     }
 }
