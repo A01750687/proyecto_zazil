@@ -42,6 +42,99 @@ import com.ars.zazil.R
 import com.ars.zazil.Viewmodel.CarritoVM
 import com.ars.zazil.Viewmodel.LoginVM
 import com.ars.zazil.ui.theme.rosa
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.rememberPaymentSheet
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.json.responseJson
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.PaymentSheet
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.json.responseJson
+import com.stripe.android.paymentsheet.rememberPaymentSheet
+import com.github.kittinunf.result.Result
+import com.stripe.android.paymentsheet.ExperimentalCustomerSessionApi
+
+@OptIn(ExperimentalCustomerSessionApi::class)
+@Composable
+fun App() {
+    val paymentSheet = rememberPaymentSheet(::onPaymentSheetResult)
+    val context = LocalContext.current
+    var customerConfig by remember { mutableStateOf<PaymentSheet.CustomerConfiguration?>(null) }
+    var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(context) {
+        "Your backend endpoint/payment-sheet".httpPost().responseJson { _, _, result ->
+            if (result is Result.Success) {
+                val responseJson = result.get().obj()
+                paymentIntentClientSecret = responseJson.getString("paymentIntent")
+                customerConfig = PaymentSheet.CustomerConfiguration(
+                    id = responseJson.getString("customer"),
+                    ephemeralKeySecret = responseJson.getString("ephemeralKey")
+                )
+                val publishableKey = responseJson.getString("publishableKey")
+                PaymentConfiguration.init(context, publishableKey)
+            }
+        }
+    }
+
+    Button(
+        onClick = {
+            val currentConfig = customerConfig
+            val currentClientSecret = paymentIntentClientSecret
+
+            if (currentConfig != null && currentClientSecret != null) {
+                presentPaymentSheet(paymentSheet, currentConfig, currentClientSecret)
+            }
+        }
+    ) {
+        Text("Checkout")
+    }
+}
+
+private fun presentPaymentSheet(
+    paymentSheet: PaymentSheet,
+    customerConfig: PaymentSheet.CustomerConfiguration,
+    paymentIntentClientSecret: String
+) {
+    paymentSheet.presentWithPaymentIntent(
+        paymentIntentClientSecret,
+        PaymentSheet.Configuration(
+            merchantDisplayName = "My merchant name",
+            customer = customerConfig,
+            // Set `allowsDelayedPaymentMethods` to true if your business handles
+            // delayed notification payment methods like US bank accounts.
+            allowsDelayedPaymentMethods = true
+        )
+    )
+}
+
+private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+    when(paymentSheetResult) {
+        is PaymentSheetResult.Canceled -> {
+            print("Canceled")
+        }
+        is PaymentSheetResult.Failed -> {
+            print("Error: ${paymentSheetResult.error}")
+        }
+        is PaymentSheetResult.Completed -> {
+            // Display for example, an order confirmation screen
+            print("Completed")
+        }
+    }
+}
+
 
 @Composable
 fun Carrito(loginVM: LoginVM, carritoViewModel: CarritoVM, modifier: Modifier = Modifier) {
@@ -222,7 +315,7 @@ fun menuPagos(
                         function()
                         carritoViewModel.limpiarCarrito()
                     },
-                    painter = painterResource(id = R.drawable.paypalimg),
+                    painter = painterResource(id = R.drawable.stripeimg),
                     contentDescription = "Continuar compra",
 
                     )
@@ -441,7 +534,7 @@ fun Donacion(loginVM: LoginVM, onDismiss: () -> Unit) {
                         modifier = Modifier.size(150.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.paypalimg),
+                            painter = painterResource(id = R.drawable.stripeimg),
                             contentDescription = "Continuar compra"
                         )
                     }
@@ -528,4 +621,6 @@ fun ProductoItem(producto: ProductoCarrito, carritoViewModel: CarritoVM) {
         )
     }
 }
+
+
 

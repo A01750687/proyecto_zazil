@@ -39,7 +39,7 @@ fun pagos(modifier: Modifier) {
         )
         Row {
             Image(
-                painter = painterResource(id = R.drawable.paypalimg),
+                painter = painterResource(id = R.drawable.stripeimg),
                 contentDescription = null,
                 modifier = Modifier.weight(1f).padding(8.dp)
             )

@@ -92,4 +92,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.3.0")
     implementation(libs.firebase.auth.ktx)
 
+    //Stripe Android SDK
+    implementation("com.stripe:stripe-android:20.52.1")
+
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-json:2.3.1")
 }
