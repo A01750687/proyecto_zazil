@@ -96,13 +96,6 @@ fun Perfil(loginVM: LoginVM, navController: NavController, modifier: Modifier = 
                         .weight(1f)
                         .padding(8.dp)
                 )
-                SectionCard(
-                    title = "Género",
-                    value = "Femenino",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                )
             }
             SectionCard(
                 title = "Email",

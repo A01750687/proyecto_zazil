@@ -587,6 +587,16 @@ fun ProductCard(carritoViewModel: CarritoVM, navController: NavHostController, p
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
+
+            var descuento = ""
+            if(product.descuento > 0.0){
+                descuento = "DESCUENTO: %${String.format("%.2f",product.descuento)}"
+            }
+            Text(
+                text = descuento,
+                color = Color.Black,
+                fontSize = 14.sp
+            )
             Text(
                 text = "Stock:${product.stock} $${String.format("%.2f",product.precio)}",
                 color = Color.Black,
